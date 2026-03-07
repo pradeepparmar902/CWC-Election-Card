@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ID Card Master Admin</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#001C6B">
+    <link rel="apple-touch-icon" href="logo192.png">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -186,6 +189,17 @@
                 saveBtn.innerHTML = "Save Link to Cloud Database";
             }
         };
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
     </script>
 </body>
 
