@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>ID Designer Pro - Header Studio</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#001C6B">
@@ -35,11 +35,19 @@
             font-family: 'Inter', sans-serif;
         }
 
+        html {
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
         body {
             background-color: var(--bg-color);
             min-height: 100vh;
+            width: 100vw;
+            max-width: 100vw;
             display: flex;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* Sidebar Styles */
