@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Database Viewer</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Firebase Cloud Sync SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary-blue: #001C6B;
+            --primary-red: #ED1C24;
+            --bg-color: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header Navigation */
+        .top-nav {
+            background-color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e0e0e0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            z-index: 10;
+        }
+
+        .top-nav h1 {
+            color: var(--primary-blue);
+            font-weight: 900;
+            font-size: 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-link {
+            text-decoration: none;
+            color: white;
+            background-color: var(--primary-blue);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-link:hover {
+            background-color: #001242;
+        }
+
+        /* Main Workspace */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Left Side: Table View */
+        .table-container {
+            flex: 2;
+            background: white;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Table Scroll Wrapper */
+        .table-scroll {
+            overflow-y: auto;
+            overflow-x: auto;
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+            min-width: 1000px;
+            /* forces horizontal scrolling if many columns */
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            padding: 15px;
+            font-weight: 700;
+            color: #555;
+            border-bottom: 2px solid #ddd;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        tr {
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        tr:hover {
+            background-color: #f1f5fa;
+        }
+
+        tr.active-row {
+            background-color: #e6effa;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .status-badge {
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        /* Right Side: Image Preview */
+        .preview-container {
+            flex: 1;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            min-width: 400px;
+        }
+
+        .preview-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview-card img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+        }
+
+        .preview-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .preview-header h2 {
+            margin: 0;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .preview-header p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #888;
+        }
+
+        .empty-state i {
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Custom Scrollbar for sleek UI */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="top-nav">
+        <h1><i data-lucide="database"></i> Cloud Database Viewer</h1>
+        <a href="index.html" class="btn-link"><i data-lucide="arrow-left"></i> Back to Designer</a>
+    </header>
+
+    <!-- Workspace -->
+    <div class="workspace">
+        <!-- Left Table -->
+        <div class="table-container">
+            <div class="table-scroll">
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date / Time</th>
+                            <th>Membership No.</th>
+                            <th>Full Name</th>
+                            <th>Mobile</th>
+                            <th>DOB</th>
+                            <th>Valid Upto</th>
+                            <th>Vibhag Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+                                <i data-lucide="loader" class="spin" style="margin-bottom:10px;"></i>
+                                <br>Loading Database Records...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right Preview -->
+        <div class="preview-container">
+            <!-- Empty State -->
+            <div id="preview-empty" class="empty-state">
+                <i data-lucide="image" size="64"></i>
+                <h3>No Card Selected</h3>
+                <p>Click on any row in the table to view the high-resolution ID card generated.</p>
+            </div>
+
+            <!-- Card View State -->
+            <div id="preview-active" class="preview-card" style="display: none;">
+                <div class="preview-header">
+                    <h2 id="view-name">--</h2>
+                    <p id="view-membership">--</p>
+                </div>
+                <img id="view-image" src="" alt="Selected ID Card">
+                <button id="btn-download"
+                    style="margin-top: 15px; width: 100%; background: var(--primary-blue); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="download" size="18"></i> Download High-Res Photo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // 1. Initialize Icons
+        lucide.createIcons();
+
+        // 2. Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDA1-QWSGJZPjB0P-cVeOoqvDj_1xqURMo",
+            authDomain: "mmp-cwc-election-card.firebaseapp.com",
+            projectId: "mmp-cwc-election-card",
+            storageBucket: "mmp-cwc-election-card.firebasestorage.app",
+            messagingSenderId: "870920667033",
+            appId: "1:870920667033:web:d0f2d4cae50568bede5d08",
+            measurementId: "G-E04MZT89TJ"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 3. Elements
+        const tbody = document.getElementById('table-body');
+        const emptyState = document.getElementById('preview-empty');
+        const activeState = document.getElementById('preview-active');
+        const viewName = document.getElementById('view-name');
+        const viewMembership = document.getElementById('view-membership');
+        const viewImage = document.getElementById('view-image');
+        const btnDownload = document.getElementById('btn-download');
+
+        // 4. State Management
+        let allRecords = [];
+        let currentlySelectedRow = null;
+
+        // Function to select a row and show the image
+        const selectRecord = (rec, rowElement) => {
+            // Remove highlight from previous row
+            if (currentlySelectedRow) {
+                currentlySelectedRow.classList.remove('active-row');
+            }
+
+            // Add highlight
+            rowElement.classList.add('active-row');
+            currentlySelectedRow = rowElement;
+
+            // Update Right Side UI
+            emptyState.style.display = 'none';
+            activeState.style.display = 'flex';
+
+            viewName.textContent = rec["Full Printed Name"] || "Unknown Member";
+            viewMembership.textContent = `ID: ${rec["Membership No"] || "N/A"}`;
+            viewImage.src = rec.photoUrl || ""; // Firebase Storage PNG link
+
+            // Setup Download Button
+            btnDownload.onclick = async () => {
+                const btnOrig = btnDownload.innerHTML;
+                btnDownload.innerHTML = `<i data-lucide="loader" class="spin"></i> Downloading...`;
+                if (window.lucide) lucide.createIcons();
+
+                try {
+                    // Fetch blob directly via proxy to bypass strict cross-origin block on anchor downloads
+                    const response = await fetch(rec.photoUrl);
+                    const blob = await response.blob();
+                    const a = document.createElement("a");
+                    a.href = window.URL.createObjectURL(blob);
+                    a.download = `ID_${rec["Full Printed Name"] ? rec["Full Printed Name"].replace(/\s/g, '_').toUpperCase() : "CARD"}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } catch (e) {
+                    alert("Download failed. You can right-click the image and select 'Save Image As' instead.");
+                } finally {
+                    btnDownload.innerHTML = btnOrig;
+                    if (window.lucide) lucide.createIcons();
+                }
+            };
+        };
+
+        // 5. Fetch Data from Firebase
+        const fetchDatabase = async () => {
+            try {
+                // Get all logs ordered by the newest generation first if timestamp exists
+                const snapshot = await db.collection('idCardLogs')
+                    .orderBy('timestamp', 'desc') // Requires an index in Firestore if large, works natively if not mixed queries
+                    .get();
+
+                tbody.innerHTML = ''; // Clear loading screen
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">No cards generated yet. </td></tr>`;
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+
+                    // Format Date nicely safely
+                    let dateStr = "N/A";
+                    if (data.timestamp && data.timestamp.seconds) {
+                        const d = new Date(data.timestamp.seconds * 1000);
+                        dateStr = d.toLocaleString(undefined, {
+                            month: 'short', day: 'numeric', year: 'numeric',
+                            hour: 'numeric', minute: '2-digit'
+                        });
+                    }
+
+                    // Create table row
+                    const tr = document.createElement('tr');
+
+                    tr.innerHTML = `
+                        <td style="font-size: 0.75rem; color: #666;">${dateStr}</td>
+                        <td style="font-weight: 700;">${data["Membership No"] || "-"}</td>
+                        <td>${data["Full Printed Name"] || "-"}</td>
+                        <td>${data["Mobile Number"] || "-"}</td>
+                        <td>${data["Date of Birth"] || "-"}</td>
+                        <td>${data["Valid Upto"] || "-"}</td>
+                        <td>${data["Vibhag Name"] || "-"}</td>
+                        <td><span class="status-badge"><i data-lucide="check" size="12"></i> Saved</span></td>
+                    `;
+
+                    // Wire up clicking
+                    tr.onclick = () => selectRecord(data, tr);
+
+                    tbody.appendChild(tr);
+                });
+
+                // Refresh small lucide icons
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error("Error fetching documents: ", error);
+
+                // Fallback for missing Index initially
+                if (error.message.includes("index")) {
+                    const snapshotUnordered = await db.collection('idCardLogs').get();
+                    tbody.innerHTML = ''; // Clear loading screen
+                    snapshotUnordered.forEach(doc => {
+                        const data = doc.data();
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-size: 0.75rem; color: #666;">-- (Requires Index) --</td>
+                            <td style="font-weight: 700;">${data["Membership No"] || "-"}</td>
+                            <td>${data["Full Printed Name"] || "-"}</td>
+                            <td>${data["Mobile Number"] || "-"}</td>
+                            <td>${data["Date of Birth"] || "-"}</td>
+                            <td>${data["Valid Upto"] || "-"}</td>
+                            <td>${data["Vibhag Name"] || "-"}</td>
+                            <td><span class="status-badge"><i data-lucide="check" size="12"></i> Saved</span></td>
+                        `;
+                        tr.onclick = () => selectRecord(data, tr);
+                        tbody.appendChild(tr);
+                    });
+                    lucide.createIcons();
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: red;">Database Connection Failed. Check Console.</td></tr>`;
+                }
+            }
+        };
+
+        // Boot system
+        fetchDatabase();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,353 @@
+:root {
+  --primary-red: #ED1C24;
+  --primary-blue: #001C6B;
+  --primary-pink: #EC008C;
+  --bg-color: #f0f2f5;
+  --card-bg: #ffffff;
+  --sidebar-width: 400px;
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: #333;
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  overflow-y: auto;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar h2 {
+  margin-bottom: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: white;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(0, 28, 107, 0.1);
+}
+
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.upload-section {
+  border: 2px dashed rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.upload-section:hover {
+  border-color: var(--primary-pink);
+  background: rgba(236, 0, 140, 0.02);
+}
+
+/* Main Content Area */
+.main-content {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 2rem;
+}
+
+/* ID Card Template Styles */
+.id-card-container {
+  padding: 2rem;
+  background: white;
+  box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.12), 0 30px 60px -30px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  /* ID cards often have sharp or slightly rounded corners */
+}
+
+.id-card {
+  width: 900px;
+  height: auto;
+  min-height: 560px;
+  background: white;
+  border: 1px solid #ddd;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  transform-origin: center;
+}
+
+.card-top-stripes {
+  display: flex;
+  height: 25px;
+  width: 100%;
+}
+
+.stripe-blue {
+  background: #00008B;
+  flex: 1;
+}
+
+.stripe-green {
+  background: #008000;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.stripe-orange {
+  background: #FF8C00;
+  flex: 1;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  border-bottom: 3px solid var(--primary-blue);
+}
+
+.header-logo {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}
+
+.header-text {
+  text-align: center;
+  flex: 1;
+}
+
+.header-text h1 {
+  color: var(--primary-red);
+  font-size: 38px;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.header-text h2 {
+  color: var(--primary-blue);
+  font-size: 18px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.header-text p {
+  color: var(--primary-blue);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.office-bar {
+  background: var(--primary-blue);
+  color: white;
+  text-align: center;
+  padding: 6px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.card-body {
+  display: flex;
+  padding: 20px 30px;
+  gap: 30px;
+}
+
+.photo-container {
+  width: 200px;
+  height: 250px;
+  border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.photo-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.details-container {
+  flex: 1;
+}
+
+.member-name {
+  color: var(--primary-pink);
+  font-size: 42px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  line-height: 1.1;
+}
+
+.info-item {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.info-label {
+  font-weight: 800;
+}
+
+.membership-no {
+  margin-top: 15px;
+  color: var(--primary-blue);
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.membership-no .value {
+  border: 1px solid var(--primary-blue);
+  padding: 2px 10px;
+  border-radius: 4px;
+}
+
+.valid-upto-box {
+  background: var(--primary-pink);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 900;
+  margin-top: 15px;
+}
+
+.issue-date {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.card-footer {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  text-align: center;
+}
+
+.signature {
+  width: 120px;
+  height: 50px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+.signature-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.signature-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #00134d;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 28, 107, 0.2);
+}
+
+.btn-secondary {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+}
