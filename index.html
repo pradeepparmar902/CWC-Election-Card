@@ -137,6 +137,30 @@
             margin-bottom: 1rem;
         }
 
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .form-grid-2-1 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .form-grid-100-1 {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 0.5rem;
+        }
+
         /* Preview Canvas */
         .main-preview {
             margin-left: var(--sidebar-width);
@@ -459,6 +483,13 @@
                 padding: 1rem;
             }
 
+            .form-grid-3,
+            .form-grid-2,
+            .form-grid-2-1,
+            .form-grid-100-1 {
+                grid-template-columns: 1fr;
+            }
+
             .id-card {
                 transform: scale(0.35);
                 transform-origin: top left;
@@ -586,14 +617,14 @@
 
         <div class="section-title">Member Details</div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+        <div class="form-grid-3">
             <div class="form-group"><label>First Name</label><input type="text" id="m-fname" value=""></div>
             <div class="form-group"><label>Middle Name</label><input type="text" id="m-mname" value=""></div>
             <div class="form-group"><label>Surname</label><input type="text" id="m-sname" value=""></div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-            <div class="form-group" style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem;">
+        <div class="form-grid-2">
+            <div class="form-group form-grid-2-1">
                 <div><label>Date of Birth</label><input type="date" id="m-dob" value=""></div>
                 <div>
                     <label>Gender</label>
@@ -615,13 +646,13 @@
 
         <div class="form-group"><label>Address</label><textarea id="m-address" rows="2"></textarea></div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+        <div class="form-grid-2">
             <div class="form-group"><label>Mobile Number</label><input type="text" id="m-mobile" value="">
             </div>
             <div class="form-group"><label>Membership No</label><input type="text" id="m-membership" value=""></div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+        <div class="form-grid-2">
             <div class="form-group"><label>Valid Upto</label><input type="text" id="m-valid" value="">
             </div>
             <div class="form-group"><label>Date of Issue</label><input type="date" id="m-issue" value="">
@@ -630,7 +661,7 @@
 
         <div class="section-title" style="margin-top: 1rem; font-size: 0.65rem; opacity: 0.7;">Admin (Database Only)
         </div>
-        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 0.5rem;">
+        <div class="form-grid-100-1">
             <div class="form-group"><label>Vibhag No</label><input type="text" id="db-vibhag-no" placeholder="e.g. 12">
             </div>
             <div class="form-group"><label>Vibhag Name</label><input type="text" id="db-vibhag-name"
