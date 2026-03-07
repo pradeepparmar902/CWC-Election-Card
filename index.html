@@ -439,8 +439,8 @@
         /* Mobile Layout Adjustments */
         @media (max-width: 1200px) {
             body {
-                flex-direction: column-reverse;
-                overflow-x: hidden;
+                flex-direction: column-reverse !important;
+                overflow-x: hidden !important;
             }
 
             .sidebar {
@@ -454,18 +454,22 @@
             }
 
             .main-preview {
-                margin-left: 0;
+                margin-left: 0 !important;
                 padding: 1rem;
                 height: auto;
                 justify-content: flex-start;
                 max-width: 100vw;
                 overflow-x: hidden;
+                overflow-y: hidden;
             }
 
             .id-card {
                 transform: scale(0.6);
-                transform-origin: top center;
+                transform-origin: top left;
                 margin-bottom: 20px;
+                /* Offset physical box width leftover from scaling 1000x630 -> 600x378 */
+                margin-right: -400px;
+                margin-bottom: -232px;
             }
 
             .actions {
@@ -475,6 +479,8 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 10px;
+                position: relative;
+                z-index: 10;
             }
         }
 
@@ -493,17 +499,17 @@
             .id-card {
                 transform: scale(0.35);
                 transform-origin: top left;
-                margin-left: 50%;
-                left: -175px;
-                /* Offset half of scaled width to center */
-                position: relative;
+                /* At 0.35 scale, physical box needs negative margins so it takes exactly 350x220 space */
+                margin-right: -650px;
+                margin-bottom: -409px;
             }
         }
 
         @media (max-width: 480px) {
             .id-card {
-                transform: scale(0.30);
-                left: -150px;
+                transform: scale(0.30) !important;
+                margin-right: -700px !important;
+                margin-bottom: -441px !important;
             }
         }
     </style>
