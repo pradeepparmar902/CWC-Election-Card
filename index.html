@@ -19,8 +19,33 @@
         .hide-defaults .card-stripes,
         .hide-defaults .header-container,
         .hide-defaults .office-bar,
-        .hide-defaults .default-label {
+        .hide-defaults .default-label,
+        .hide-defaults #drag-sign {
             display: none !important;
+        }
+
+        /* Strip styling to leave raw text placeholders */
+        .hide-defaults .valid-box {
+            background: transparent !important;
+            color: black !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            font-weight: 600 !important;
+        }
+
+        .hide-defaults .name-text {
+            color: black !important;
+            font-weight: 600 !important;
+        }
+
+        .hide-defaults #drag-m-membership span {
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        .hide-defaults #drag-photo {
+            border: 1px dashed #ccc !important;
+            background: transparent !important;
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
