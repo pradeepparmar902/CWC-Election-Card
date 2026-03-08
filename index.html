@@ -14,6 +14,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Firebase Cloud Sync SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -792,6 +793,7 @@
                     <option value="image/png">PNG (Sharp Text)</option>
                     <option value="image/jpeg">JPG (Photo Style)</option>
                     <option value="image/svg+xml">SVG (Vector for CorelDRAW)</option>
+                    <option value="application/pdf">PDF (Print Ready)</option>
                 </select>
             </div>
             <button class="btn btn-p" id="btn-download"><i data-lucide="download"></i> Export High-Res ID</button>
@@ -1133,6 +1135,21 @@
 
                     if (!cachedSvg) throw new Error("Empty vector generated");
                     blob = await (await fetch(cachedSvg)).blob();
+
+                } else if (formatSelection === 'application/pdf') {
+                    finalExt = 'pdf';
+                    // Generate high-res image first for the PDF
+                    const dataUrl = await htmlToImage.toJpeg(area, { backgroundColor: '#ffffff', pixelRatio: 4, quality: 0.98, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
+
+                    const { jsPDF } = window.jspdf;
+                    // Create landscape PDF, dimensions 100mm x 63mm (matching 1000x630 ratio)
+                    const doc = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                        format: [100, 63]
+                    });
+                    doc.addImage(dataUrl, 'JPEG', 0, 0, 100, 63);
+                    blob = doc.output('blob');
 
                 } else {
                     // Raster Path (Local)
