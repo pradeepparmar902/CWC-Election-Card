@@ -15,7 +15,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Firebase Cloud Sync SDKs -->
+    <style>
+        .hide-defaults .card-stripes,
+        .hide-defaults .header-container,
+        .hide-defaults .office-bar,
+        .hide-defaults .default-label {
+            display: none !important;
+        }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
@@ -737,36 +744,36 @@
             </div>
 
             <div class="draggable detail-text" id="drag-m-dob" style="top: 310px; left: 300px;">
-                <b>DOB : </b> <span id="view-m-dob">[DD.MM.YYYY]-M</span>
+                <span class="default-label"><b>DOB : </b> </span><span id="view-m-dob">[DD.MM.YYYY]-M</span>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-address"
                 style="top: 350px; left: 300px; max-width: 650px; line-height: 1.15;">
-                <b>Address : </b> <span id="view-m-addr">[Full Address Here]</span>
+                <span class="default-label"><b>Address : </b> </span><span id="view-m-addr">[Full Address Here]</span>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-mobile" style="top: 440px; left: 300px;">
-                <b>Mob.</b> <span id="view-m-mobile">[Mobile No]</span>
+                <span class="default-label"><b>Mob.</b> </span><span id="view-m-mobile">[Mobile No]</span>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-membership"
                 style="top: 480px; left: 300px; color: var(--primary-blue); font-weight: 800;">
-                Membership No.: <span id="view-m-membership"
+                <span class="default-label">Membership No.: </span><span id="view-m-membership"
                     style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">[Mem
                     No]</span>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable valid-box detail-text" id="drag-m-valid" style="top: 535px; left: 300px;">
-                Valid Up To : [Valid Date]
+                <span class="default-label">Valid Up To : </span>[Valid Date]
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-issue" style="top: 590px; left: 40px; font-weight: 800;">
-                Date of Issue : <span id="view-m-issue">[Issue Date]</span>
+                <span class="default-label">Date of Issue : </span><span id="view-m-issue">[Issue Date]</span>
                 <div class="resizer"></div>
             </div>
 
@@ -897,21 +904,21 @@
             // Format DOB for display (YYYY-MM-DD to DD.MM.YYYY)
             if (mDob.value) {
                 const parts = mDob.value.split('-');
-                document.getElementById('drag-m-dob').innerHTML = `<b>DOB : </b> ${parts[2]}.${parts[1]}.${parts[0]}-${mGender.value}<div class="resizer"></div>`;
+                document.getElementById('drag-m-dob').innerHTML = `<span class="default-label"><b>DOB : </b> </span>${parts[2]}.${parts[1]}.${parts[0]}-${mGender.value}<div class="resizer"></div>`;
             } else {
-                document.getElementById('drag-m-dob').innerHTML = `<b>DOB : </b><div class="resizer"></div>`;
+                document.getElementById('drag-m-dob').innerHTML = `<span class="default-label"><b>DOB : </b></span><div class="resizer"></div>`;
             }
 
-            document.getElementById('drag-m-mobile').innerHTML = `<b>Mob.</b> ${mMobile.value}<div class="resizer"></div>`;
-            document.getElementById('drag-m-membership').innerHTML = `Membership No.: <span style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">${mMembership.value}</span><div class="resizer"></div>`;
-            document.getElementById('drag-m-valid').innerHTML = `Valid Up To : ${mValid.value}<div class="resizer"></div>`;
+            document.getElementById('drag-m-mobile').innerHTML = `<span class="default-label"><b>Mob.</b> </span>${mMobile.value}<div class="resizer"></div>`;
+            document.getElementById('drag-m-membership').innerHTML = `<span class="default-label">Membership No.: </span><span style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">${mMembership.value}</span><div class="resizer"></div>`;
+            document.getElementById('drag-m-valid').innerHTML = `<span class="default-label">Valid Up To : </span>${mValid.value}<div class="resizer"></div>`;
 
             // Format Issue Date
             if (mIssue.value) {
                 const parts = mIssue.value.split('-');
-                document.getElementById('drag-m-issue').innerHTML = `Date of Issue : ${parts[2]}.${parts[1]}.${parts[0]}<div class="resizer"></div>`;
+                document.getElementById('drag-m-issue').innerHTML = `<span class="default-label">Date of Issue : </span>${parts[2]}.${parts[1]}.${parts[0]}<div class="resizer"></div>`;
             } else {
-                document.getElementById('drag-m-issue').innerHTML = `Date of Issue : <div class="resizer"></div>`;
+                document.getElementById('drag-m-issue').innerHTML = `<span class="default-label">Date of Issue : </span><div class="resizer"></div>`;
             }
         };
 
@@ -1010,10 +1017,13 @@
         };
 
         hideDefaultsToggle.onchange = (e) => {
-            const displayStyle = e.target.checked ? 'none' : 'flex';
-            document.querySelector('.card-stripes').style.display = displayStyle;
-            document.querySelector('.header-container').style.display = displayStyle;
-            document.querySelector('.office-bar').style.display = displayStyle;
+            if (e.target.checked) {
+                captureArea.classList.add('hide-defaults');
+                document.getElementById('drag-sign').style.display = 'none';
+            } else {
+                captureArea.classList.remove('hide-defaults');
+                document.getElementById('drag-sign').style.display = 'block';
+            }
         };
 
         const bgStudio = document.getElementById('bg-studio-container');
