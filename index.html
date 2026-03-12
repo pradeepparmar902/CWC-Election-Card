@@ -651,6 +651,10 @@
             /* Show Hamburger ONLY on mobile, make it highly visible */
             .menu-trigger {
                 display: flex !important;
+                position: fixed !important;
+                top: 15px !important;
+                left: 15px !important;
+                z-index: 99999 !important; /* Above EVERYTHING including toast containers */
                 background: var(--primary-blue) !important;
                 color: white !important;
                 border: 2px solid white !important;
@@ -708,12 +712,6 @@
                 transform: scale(0.28) !important;
                 margin-right: -720px !important;
                 margin-bottom: -455px !important;
-            }
-            .menu-trigger {
-                top: 15px;
-                left: 15px;
-                width: 40px;
-                height: 40px;
             }
         }
 
