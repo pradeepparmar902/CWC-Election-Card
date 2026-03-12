@@ -31,9 +31,9 @@
             --primary-red: #ED1C24;
             --primary-blue: #001C6B;
             --primary-pink: #EC008C;
-            --bg-color: #f0f2f5;
-            --sidebar-width: 420px;
-            --transition: all 0.3s ease;
+            --bg-color: #f8fafc;
+            --sidebar-width: 500px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -62,15 +62,17 @@
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
-            background: white;
-            border-right: 1px solid #ddd;
-            padding: 2rem;
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(226, 232, 240, 0.5);
+            padding: 1.5rem;
             overflow-y: auto;
             position: fixed;
             left: 0;
             top: 0;
             z-index: 100;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.02);
         }
 
         .sidebar h2 {
@@ -81,13 +83,17 @@
         }
 
         .section-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            color: #999;
+            color: #718096;
             text-transform: uppercase;
-            margin: 1.5rem 0 1rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+            letter-spacing: 0.05em;
+            margin: 2rem 0 1.2rem;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group {
@@ -96,20 +102,36 @@
 
         .form-group label {
             display: block;
-            font-size: 0.8rem;
+            width: 100%;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: #555;
-            margin-bottom: 0.4rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+            clear: both;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.7rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 0.75rem;
+            border: 1.5px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            color: #1a202c;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 28, 107, 0.1);
         }
 
         .btn-group {
@@ -139,11 +161,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem;
-            background: #f0f4ff;
-            border-radius: 12px;
-            margin-bottom: 1rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
+            border: 1px solid #dce4ff;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 28, 107, 0.05);
         }
+
+        /* Section Theming */
+        .section-personal { background: rgba(59, 130, 246, 0.03); border-left: 4px solid #3b82f6; border-radius: 0 12px 12px 0; padding: 1rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .section-contact { background: rgba(16, 185, 129, 0.03); border-left: 4px solid #10b981; border-radius: 0 12px 12px 0; padding: 1rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .section-admin { background: rgba(245, 158, 11, 0.03); border-left: 4px solid #f59e0b; border-radius: 0 12px 12px 0; padding: 1rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
 
         .form-grid-3 {
             display: grid;
@@ -231,6 +260,73 @@
 
         .design-mode-on .draggable:hover .resizer {
             display: block;
+        }
+
+        .design-only {
+            display: none !important;
+        }
+        .design-mode-on .design-only {
+            display: block !important;
+            float: right;
+            color: var(--primary-pink);
+            font-size: 0.65rem;
+            font-weight: 800;
+            background: rgba(236, 0, 140, 0.1);
+            border: 1px solid rgba(236, 0, 140, 0.2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .design-only input[type="checkbox"] {
+            vertical-align: middle;
+            margin-right: 3px;
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Mandatory Field Toggle */
+        .mandatory-toggle {
+            position: absolute;
+            top: -22px;
+            left: 0;
+            background: var(--primary-pink);
+            color: white;
+            font-size: 0.60rem;
+            padding: 2px 6px;
+            border-radius: 4px 4px 0 0;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 800;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .design-mode-on .mandatory-toggle {
+            display: flex;
+        }
+
+        .mandatory-toggle input {
+            margin: 0;
+            width: 12px;
+            height: 12px;
+            cursor: pointer;
+        }
+        
+        /* Highlight mandatory fields in design mode */
+        .design-mode-on .draggable[data-mandatory="true"] {
+            border-color: #28a745 !important;
+            background: rgba(40, 167, 69, 0.05);
+        }
+        
+        .design-mode-on .draggable[data-mandatory="true"] .mandatory-toggle {
+            background: #28a745;
+            display: flex; /* Always show if mandatory */
         }
 
         /* Parts of the Card */
@@ -520,45 +616,250 @@
                 margin-right: -650px;
                 margin-bottom: -409px;
             }
+
+            /* Responsive Modals */
+            div[id$="-modal"] > div {
+                max-width: 95% !important;
+                margin: 0 !important;
+            }
+
+            #approvals-container {
+                flex-direction: column !important;
+                height: auto !important;
+                overflow-y: visible !important;
+                min-height: auto !important;
+            }
+
+            #approvals-table-container {
+                border-right: none !important;
+                border-bottom: 2px solid #eee !important;
+                max-height: 300px !important;
+                flex: none !important;
+            }
+
+            #approvals-preview-pane {
+                width: 100% !important;
+                padding: 10px !important;
+            }
+
+            .admin-grid-columns {
+                grid-template-columns: 1fr !important;
+            }
         }
 
         @media (max-width: 480px) {
             .id-card {
-                transform: scale(0.30) !important;
-                margin-right: -700px !important;
-                margin-bottom: -441px !important;
+                transform: scale(0.28) !important;
+                margin-right: -720px !important;
+                margin-bottom: -455px !important;
             }
+            .menu-trigger {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Navigation Drawer Styles */
+        .menu-trigger {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .menu-trigger:hover {
+            transform: scale(1.1);
+            background: #fff;
+            color: var(--primary-blue);
+        }
+
+        .nav-drawer {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-drawer.open {
+            left: 0;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .drawer-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            background: linear-gradient(135deg, #1a365d 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-drawer {
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .close-drawer:hover {
+            color: var(--primary-red);
+        }
+
+        .drawer-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid transparent;
+        }
+
+        .drawer-nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-blue);
+            transform: translateX(5px);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .drawer-nav-item i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .drawer-nav-item.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1a365d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .drawer-nav-item.secondary {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            background: none;
+            border: 1px dashed #ddd;
+        }
+
+        .drawer-footer {
+            margin-top: auto;
+            font-size: 0.75rem;
+            color: #888;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
 
 <body class="design-mode-off">
 
-    <aside class="sidebar">
-        <h2 style="margin-bottom: 5px;">ID Designer Pro</h2>
-        <a href="view.html"
-            style="display: inline-block; margin-bottom: 0.5rem; color: var(--primary-red); font-size: 0.8rem; font-weight: bold; text-decoration: none;"><i
-                data-lucide="database" size="14" style="vertical-align: middle;"></i> View Generated Library</a>
+    <!-- Navigation Trigger -->
+    <div class="menu-trigger" onclick="toggleDrawer()" title="Menu">
+        <i data-lucide="menu"></i>
+    </div>
 
-        <div
-            style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee;">
-            <a href="#" id="btn-show-approvals"
-                style="color: #F7931E; font-size: 0.8rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 5px;">
-                <i data-lucide="check-square" size="14"></i> Checker Dashboard
-                <span id="badge-pending"
-                    style="background: red; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.6rem; display: none;">0</span>
-            </a>
-            <a href="#" id="btn-show-rejected"
-                style="color: #666; font-size: 0.8rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 5px;">
-                <i data-lucide="x-circle" size="14"></i> My Rejected Cards
-                <span id="badge-rejected"
-                    style="background: red; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.6rem; display: none;">0</span>
-            </a>
-            <a href="#" id="btn-show-admin-settings"
-                style="color: #666; font-size: 0.8rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 5px; margin-top: 5px; padding-top: 5px; border-top: 1px dashed #ddd;">
-                <i data-lucide="settings" size="14"></i> Admin Settings
-            </a>
+    <!-- Background Overlay -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+
+    <!-- Sliding Navigation Drawer -->
+    <div class="nav-drawer" id="nav-drawer">
+        <div class="drawer-header">
+            <h3>ID Designer Menu</h3>
+            <div class="close-drawer" onclick="toggleDrawer()">
+                <i data-lucide="x" size="20"></i>
+            </div>
         </div>
+
+        <nav style="display: flex; flex-direction: column; gap: 5px;">
+            <a href="view.html" class="drawer-nav-item">
+                <i data-lucide="database"></i> Generated Library
+            </a>
+            <a href="admin.html" class="drawer-nav-item">
+                <i data-lucide="shield"></i> Admin Panel
+            </a>
+            <a href="#" class="drawer-nav-item" id="btn-show-approvals-drawer" onclick="toggleDrawer()">
+                <i data-lucide="check-square" style="color: #F7931E;"></i> Checker Dashboard
+                <span id="badge-pending-drawer"
+                    style="background: red; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.6rem; display: none; margin-left: auto;">0</span>
+            </a>
+            <a href="#" class="drawer-nav-item" id="btn-show-rejected-drawer" onclick="toggleDrawer()">
+                <i data-lucide="x-circle" style="color: #666;"></i> My Rejected Cards
+                <span id="badge-rejected-drawer"
+                    style="background: red; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.6rem; display: none; margin-left: auto;">0</span>
+            </a>
+            <a href="#" class="drawer-nav-item secondary" id="btn-show-admin-drawer" onclick="toggleDrawer()">
+                <i data-lucide="settings"></i> Admin Settings
+            </a>
+        </nav>
+
+        <div class="drawer-footer">
+            <p>MMP CWC ID Card Designer</p>
+            <p>v2.5.0 • Glassmorphism Edition</p>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <h2 style="margin-bottom: 5px; margin-top: 50px;">ID Designer Pro</h2>
+        <!-- Old navigation buttons removed and moved to Nav Drawer -->
 
         <div class="mode-toggle">
             <div>
@@ -633,7 +934,7 @@
                 </div>
                 <div class="form-group">
                     <label>Line 3 (Reg. Info)</label>
-                    <input type="text" id="h-line3" value="[Regd. No. Ms. 491/GB. BSD ★ PTR No. F-13507 (Mumbai)]">
+                    <input type="text" id="h-line3" value="[Regd. No. Ms. 491/GB. BSD â˜… PTR No. F-13507 (Mumbai)]">
                 </div>
                 <div class="form-group">
                     <label>Slogan (Top Strip)</label>
@@ -694,7 +995,7 @@
                 <i data-lucide="star" size="16"></i> Set as Default Template
             </button>
             <div id="default-status" style="font-size: 0.65rem; text-align: center; margin-top: 5px; opacity: 0.8;">
-                No default set — using system layout
+                No default set â€” using system layout
             </div>
 
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2);">
@@ -707,70 +1008,125 @@
             </div>
         </div>
 
-        <div class="section-title">Member Details</div>
+        <!-- Member Details Section -->
+        <div class="section-personal">
+            <div class="section-title"><i data-lucide="user" style="width: 14px; height: 14px; color: #3b82f6;"></i> Personal Details</div>
 
-        <div class="form-grid-3">
-            <div class="form-group"><label>First Name</label><input type="text" id="m-fname" value=""></div>
-            <div class="form-group"><label>Middle Name</label><input type="text" id="m-mname" value=""></div>
-            <div class="form-group"><label>Surname</label><input type="text" id="m-sname" value=""></div>
-        </div>
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label><i data-lucide="type" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>First Name <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-name" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-fname" value="">
+                </div>
+                <div class="form-group">
+                    <label>Middle Name</label>
+                    <input type="text" id="m-mname" value="">
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="type" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Surname <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-name" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-sname" value="">
+                </div>
+            </div>
 
-        <div class="form-grid-2">
-            <div class="form-group form-grid-2-1">
-                <div><label>Date of Birth</label><input type="date" id="m-dob" value=""></div>
-                <div>
-                    <label>Gender</label>
-                    <select id="m-gender">
-                        <option value="M">M</option>
-                        <option value="F">F</option>
+            <div class="form-grid-2">
+                <div class="form-group form-grid-2-1">
+                    <div>
+                        <label><i data-lucide="calendar" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>DOB <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-dob" onchange="toggleMandatory(this)"> Req.</span></label>
+                        <input type="date" id="m-dob" value="">
+                    </div>
+                    <div>
+                        <label><i data-lucide="users" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Gender <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-dob" onchange="toggleMandatory(this)"> Req.</span></label>
+                        <select id="m-gender">
+                            <option value="">-- Select --</option>
+                            <option value="M">M</option>
+                            <option value="F">F</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="clock" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Period <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-period-data" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <select id="m-period" onchange="syncMember()">
+                        <option value="Lifetime">Life Time</option>
+                        <option value="5 Years">5 Years</option>
+                        <option value="1 Year">1 Year</option>
                     </select>
                 </div>
             </div>
+
             <div class="form-group">
-                <label>Period</label>
-                <select id="m-period">
-                    <option value="Lifetime">Life Time</option>
-                    <option value="5 Years">5 Years</option>
-                    <option value="1 Year">1 Year</option>
+                <label><i data-lucide="map-pin" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Address <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-address" onchange="toggleMandatory(this)"> Req.</span></label>
+                <textarea id="m-address" rows="2" oninput="syncMember()"></textarea>
+            </div>
+        </div>
+
+        <div class="section-contact">
+            <div class="section-title"><i data-lucide="shield-check" style="width: 14px; height: 14px; color: #10b981;"></i> Membership Details</div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label><i data-lucide="phone" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Mobile <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-mobile" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-mobile" value="" oninput="syncMember()">
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="id-card" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Member No <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-membership" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-membership" value="" oninput="syncMember()">
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label><i data-lucide="calendar-check" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Valid Upto <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-valid" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-valid" value="" oninput="syncMember()">
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="calendar-days" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Issue Date <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-issue" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="date" id="m-issue" value="" onchange="syncMember()" oninput="syncMember()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i data-lucide="image" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Member Photo <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-photo" onchange="toggleMandatory(this)"> Req.</span></label>
+                <input type="file" id="photo-upload" accept="image/png, image/jpeg, image/jpg">
+            </div>
+        </div>
+
+        <div class="section-admin">
+            <div class="section-title"><i data-lucide="database" style="width: 14px; height: 14px; color: #f59e0b;"></i> Admin & Database</div>
+            <!-- Vibhag Dropdown -->
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <label><i data-lucide="map" style="width: 12px; height: 12px; color: #f59e0b; vertical-align: middle; margin-right: 4px;"></i>Vibhag <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-db-vibhag" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <a href="javascript:void(0)" onclick="loadVibhagList(true)" style="font-size: 0.65rem; color: var(--primary-blue); text-decoration: none;">🔄 Refresh List</a>
+                </div>
+                <select id="vibhag-select" onchange="onVibhagSelect(this.value)" style="width:100%;">
+                    <option value="">-- Select Vibhag No --</option>
                 </select>
             </div>
-        </div>
-
-        <div class="form-group"><label>Address</label><textarea id="m-address" rows="2"></textarea></div>
-
-        <div class="form-grid-2">
-            <div class="form-group"><label>Mobile Number</label><input type="text" id="m-mobile" value="">
+            <div class="form-grid-2" id="vibhag-details-row" style="display:none;">
+                <div class="form-group">
+                    <label>Vibhag Code</label>
+                    <input type="text" id="vibhag-code-display" readonly
+                        style="background:rgba(255,255,255,0.4); color:#001C6B; font-weight:700; cursor:default;">
+                </div>
+                <div class="form-group">
+                    <label>Vibhag Name</label>
+                    <input type="text" id="vibhag-name-display" readonly
+                        style="background:rgba(255,255,255,0.4); color:#001C6B; font-weight:700; cursor:default;">
+                </div>
             </div>
-            <div class="form-group"><label>Membership No</label><input type="text" id="m-membership" value=""></div>
-        </div>
+            <!-- Hidden fields for database storage -->
+            <input type="hidden" id="db-vibhag-no">
+            <input type="hidden" id="db-vibhag-code">
+            <input type="hidden" id="db-vibhag-name">
 
-        <div class="form-grid-2">
-            <div class="form-group"><label>Valid Upto</label><input type="text" id="m-valid" value="">
+            <div class="form-group" style="margin-top: 5px;">
+                <label><i data-lucide="sticky-note" style="width: 12px; height: 12px; color: #f59e0b; vertical-align: middle; margin-right: 4px;"></i>Remarks (Admin Only)</label>
+                <input type="text" id="db-remarks" placeholder="Optional notes for the database">
             </div>
-            <div class="form-group"><label>Date of Issue</label><input type="date" id="m-issue" value="">
-            </div>
         </div>
 
-        <div class="section-title" style="margin-top: 1rem; font-size: 0.65rem; opacity: 0.7;">Admin (Database Only)
-        </div>
-        <div class="form-grid-100-1">
-            <div class="form-group"><label>Vibhag No</label><input type="text" id="db-vibhag-no" placeholder="e.g. 12">
-            </div>
-            <div class="form-group"><label>Vibhag Name</label><input type="text" id="db-vibhag-name"
-                    placeholder="e.g. Mumbai"></div>
-        </div>
-        <div class="form-group" style="margin-top: 5px;">
-            <label>Remarks (Info Only / Will not print on ID)</label>
-            <input type="text" id="db-remarks" placeholder="Optional notes for the database">
-        </div>
-
-        <div class="form-group"><label>Member Photo (PNG/JPG)</label><input type="file" id="photo-upload"
-                accept="image/png, image/jpeg, image/jpg"></div>
-
-        <!-- Cloud Sync details have been moved to the Admin Panel -->
-
-        <button class="btn btn-s" id="btn-reset" style="width: 100%; margin-top: 2rem;"><i data-lucide="refresh-cw"
-                size="16"></i> Reset Layout</button>
+        <button class="btn btn-s" id="btn-reset" style="width: 100%; margin-top: 2rem; background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none; font-weight: 700;">
+            <i data-lucide="refresh-cw" size="16"></i> Reset Layout
+        </button>
     </aside>
 
     <main class="main-preview">
@@ -793,12 +1149,13 @@
                     <div class="header-text-box">
                         <h1 id="view-h1">MUMBAI MEGHWAL PANCHAYAT</h1>
                         <h2 id="view-h2">(CENTRAL WORKING COMMITTEE)</h2>
-                        <p id="view-h3">[Regd. No. Ms. 491/GB. BSD ★ PTR No. F-13507 (Mumbai)]</p>
+                        <p id="view-h3">[Regd. No. Ms. 491/GB. BSD â˜… PTR No. F-13507 (Mumbai)]</p>
                     </div>
                     <img src="src/assets/ambedkar_logo.png" class="logo-box" id="logo2-view">
                 </div>
                 <!-- Mode B: Imported -->
                 <img id="header-imported-view" class="header-full-img hidden">
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
@@ -806,23 +1163,27 @@
             <div class="office-bar draggable" id="drag-office" style="margin-top: 4px;">
                 <span id="view-h-office">Office : C/o. B-4, Sant Veer Meghmaya Marg, Tulsiwadi, Mahalaxmi, Mumbai - 400
                     034.</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer" style="z-index: 1;"></div>
             </div>
 
             <!-- 4. Member Photo -->
             <div class="draggable" id="drag-photo">
                 <i data-lucide="user" size="60" color="#ccc"></i>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <!-- 5. Member Info (Separated) -->
             <div class="draggable name-text" id="drag-m-name" style="top: 250px; left: 300px;">
                 <span id="view-m-name">[Full Name Here]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-dob" style="top: 310px; left: 300px;">
                 <span class="default-label"><b>DOB : </b> </span><span id="view-m-dob">[DD.MM.YYYY]-M</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
@@ -830,11 +1191,13 @@
                 style="top: 350px; left: 300px; max-width: 650px; line-height: 1.15;">
                 <span class="default-label"><b>Address : </b> </span><span id="view-m-address">[Full Address
                     Here]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-mobile" style="top: 440px; left: 300px;">
                 <span class="default-label"><b>Mob.</b> </span><span id="view-m-mobile">[Mobile No]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
@@ -843,22 +1206,31 @@
                 <span class="default-label">Membership No.: </span><span id="view-m-membership"
                     style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px; display: inline-block; min-width: 80px; white-space: nowrap;">[Mem
                     No]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable valid-box detail-text" id="drag-m-valid" style="top: 535px; left: 300px;">
                 <span class="default-label">Valid Up To : </span><span id="view-m-valid">[Valid Date]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-issue" style="top: 590px; left: 40px; font-weight: 800;">
                 <span class="default-label">Date of Issue : </span><span id="view-m-issue">[Issue Date]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-db-vibhag"
-                style="top: 590px; left: 300px; font-weight: 600; font-size: 14px; color: #666;">
+                style="top: 590px; left: 300px; font-weight: 600; font-size: 14px; color: #666; display: none;">
                 <span id="view-db-vibhag-no"></span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
+            </div>
+
+            <!-- Hidden draggables for non-visual mandatory data -->
+            <div class="draggable" id="drag-period-data" style="display:none;">
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
             </div>
 
             <!-- 6. Signature -->
@@ -869,8 +1241,13 @@
                 </svg>
                 <div style="font-weight: 800; font-size: 18px;">(R.P. Dharia)</div>
                 <div style="font-weight: 800; font-size: 18px;">President</div>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
+        </div>
+        <!-- Off-screen Worker Area for Background Generation (Mirrors capture-area structure) -->
+        <div id="capture-area-worker" class="id-card" style="position: fixed; left: -5000px; top: -5000px; display: block; pointer-events: none;">
+            <!-- Content will be injected from capture-area.innerHTML during background processing -->
         </div>
 
         <div class="actions">
@@ -1018,7 +1395,7 @@
                         <div
                             style="font-weight: bold; font-size: 0.85rem; color: var(--primary-red); margin-bottom: 10px;">
                             LIFETIME MEMBERSHIP</div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="admin-grid-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                             <div style="grid-column: 1 / -1; margin-bottom: 10px;">
                                 <label
                                     style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Membership
@@ -1050,7 +1427,7 @@
                         <div
                             style="font-weight: bold; font-size: 0.85rem; color: var(--primary-blue); margin-bottom: 10px;">
                             5 YEARS MEMBERSHIP</div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="admin-grid-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                             <div style="grid-column: 1 / -1; margin-bottom: 10px;">
                                 <label
                                     style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Membership
@@ -1081,7 +1458,7 @@
                     <div style="padding: 15px; background: #fcfcfc; border: 1px solid #eee; border-radius: 8px;">
                         <div style="font-weight: bold; font-size: 0.85rem; color: #F7931E; margin-bottom: 10px;">
                             1 YEAR MEMBERSHIP</div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="admin-grid-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                             <div style="grid-column: 1 / -1; margin-bottom: 10px;">
                                 <label
                                     style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Membership
@@ -1126,7 +1503,7 @@
             const diag = document.getElementById('diag-log');
             if (diag) {
                 diag.style.display = 'block';
-                diag.innerHTML += `<div style="color:#ff4d4d; margin-bottom:5px;">⚠️ [Line ${line}] ${msg}</div>`;
+                diag.innerHTML += `<div style="color:#ff4d4d; margin-bottom:5px;">âš ï¸ [Line ${line}] ${msg}</div>`;
             }
             alert("STABILITY ERROR: " + msg + "\nLine: " + line);
             return false;
@@ -1147,6 +1524,97 @@
         const storage = firebase.storage();
 
         lucide.createIcons();
+
+        // Set today's date as default for Date of Issue
+        const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const mIssueEl = document.getElementById('m-issue');
+        if (mIssueEl && !mIssueEl.value) {
+            mIssueEl.value = todayStr;
+        }
+
+        // â”€â”€ Vibhag Searchable Dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        window.vibhagRecords = [];
+
+        // Load Vibhag list from Firestore → populate <select> dropdown
+        window.loadVibhagList = function(forceServer = false) {
+            const options = forceServer ? { source: 'server' } : {};
+            
+            db.collection("settings").doc("vibhagList").get(options).then(snap => {
+                const sel = document.getElementById('vibhag-select');
+                if (!sel) return;
+
+                if (!snap.exists) {
+                    console.warn("Vibhag document 'settings/vibhagList' does not exist.");
+                    sel.innerHTML = '<option value="">⚠️ No Data - Upload CSV in Admin Panel</option>';
+                    return;
+                }
+                const data = snap.data();
+                if (data && data.records && data.records.length > 0) {
+                    window.vibhagRecords = data.records;
+                    
+                    // Clear existing options except placeholder
+                    sel.innerHTML = '<option value="">-- Select Vibhag No --</option>';
+                    window.vibhagRecords.forEach(v => {
+                        const opt = document.createElement('option');
+                        opt.value = v.no;
+                        opt.dataset.code = v.code;
+                        opt.dataset.name = v.name;
+                        opt.textContent = `${v.no} - ${v.name}`; 
+                        sel.appendChild(opt);
+                    });
+
+                    // If we had a loaded value, re-select it
+                    const dbVNo = document.getElementById('db-vibhag-no').value;
+                    if (dbVNo) sel.value = dbVNo;
+
+                } else {
+                    sel.innerHTML = '<option value="">⚠️ Database is empty - Upload CSV</option>';
+                }
+            }).catch(err => {
+                console.error("Vibhag load error:", err);
+                const diag = document.getElementById('diag-log');
+                if (diag) {
+                    diag.style.display = 'block';
+                    diag.innerHTML += `<div style="color:#ffcc00;">[Firestore] Load Error: ${err.message}</div>`;
+                }
+            });
+        };
+
+        // Initial load (aggressive)
+        loadVibhagList(true);
+        // Auto-refresh every 60 seconds
+        setInterval(() => loadVibhagList(true), 60000);
+
+        window.onVibhagSelect = function (selectedNo) {
+            const detailRow = document.getElementById('vibhag-details-row');
+            if (!selectedNo) {
+                // Clear everything
+                document.getElementById('db-vibhag-no').value = '';
+                document.getElementById('db-vibhag-code').value = '';
+                document.getElementById('db-vibhag-name').value = '';
+                document.getElementById('vibhag-code-display').value = '';
+                document.getElementById('vibhag-name-display').value = '';
+                if (detailRow) detailRow.style.display = 'none';
+                return;
+            }
+            const rec = (window.vibhagRecords || []).find(v => v.no === selectedNo);
+            if (!rec) return;
+
+            // Fill hidden storage fields
+            document.getElementById('db-vibhag-no').value = rec.no;
+            document.getElementById('db-vibhag-code').value = rec.code;
+            document.getElementById('db-vibhag-name').value = rec.name;
+
+            // Fill visible read-only text fields
+            document.getElementById('vibhag-code-display').value = rec.code;
+            document.getElementById('vibhag-name-display').value = rec.name;
+
+            // Show the code/name row
+            if (detailRow) detailRow.style.display = 'grid';
+
+            // Trigger sync to update Membership Prefix in preview
+            if (window.syncMember) window.syncMember();
+        };
 
         // Global Variable for Cloud Storage Hook
         window.masterSyncId = null;
@@ -1234,62 +1702,136 @@
             document.getElementById(id).oninput = syncColorPickers;
         });
 
-        const syncMember = () => {
-            const nameEl = document.getElementById('view-m-name');
-            if (nameEl) nameEl.innerText = `${mFname.value} ${mMname.value} ${mSname.value}`;
+        window.syncMember = () => {
+            console.log("VANILLA_SYNC_RUNNING");
+            try {
+                // 1. Force recalculate Valid Upto (Do this FIRST in case something else crashes)
+                const pSelect = document.getElementById('m-period');
+                const mValid = document.getElementById('m-valid');
+                const mIssue = document.getElementById('m-issue');
 
-            const addrEl = document.getElementById('view-m-address');
-            if (addrEl) addrEl.innerText = mAddr.value;
+                if (pSelect && mValid) {
+                    const pVal = pSelect.value || "";
+                    const pText = (pSelect.selectedIndex >= 0) ? pSelect.options[pSelect.selectedIndex].text : "";
+                    const combined = (pVal + "|" + pText).toLowerCase().replace(/\s/g, '');
+                    const issueDate = mIssue ? mIssue.value : "";
 
-            const dobEl = document.getElementById('view-m-dob');
-            if (dobEl) {
-                if (mDob.value) {
-                    const parts = mDob.value.split('-');
-                    dobEl.innerText = `${parts[2]}.${parts[1]}.${parts[0]}-${mGender.value}`;
-                } else {
-                    dobEl.innerText = "[DD.MM.YYYY]-M";
+                    if (combined.includes('lifetime') || combined.includes('liefe')) {
+                        mValid.value = "Life Time";
+                    } else if (combined.includes('1year')) {
+                        mValid.value = "1 Year";
+                    } else if (combined.includes('5year')) {
+                        if (issueDate) {
+                            const d = new Date(issueDate);
+                            d.setFullYear(d.getFullYear() + 5);
+                            const dd = String(d.getDate()).padStart(2, '0');
+                            const mm = String(d.getMonth() + 1).padStart(2, '0');
+                            const yyyy = d.getFullYear();
+                            mValid.value = `${dd}.${mm}.${yyyy}`;
+                        } else {
+                            mValid.value = "Date + 5 Years";
+                        }
+                    }
                 }
-            }
 
-            const mobEl = document.getElementById('view-m-mobile');
-            if (mobEl) mobEl.innerText = mMobile.value;
-
-            const memEl = document.getElementById('view-m-membership');
-            if (memEl) memEl.innerText = mMembership.value;
-
-            const validEl = document.getElementById('view-m-valid');
-            if (validEl) validEl.innerText = mValid.value;
-
-            const issueEl = document.getElementById('view-m-issue');
-            if (issueEl) {
-                if (mIssue.value) {
-                    const parts = mIssue.value.split('-');
-                    issueEl.innerText = `${parts[2]}.${parts[1]}.${parts[0]}`;
-                } else {
-                    issueEl.innerText = "[Issue Date]";
+                // 2. Sync UI Card Preview
+                const nameEl = document.getElementById('view-m-name');
+                const mF = document.getElementById('m-fname');
+                const mM = document.getElementById('m-mname');
+                const mS = document.getElementById('m-sname');
+                if (nameEl && mF && mM && mS) {
+                    nameEl.innerText = `${mF.value} ${mM.value} ${mS.value}`;
                 }
-            }
 
-            // Vibhag printable span
-            const vNo = document.getElementById('db-vibhag-no');
-            const vName = document.getElementById('db-vibhag-name');
-            const vSpan = document.getElementById('view-db-vibhag-no');
-            if (vNo && vName && vSpan) {
-                const dbVibhagNoStr = vNo.value ? `Vibhag No: ${vNo.value}` : '';
-                const dbVibhagNameStr = vName.value ? ` (${vName.value})` : '';
-                vSpan.innerText = dbVibhagNoStr + dbVibhagNameStr;
-            }
+                const addrEl = document.getElementById('view-m-address') || document.getElementById('view-m-addr');
+                const mAddrIn = document.getElementById('m-address');
+                if (addrEl && mAddrIn) addrEl.innerText = mAddrIn.value;
 
-            // Apply period-based color to valid box
-            applyPeriodColor();
+                const dobEl = document.getElementById('view-m-dob');
+                const mDobIn = document.getElementById('m-dob');
+                const mGenIn = document.getElementById('m-gender');
+                if (dobEl && mDobIn) {
+                    if (mDobIn.value) {
+                        const parts = mDobIn.value.split('-');
+                        const genSuffix = (mGenIn && mGenIn.value) ? `-${mGenIn.value}` : '';
+                        dobEl.innerText = `${parts[2]}.${parts[1]}.${parts[0]}${genSuffix}`;
+                    } else {
+                        dobEl.innerText = "[DD.MM.YYYY]";
+                    }
+                }
+
+                const mobEl = document.getElementById('view-m-mobile');
+                const mMobIn = document.getElementById('m-mobile');
+                if (mobEl && mMobIn) mobEl.innerText = mMobIn.value;
+
+                // 2.3 Handle Membership Number with dynamic Prefix
+                const memEl = document.getElementById('view-m-membership');
+                const mMemIn = document.getElementById('m-membership');
+                const vNoInput = document.getElementById('db-vibhag-no');
+                const vCodeInput = document.getElementById('db-vibhag-code');
+                
+                if (memEl && mMemIn) {
+                    let fullMemNo = mMemIn.value || "[Mem No]";
+                    
+                    // Period Prefix
+                    let periodPrefix = "";
+                    const pVal = pSelect ? (pSelect.value || "").toLowerCase() : "";
+                    if (pVal.includes("lifetime")) periodPrefix = "LM-";
+                    else if (pVal.includes("5")) periodPrefix = "V-";
+                    else if (pVal.includes("1")) periodPrefix = "I-";
+                    
+                    // Vibhag Prefix: [CODE-NO]/
+                    let vPrefix = "";
+                    if (vNoInput && vNoInput.value && vCodeInput && vCodeInput.value) {
+                        vPrefix = `[${vCodeInput.value}-${vNoInput.value}]/`;
+                    }
+                    
+                    // Only apply auto-prefix if the user hasn't already typed a full formatted number
+                    // (Checking for the "/" separator as a heuristic)
+                    if (fullMemNo !== "[Mem No]" && !fullMemNo.includes('/')) {
+                        memEl.innerText = vPrefix + periodPrefix + fullMemNo;
+                    } else {
+                        memEl.innerText = fullMemNo;
+                    }
+                }
+
+                const validEl = document.getElementById('view-m-valid');
+                if (validEl && mValid) validEl.innerText = mValid.value;
+
+                const issueEl = document.getElementById('view-m-issue');
+                if (issueEl && mIssue) {
+                    if (mIssue.value) {
+                        const parts = mIssue.value.split('-');
+                        issueEl.innerText = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                    } else {
+                        issueEl.innerText = "[Issue Date]";
+                    }
+                }
+
+                const vNo = document.getElementById('db-vibhag-no');
+                const vCode = document.getElementById('db-vibhag-code');
+                const vSpan = document.getElementById('view-db-vibhag-no');
+                if (vNo && vCode && vSpan) {
+                    const dbVibhagNoStr = vNo.value ? `Vibhag No: ${vNo.value}` : '';
+                    const dbVCodeStr = vCode.value ? ` (${vCode.value})` : '';
+                    vSpan.innerText = dbVibhagNoStr + dbVCodeStr;
+                }
+
+                applyPeriodColor();
+            } catch (err) {
+                console.error("Critical Sync Error:", err);
+            }
         };
 
-        // Also apply color when period dropdown changes
-        document.getElementById('m-period').onchange = () => {
-            applyPeriodColor();
-        };
+        // Attach listeners for dynamic Valid Upto
+        document.getElementById('m-period').addEventListener('change', syncMember);
+        mIssue.addEventListener('input', syncMember);
+        mIssue.addEventListener('change', syncMember);
 
         [mFname, mMname, mSname, mAddr, mDob, mGender, mMobile, mMembership, mValid, mIssue].forEach(el => el.oninput = syncMember);
+
+        // Run once on load to initialize preview and Valid Upto with today's date
+        syncMember();
 
         // 4. Image Uploads
         const handleImg = (inputId, viewId) => {
@@ -1458,6 +2000,32 @@
             document.onmouseup = () => { document.onmousemove = null; activeEl = null; };
         });
 
+        window.toggleMandatory = (checkbox) => {
+            const syncId = checkbox.getAttribute('data-sync-mandatory');
+            let drag;
+            if (syncId) {
+                // Toggled from Sidebar
+                drag = document.getElementById(syncId);
+                // Sync the checkbox on the card
+                if (drag) {
+                    const cardCheck = drag.querySelector('.mandatory-toggle input');
+                    if (cardCheck) cardCheck.checked = checkbox.checked;
+                }
+            } else {
+                // Toggled from Card
+                drag = checkbox.closest('.draggable');
+                // Sync the checkbox in the sidebar
+                if (drag) {
+                    const sidebarCheck = document.querySelector(`[data-sync-mandatory="${drag.id}"]`);
+                    if (sidebarCheck) sidebarCheck.checked = checkbox.checked;
+                }
+            }
+
+            if (drag) {
+                drag.setAttribute('data-mandatory', checkbox.checked ? "true" : "false");
+            }
+        };
+
         // 6. Reset
         document.getElementById('btn-reset').onclick = () => location.reload();
 
@@ -1477,16 +2045,62 @@
             document.body.className = 'design-mode-off';
 
             try {
+                // --- 0. MANDATORY FIELD VALIDATION ---
+                const mandatoryErrors = [];
+                const checkMandatory = (dragId, label, fieldIds) => {
+                    const drag = document.getElementById(dragId);
+                    if (drag && drag.getAttribute('data-mandatory') === 'true') {
+                        const isEmpty = fieldIds.some(fid => {
+                            const el = document.getElementById(fid);
+                            return !el || !el.value || el.value.trim() === "";
+                        });
+                        if (isEmpty) mandatoryErrors.push(label);
+                    }
+                };
+
+                checkMandatory('drag-m-name', 'Full Name (First & Surname)', ['m-fname', 'm-sname']);
+                checkMandatory('drag-m-dob', 'Date of Birth & Gender', ['m-dob', 'm-gender']);
+                checkMandatory('drag-m-address', 'Address', ['m-address']);
+                checkMandatory('drag-m-mobile', 'Mobile Number', ['m-mobile']);
+                checkMandatory('drag-m-membership', 'Membership Number', ['m-membership']);
+                checkMandatory('drag-m-valid', 'Valid Upto Date', ['m-valid']);
+                checkMandatory('drag-m-issue', 'Date of Issue', ['m-issue']);
+                checkMandatory('drag-db-vibhag', 'Vibhag Selection', ['db-vibhag-no']);
+                checkMandatory('drag-period-data', 'Period Selection', ['m-period']);
+
+                // Special check for photo
+                const photoDrag = document.getElementById('drag-photo');
+                if (photoDrag && photoDrag.getAttribute('data-mandatory') === 'true') {
+                    const photoImg = photoDrag.querySelector('img');
+                    if (!photoImg || !photoImg.src || photoImg.src.includes('lucide')) {
+                        mandatoryErrors.push('Member Photo');
+                    }
+                }
+
+                if (mandatoryErrors.length > 0) {
+                    alert("Submission Blocked!\n\nThe following mandatory fields are missing:\n- " + mandatoryErrors.join("\n- "));
+                    return;
+                }
+
                 // --- 1. PREPARE DATA PAYLOAD ---
                 const vName = document.getElementById('db-vibhag-name').value;
                 const vNo = document.getElementById('db-vibhag-no').value;
                 const mName = document.getElementById('view-m-name').innerText;
                 const fileName = `ID_${mName.replace(/\s/g, '_').toUpperCase()}`;
 
+                const memVal = document.getElementById('m-membership').value;
+                const memView = document.getElementById('view-m-membership');
+                let finalMemNo = memVal;
+                
+                // If the preview has the full formatted number, use it for the database
+                if (memView && memView.innerText && memView.innerText !== "[Mem No]") {
+                    finalMemNo = memView.innerText;
+                }
+
                 const cloudPayload = {
                     fileName: fileName,
                     memberData: {
-                        "Membership No": document.getElementById('m-membership').value,
+                        "Membership No": finalMemNo,
                         "First Name": document.getElementById('m-fname').value,
                         "Middle Name": document.getElementById('m-mname').value,
                         "Surname": document.getElementById('m-sname').value,
@@ -1498,8 +2112,9 @@
                         "Mobile Number": document.getElementById('m-mobile').value,
                         "Valid Upto": document.getElementById('m-valid').value,
                         "Date of Issue": document.getElementById('m-issue').value,
-                        "Vibhag No": vNo,
-                        "Vibhag Name": vName,
+                        "Vibhag No": document.getElementById('db-vibhag-no').value,
+                        "Vibhag Code": document.getElementById('db-vibhag-code').value,
+                        "Vibhag Name": document.getElementById('db-vibhag-name').value,
                         "Remarks": document.getElementById('db-remarks') ? document.getElementById('db-remarks').value : ""
                     }
                 };
@@ -1637,6 +2252,7 @@
                         fontSize: String(el.style.fontSize || ""),
                         color: String(el.style.color || ""),
                         visibility: String(el.style.visibility || ""),
+                        isMandatory: el.getAttribute('data-mandatory') === "true",
                         contents: []
                     };
 
@@ -1671,7 +2287,7 @@
             }
         };
 
-        const applyLayoutConfig = (configData) => {
+        const applyLayoutConfig = (configData, targetAreaId = 'capture-area') => {
             if (!configData) return null;
             let config = configData;
 
@@ -1688,9 +2304,13 @@
             if (!config || typeof config !== 'object') return null;
 
             if (config.layout && Array.isArray(config.layout)) {
+                const root = document.getElementById(targetAreaId);
+                if (!root) return null;
+
                 config.layout.forEach(item => {
                     if (!item || !item.id) return;
-                    const el = document.getElementById(item.id);
+                    // Find by ID within the root container (handles duplicate IDs in the DOM)
+                    const el = root.id === item.id ? root : root.querySelector(`[id="${item.id}"]`);
                     if (el) {
                         if (item.top) el.style.top = item.top;
                         if (item.left) el.style.left = item.left;
@@ -1700,10 +2320,21 @@
                         if (item.color) el.style.color = item.color;
                         if (item.visibility) el.style.visibility = item.visibility;
 
+                        const isMandatory = item.isMandatory === true;
+                        el.setAttribute('data-mandatory', isMandatory ? "true" : "false");
+                        
+                        // Sync card toggle
+                        const mCheck = el.querySelector('.mandatory-toggle input');
+                        if (mCheck) mCheck.checked = isMandatory;
+
+                        // Sync sidebar toggle
+                        const sidebarCheck = document.querySelector(`[data-sync-mandatory="${el.id}"]`);
+                        if (sidebarCheck) sidebarCheck.checked = isMandatory;
+
                         if (item.contents && Array.isArray(item.contents)) {
                             item.contents.forEach(nodeData => {
                                 if (!nodeData || !nodeData.id) return;
-                                const node = document.getElementById(nodeData.id);
+                                const node = el.id === nodeData.id ? el : el.querySelector(`[id="${nodeData.id}"]`);
                                 if (node) {
                                     let innerHtml = nodeData.inner || "";
                                     if (innerHtml.includes('<img ') && innerHtml.includes('http')) {
@@ -1717,7 +2348,7 @@
                 });
             }
 
-            const captureArea = document.getElementById('capture-area');
+            const captureArea = document.getElementById(targetAreaId);
             if (captureArea) {
                 if (config.bgImage) {
                     captureArea.style.backgroundImage = config.bgImage;
@@ -1727,7 +2358,7 @@
 
                 if (config.hideDefaults !== undefined) {
                     const hideToggle = document.getElementById('hide-defaults-toggle');
-                    if (hideToggle) hideToggle.checked = !!config.hideDefaults;
+                    if (hideToggle && targetAreaId === 'capture-area') hideToggle.checked = !!config.hideDefaults;
 
                     if (config.hideDefaults) {
                         captureArea.classList.add('hide-defaults');
@@ -1849,11 +2480,11 @@
             if (hasDefault) {
                 btnSetDefault.innerHTML = '<i data-lucide="star-off" size="16"></i> Clear Default Template';
                 btnSetDefault.style.background = '#ED1C24';
-                defaultStatus.textContent = '✅ Default template is active';
+                defaultStatus.textContent = 'âœ… Default template is active';
             } else {
                 btnSetDefault.innerHTML = '<i data-lucide="star" size="16"></i> Set as Default Template';
                 btnSetDefault.style.background = '#F7931E';
-                defaultStatus.textContent = 'No default set — using system layout';
+                defaultStatus.textContent = 'No default set â€” using system layout';
             }
             if (window.lucide) lucide.createIcons();
         };
@@ -2002,7 +2633,7 @@
                             l.remove();
                             return;
                         }
-                        // Cloud template failed — fall through to default template
+                        // Cloud template failed â€” fall through to default template
                     }
                 }
             } catch (err) {
@@ -2109,9 +2740,16 @@
             const rejectedCount = approvalsList.filter(doc => doc.data.status === 'rejected').length;
 
             const bPending = document.getElementById('badge-pending');
-            const bRejected = document.getElementById('badge-rejected');
+            const bPendingDrawer = document.getElementById('badge-pending-drawer');
+            if (pendingCount > 0) {
+                if (bPending) { bPending.innerText = pendingCount; bPending.style.display = 'inline-block'; }
+                if (bPendingDrawer) { bPendingDrawer.innerText = pendingCount; bPendingDrawer.style.display = 'inline-block'; }
+            } else {
+                if (bPending) bPending.style.display = 'none';
+                if (bPendingDrawer) bPendingDrawer.style.display = 'none';
+            }
 
-            if (bPending) { bPending.style.display = pendingCount > 0 ? 'inline-block' : 'none'; bPending.innerText = pendingCount; }
+            const bRejected = document.getElementById('badge-rejected');
             if (bRejected) { bRejected.style.display = rejectedCount > 0 ? 'inline-block' : 'none'; bRejected.innerText = rejectedCount; }
         }
 
@@ -2432,40 +3070,54 @@
         }
 
         // --- Robust Sidebar Button Initialization ---
+        // Navigation Drawer Toggle
+        function toggleDrawer() {
+            const drawer = document.getElementById('nav-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            if (drawer && overlay) {
+                drawer.classList.toggle('open');
+                overlay.classList.toggle('active');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
         function initSidebarDashboardButtons() {
             console.log("Initializing Dashboard Buttons...");
 
-            const bAdmin = document.getElementById('btn-show-admin-settings');
-            if (bAdmin) {
-                bAdmin.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log("Admin Settings button clicked!");
-                    document.getElementById('admin-settings-modal').classList.remove('hidden');
-                    window.loadAdminSettings();
-                });
-            }
+            const bRejected = document.getElementById('btn-show-rejected');
+            const bRejectedDrawer = document.getElementById('btn-show-rejected-drawer');
+            const handleRejected = (e) => {
+                e.preventDefault();
+                if (!unsubscribeApprovals) listenToApprovals();
+                document.getElementById('approvals-modal-text').innerText = 'My Rejected Cards';
+                document.getElementById('approvals-modal').classList.remove('hidden');
+                renderApprovalsDashboard('rejected');
+            };
+            if (bRejected) bRejected.addEventListener('click', handleRejected);
+            if (bRejectedDrawer) bRejectedDrawer.addEventListener('click', handleRejected);
 
             const bApprovals = document.getElementById('btn-show-approvals');
-            if (bApprovals) {
-                bApprovals.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (!unsubscribeApprovals) listenToApprovals();
-                    document.getElementById('approvals-modal-text').innerText = 'Checker Dashboard (Pending)';
-                    document.getElementById('approvals-modal').classList.remove('hidden');
-                    renderApprovalsDashboard('pending');
-                });
-            }
+            const bApprovalsDrawer = document.getElementById('btn-show-approvals-drawer');
+            const handleApprovals = (e) => {
+                e.preventDefault();
+                if (!unsubscribeApprovals) listenToApprovals();
+                document.getElementById('approvals-modal-text').innerText = 'Checker Dashboard (Pending)';
+                document.getElementById('approvals-modal').classList.remove('hidden');
+                renderApprovalsDashboard('pending');
+            };
+            if (bApprovals) bApprovals.addEventListener('click', handleApprovals);
+            if (bApprovalsDrawer) bApprovalsDrawer.addEventListener('click', handleApprovals);
 
-            const bRejected = document.getElementById('btn-show-rejected');
-            if (bRejected) {
-                bRejected.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (!unsubscribeApprovals) listenToApprovals();
-                    document.getElementById('approvals-modal-text').innerText = 'My Rejected Cards';
-                    document.getElementById('approvals-modal').classList.remove('hidden');
-                    renderApprovalsDashboard('rejected');
-                });
-            }
+            const bAdmin = document.getElementById('btn-show-admin-settings');
+            const bAdminDrawer = document.getElementById('btn-show-admin-drawer');
+            const handleAdmin = (e) => {
+                e.preventDefault();
+                console.log("Admin Settings button clicked!");
+                document.getElementById('admin-settings-modal').classList.remove('hidden');
+                window.loadAdminSettings();
+            };
+            if (bAdmin) bAdmin.addEventListener('click', handleAdmin);
+            if (bAdminDrawer) bAdminDrawer.addEventListener('click', handleAdmin);
         }
 
         // Immediately try to attach (in case script is at end of body)
@@ -2608,87 +3260,115 @@
                 return;
             }
 
-            if (!confirm(`Are you sure you want to generate ${allottedCards.length} high-res ID cards? This may take a few minutes.`)) {
+            if (window.bulkProcessingActive) {
+                alert("A bulk process is already running in the background.");
                 return;
             }
 
+            if (!confirm(`Are you sure you want to generate ${allottedCards.length} high-res ID cards in the background?\nYou can continue working while this process runs.`)) {
+                return;
+            }
+            
+            // Close the approvals modal to free up the screen
+            document.getElementById('approvals-modal').classList.add('hidden');
+
             window.bulkProcessingActive = true;
 
-            // Create a blocking overlay
-            const overlay = document.createElement('div');
-            overlay.id = 'bulk-overlay';
-            overlay.style = `
-                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: rgba(0,0,0,0.9); z-index: 10000; display: flex;
-                flex-direction: column; align-items: center; justify-content: center;
-                color: white; font-family: sans-serif; backdrop-filter: blur(10px);
+            // 1. Create Floating Progress Toast
+            let progressToast = document.getElementById('bulk-progress-toast');
+            if (!progressToast) {
+                progressToast = document.createElement('div');
+                progressToast.id = 'bulk-progress-toast';
+                progressToast.style = `
+                    position: fixed; bottom: 80px; right: 20px; width: 320px;
+                    background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                    z-index: 100000; padding: 20px; border: 1px solid #ddd;
+                    transition: all 0.3s ease; display: flex; flex-direction: column; gap: 10px;
                 `;
-            document.body.appendChild(overlay);
+                document.body.appendChild(progressToast);
+            }
+            progressToast.style.display = 'flex';
 
             let successCount = 0;
             let errorCount = 0;
             let currentErrors = [];
 
-            const updateOverlayHTML = (index, total, name, no) => {
-                overlay.innerHTML = `
-                    <i class="spin" data-lucide="loader" style="width: 60px; height: 60px; margin-bottom: 20px; color: #007bff;"></i>
-                    <h2 style="margin:0 0 10px 0; font-size: 1.5rem;">Processing Card ${index + 1} of ${total}</h2>
-                    <p style="margin:0; font-size: 1.1rem; color: #ccc;">${name} (${no})</p>
-                    <p style="margin-top: 15px; font-size: 0.9rem; color: #888;">Please do not close the browser.</p>
-                    ${currentErrors.length > 0 ? `<div style="margin-top:20px; color:#ff6b6b; font-size:0.8rem; background:rgba(255,107,107,0.1); padding:10px; border-radius:8px;">Last Error: ${currentErrors[currentErrors.length - 1]}</div>` : ''}
-                    <button id="btn-cancel-bulk" style="margin-top:40px; background:#6c757d; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold;">Stop Processing</button>
+            const updateProgressUI = (index, total, name) => {
+                const percent = Math.round(((index) / total) * 100);
+                progressToast.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                        <b style="color:var(--primary-blue);">Bulk Generating Cards</b>
+                        <span style="font-size:0.8rem; background:#eef2f7; padding:2px 8px; border-radius:10px;">${index}/${total}</span>
+                    </div>
+                    <div style="height:8px; background:#eee; border-radius:4px; overflow:hidden;">
+                        <div style="width:${percent}%; height:100%; background:var(--primary-blue); transition: width 0.5s;"></div>
+                    </div>
+                    <p style="margin:0; font-size:0.8rem; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Processing: <b>${name}</b></p>
+                    <div style="display:flex; gap:10px; font-size:0.75rem;">
+                        <span style="color:#28a745;">âœ… ${successCount}</span>
+                        <span style="color:#dc3545;">â Œ ${errorCount}</span>
+                    </div>
+                    <button id="btn-stop-bulk" style="margin-top:5px; background:#fff; border:1px solid #dc3545; color:#dc3545; padding:6px; border-radius:6px; font-size:0.7rem; cursor:pointer; font-weight:bold;">Stop Background Process</button>
                 `;
-                if (window.lucide) lucide.createIcons();
-                document.getElementById('btn-cancel-bulk').onclick = () => {
-                    if (confirm("Stop bulk processing? Cards already finished will stay approved.")) {
-                        window.bulkProcessingActive = false;
-                    }
+                document.getElementById('btn-stop-bulk').onclick = () => {
+                    if (confirm("Stop background generation?")) window.bulkProcessingActive = false;
                 };
             };
 
-            for (let i = 0; i < allottedCards.length; i++) {
-                if (!window.bulkProcessingActive) break;
+            // Start Queue
+            (async () => {
+                for (let i = 0; i < allottedCards.length; i++) {
+                    if (!window.bulkProcessingActive) break;
 
-                const card = allottedCards[i];
-                const mName = card.data.memberData ? card.data.memberData['Full Printed Name'] : 'Unknown';
-                const mNo = card.data.memberData ? card.data.memberData['Membership No'] : 'N/A';
+                    const card = allottedCards[i];
+                    const mName = card.data.memberData ? card.data.memberData['Full Printed Name'] : 'Unknown';
+                    updateProgressUI(i, allottedCards.length, mName);
 
-                updateOverlayHTML(i, allottedCards.length, mName, mNo);
-
-                try {
-                    // Force render preview in DOM for capture
-                    window.showCardPreview(card.id);
-                    await new Promise(r => setTimeout(r, 800)); // Increased wait for repaint
-
-                    const success = await window.approveCard(card.id, true);
-                    if (success) successCount++;
-                    else {
+                    try {
+                        // Use the WORKER area for capture
+                        const success = await window.approveCard(card.id, true, 'capture-area-worker');
+                        if (success) successCount++;
+                        else {
+                            errorCount++;
+                            currentErrors.push(`${mName}: Approval failed.`);
+                        }
+                    } catch (e) {
+                        console.error("Bulk process failed on card", card.id, e);
                         errorCount++;
-                        currentErrors.push(`${mName}: Approval function returned false.`);
+                        currentErrors.push(`${mName}: ${e.message}`);
                     }
-                } catch (e) {
-                    console.error("Bulk process failed on card", card.id, e);
-                    errorCount++;
-                    currentErrors.push(`${mName}: ${e.message || 'Unknown error'}`);
+                    
+                    // Small delay to allow browser to breathe
+                    await new Promise(r => setTimeout(r, 1000));
                 }
 
-                await new Promise(r => setTimeout(r, 1200));
-            }
-
-            overlay.remove();
-            window.bulkProcessingActive = false;
-
-            let finalMsg = `Bulk Generation Complete!\n\nSuccessfully Generated: ${successCount}\nFailed: ${errorCount}`;
-            if (currentErrors.length > 0) {
-                finalMsg += `\n\nErrors encountered:\n- ${currentErrors.slice(0, 3).join('\n- ')}`;
-                if (currentErrors.length > 3) finalMsg += `\n...and ${currentErrors.length - 3} more.`;
-            }
-            alert(finalMsg);
+                // Completion UI
+                window.bulkProcessingActive = false;
+                progressToast.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px; color:#28a745; margin-bottom:10px;">
+                        <i data-lucide="check-circle" size="24"></i>
+                        <b>Generation Complete!</b>
+                    </div>
+                    <div style="font-size:0.8rem; color:#666;">
+                        Generated: ${successCount} | Failed: ${errorCount}
+                    </div>
+                    <button onclick="this.parentElement.style.display='none'" style="margin-top:10px; background:var(--primary-blue); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer; font-weight:bold;">Dismiss</button>
+                `;
+                if (window.lucide) lucide.createIcons();
+                
+                // Final Alert only if there were errors
+                if (errorCount > 0) {
+                    alert(`Bulk Generation finished with ${errorCount} errors. Check console for details.`);
+                } else {
+                    // Small non-blocking success notification
+                    console.log("BULK_SUCCESS_ALL");
+                }
+            })();
         };
 
 
         // Action Functions
-        window.approveCard = async function (id, isSilent = false) {
+        window.approveCard = async function (id, isSilent = false, targetAreaId = 'capture-area') {
             console.log("APPROVE_CARD_CALLED", { id, isSilent });
             const item = approvalsList.find(i => i.id === id);
             if (!item) {
@@ -2706,12 +3386,15 @@
                 return false;
             }
 
-            const l = document.createElement('div');
-            l.className = 'approval-toast';
-            l.innerHTML = '<i class="spin" data-lucide="loader"></i> Assigning Membership Number and Generating Final ID Card...';
-            l.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:white; padding:15px 30px; border-radius:6px; z-index:99999; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.3);';
-            document.body.appendChild(l);
-            if (window.lucide) lucide.createIcons();
+            if (!isSilent) {
+                const l = document.createElement('div');
+                l.className = 'approval-toast';
+                l.id = 'approval-toast-' + id;
+                l.innerHTML = '<i class="spin" data-lucide="loader"></i> Assigning Membership Number and Generating Final ID Card...';
+                l.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:white; padding:15px 30px; border-radius:6px; z-index:99999; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.3);';
+                document.body.appendChild(l);
+                if (window.lucide) lucide.createIcons();
+            }
 
             try {
                 // 1. **Auto-Generate Next Membership Number**
@@ -2744,13 +3427,16 @@
                 // If we ALREADY have a pre-allotted number, use it!
                 let nextNum = 0;
                 if (mData['Membership No']) {
-                    // FIX: Handle numbers with Vibhag prefix like "KUR-33/LM-1001"
+                    // Design: [[VCode]-[VNo]]/[Period Code][Number]
+                    // Example: [KUR-33]/LM-1001
                     let numPart = String(mData['Membership No']);
                     if (numPart.includes('/')) {
                         numPart = numPart.split('/')[1]; // Get "LM-1001"
                     }
-                    const val = numPart.replace(prefix, ''); // Get "1001"
-                    nextNum = parseInt(val) || 0;
+                    
+                    // Possible Period Codes: LM-, V-, I-
+                    const cleanNum = numPart.replace("LM-", "").replace("V-", "").replace("I-", "");
+                    nextNum = parseInt(cleanNum) || 0;
                 }
 
                 if (!nextNum) {
@@ -2760,16 +3446,20 @@
 
                 const paddedNum = String(nextNum).padStart(4, '0');
 
-                // Re-calculate the FULL membership number (preserving Vibhag prefix if it exists)
-                let vibhagPrefix = "";
-                const vName = mData['Vibhag Name'];
+                // Re-calculate the FULL membership number: [[VCode]-[VNo]]/[Period Code][Number]
+                let dynamicVibhagPrefix = "";
+                const vCode = mData['Vibhag Code'];
                 const vNo = mData['Vibhag No'];
-                if (vName && vNo) {
-                    const abv = vName.substring(0, 3).toUpperCase();
-                    vibhagPrefix = `${abv}-${vNo}/`;
+                
+                if (vCode && vNo) {
+                    dynamicVibhagPrefix = `[${vCode}-${vNo}]/`;
+                } else if (mData['Vibhag Name']) {
+                    // Fallback for older records using Name
+                    const abv = String(mData['Vibhag Name']).substring(0, 3).toUpperCase();
+                    dynamicVibhagPrefix = `[${abv}-${vNo || '??'}]/`;
                 }
 
-                mData['Membership No'] = vibhagPrefix + prefix + paddedNum;
+                mData['Membership No'] = dynamicVibhagPrefix + prefix + paddedNum;
 
                 // Update Admin Settings with NEW lastUsedNumber (if it progressed)
                 const updatePath = `${catKey}.lastUsedNumber`;
@@ -2784,19 +3474,36 @@
                 const safeName = (mData['Full Printed Name'] || "MEMBER").replace(/[^\w\s]/gi, '').replace(/\s/g, '_').toUpperCase();
                 d.fileName = `ID_${safeName}_${paddedNum}`;
 
+                const updateToast = (msg, icon) => {
+                    if (isSilent) return;
+                    const toast = document.getElementById('approval-toast-' + id);
+                    if (toast) {
+                        toast.innerHTML = `<i class="spin" data-lucide="${icon}"></i> ${msg}`;
+                        if (window.lucide) lucide.createIcons();
+                    }
+                };
+
                 // Save current UI state (layout and data)
-                const captureArea = document.getElementById('capture-area');
+                const captureArea = document.getElementById(targetAreaId);
                 const tempCaptureAreaHtml = captureArea.innerHTML;
-                const currentLayout = getLayoutConfig();
+                
+                // If using worker, prime it with the current UI's static elements if needed, 
+                // but actually we expect it to be ready.
+                if (targetAreaId === 'capture-area-worker' && !captureArea.innerHTML.trim()) {
+                    const master = document.getElementById('capture-area');
+                    if (master) captureArea.innerHTML = master.innerHTML;
+                }
+
+                const currentLayout = getLayoutConfig(); // Base config for restoration
 
                 // 2. **Apply Maker's Specific Template Design**
                 if (d.templateConfig) {
-                    applyLayoutConfig(d.templateConfig);
+                    // Important: applyLayoutConfig needs to know which area to target
+                    applyLayoutConfig(d.templateConfig, targetAreaId);
                 }
 
                 // 3. **Restore Injection & Render Graphics**
-                l.innerHTML = '<i class="spin" data-lucide="image"></i> Generating High-Res Graphics...';
-                if (window.lucide) lucide.createIcons();
+                updateToast('Generating High-Res Graphics...', 'image');
 
                 // Restrict DOM targeting to ONLY `#capture-area` children to avoid ID conflicts
                 const setPreviewText = (sel, val) => {
@@ -2828,7 +3535,7 @@
                 setPreviewText('#view-db-vibhag-no', dbVibhagNoStr + dbVibhagNameStr);
 
                 // Photo Handling
-                const photoWrap = document.getElementById('drag-photo');
+                const photoWrap = captureArea.querySelector('#drag-photo');
                 if (photoWrap && d.photoUrl) {
                     if (d.photoUrl.startsWith('data:')) {
                         photoWrap.innerHTML = `<img src="${d.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
@@ -2993,18 +3700,18 @@
 
                 // Restore UI
                 captureArea.innerHTML = tempCaptureAreaHtml;
-                applyLayoutConfig(currentLayout);
-                if (typeof syncMember === 'function') syncMember();
+                applyLayoutConfig(currentLayout, targetAreaId);
+                if (targetAreaId === 'capture-area') {
+                    if (typeof syncMember === 'function') syncMember();
+                }
 
-                // 4. **Sync to Google Sheets (Optional — only if Master Sync URL is configured)**
+                // 4. **Sync to Google Sheets (Optional â€” only if Master Sync URL is configured)**
                 const currentMsId = window.masterSyncId;
                 if (currentMsId) {
                     try {
-                        l.innerHTML = '<i class="spin" data-lucide="cloud"></i> Connecting to Sync Master...';
-                        if (window.lucide) lucide.createIcons();
+                        updateToast('Connecting to Sync Master...', 'cloud');
                         const conf = await getMasterConfig(currentMsId);
-                        l.innerHTML = '<i class="spin" data-lucide="cloud"></i> Saving Final Files to Google...';
-                        if (window.lucide) lucide.createIcons();
+                        updateToast('Saving Final Files to Google...', 'cloud');
 
                         await fetch(conf.scriptUrl, {
                             method: 'POST', mode: 'no-cors', body: JSON.stringify({
@@ -3020,11 +3727,10 @@
                         console.warn("Google Sheets sync skipped or failed (non-critical):", syncErr.message);
                     }
                 } else {
-                    console.log("No Master Sync URL configured — skipping Google Sheets sync, saving to Firebase only.");
+                    console.log("No Master Sync URL configured â€” skipping Google Sheets sync, saving to Firebase only.");
                 }
 
-                l.innerHTML = '<i class="spin" data-lucide="database"></i> Finalizing Database & Card Storage...';
-                if (window.lucide) lucide.createIcons();
+                updateToast('Finalizing Database & Card Storage...', 'database');
 
                 // --- NEW: Store the Generated Card PNG in Firebase Storage for the Cloud Viewer ---
                 let finalCardUrl = d.photoUrl || "";
@@ -3046,13 +3752,13 @@
                 await db.collection('pendingApprovals').doc(id).delete();
 
                 if (!isSilent) {
-                    l.innerHTML = '<i data-lucide="check-circle"></i> Approved Successfully!';
-                    if (window.lucide) lucide.createIcons();
-                    setTimeout(() => l.remove(), 2000);
-                } else if (l) {
-                    l.remove();
+                    const toast = document.getElementById('approval-toast-' + id);
+                    if (toast) {
+                        toast.innerHTML = '<i data-lucide="check-circle"></i> Approved Successfully!';
+                        if (window.lucide) lucide.createIcons();
+                        setTimeout(() => toast.remove(), 2000);
+                    }
                 }
-
                 return true;
 
             } catch (err) {
@@ -3111,12 +3817,60 @@
             document.getElementById('m-period').value = m['Period'] || 'Lifetime';
             document.getElementById('m-address').value = m['Address'] || '';
             document.getElementById('m-mobile').value = m['Mobile Number'] || '';
-            document.getElementById('m-membership').value = m['Membership No'] || '';
+            
+            // Extract suffix from formatted Membership No: [VCODE-VNO]/CODE-NUMBER
+            let memVal = m['Membership No'] || '';
+            if (memVal.includes('/')) {
+                let suffix = memVal.split('/')[1]; // e.g. LM-1001
+                memVal = suffix.replace("LM-", "").replace("V-", "").replace("I-", "");
+            }
+            document.getElementById('m-membership').value = memVal;
             document.getElementById('m-valid').value = m['Valid Upto'] || '';
             document.getElementById('m-issue').value = m['Date of Issue'] || '';
 
-            if (document.getElementById('db-vibhag-no')) document.getElementById('db-vibhag-no').value = m['Vibhag No'] || '';
-            if (document.getElementById('db-vibhag-name')) document.getElementById('db-vibhag-name').value = m['Vibhag Name'] || '';
+            // Restore vibhag dropdown fields
+            const loadedVNo = m['Vibhag No'] || '';
+            const loadedVCode = m['Vibhag Code'] || '';
+            const loadedVName = m['Vibhag Name'] || '';
+
+            if (document.getElementById('db-vibhag-no')) document.getElementById('db-vibhag-no').value = loadedVNo;
+            if (document.getElementById('db-vibhag-code')) document.getElementById('db-vibhag-code').value = loadedVCode;
+            if (document.getElementById('db-vibhag-name')) document.getElementById('db-vibhag-name').value = loadedVName;
+
+            // Sync the dropdown and call syncMember
+            const vSel = document.getElementById('vibhag-select');
+            if (vSel) {
+                vSel.value = loadedVNo;
+                // Ensure display fields are updated
+                const detailRow = document.getElementById('vibhag-details-row');
+                if (loadedVNo && detailRow) {
+                    detailRow.style.display = 'grid';
+                    document.getElementById('vibhag-code-display').value = loadedVCode;
+                    document.getElementById('vibhag-name-display').value = loadedVName;
+                } else if (detailRow) {
+                    detailRow.style.display = 'none';
+                }
+            }
+
+            // --- PHOTO PREVIEW UPDATE ---
+            const photoWrap = document.getElementById('drag-photo');
+            if (photoWrap && item.data.photoUrl) {
+                photoWrap.innerHTML = `<img src="${item.data.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
+            }
+
+            // Sync everything
+            setTimeout(() => { if (window.syncMember) window.syncMember(); }, 100);
+            
+            // Close the panel
+            document.getElementById('rejected-dashboard').classList.remove('active');
+
+            if (loadedVNo && document.getElementById('vibhag-select')) {
+                document.getElementById('vibhag-select').value = loadedVNo;
+                document.getElementById('vibhag-code-display').value = loadedVCode;
+                document.getElementById('vibhag-name-display').value = loadedVName;
+                const detailRow = document.getElementById('vibhag-details-row');
+                if (detailRow) detailRow.style.display = 'grid';
+            }
             if (document.getElementById('db-remarks')) document.getElementById('db-remarks').value = m['Remarks'] || '';
 
             if (item.data.templateConfig) {

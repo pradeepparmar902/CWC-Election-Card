@@ -244,36 +244,229 @@
             background: #a8a8a8;
         }
 
+        /* Navigation Drawer Styles (Matches index.html) */
+        .menu-trigger {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .menu-trigger:hover {
+            transform: scale(1.1);
+            background: #fff;
+            color: var(--primary-blue);
+        }
+
+        .nav-drawer {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .nav-drawer.open {
+            left: 0;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .drawer-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-drawer {
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .drawer-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid transparent;
+        }
+
+        .drawer-nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-blue);
+            transform: translateX(5px);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .drawer-nav-item i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .drawer-nav-item.active {
+            background: linear-gradient(135deg, #3b82f6 0%, var(--primary-blue) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .drawer-footer {
+            margin-top: auto;
+            font-size: 0.75rem;
+            color: #888;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+
+            .top-nav {
+                padding: 15px 15px 15px 75px; /* Offset for hamburger */
+                justify-content: flex-start;
+            }
+
+            .top-nav h1 {
+                font-size: 1.2rem;
+            }
+
+            .top-nav .btn-link {
+                display: none; /* Icons handled in drawer */
+            }
+
             .workspace {
                 flex-direction: column;
+                height: auto;
+                overflow: visible;
             }
 
             .table-container {
-                flex: 1;
+                flex: none;
+                height: 400px;
                 border-right: none;
                 border-bottom: 2px solid #ddd;
             }
 
             .preview-container {
-                flex: 1;
+                flex: none;
                 min-width: auto;
                 padding: 20px;
-                overflow-y: auto;
+                background: white;
+                height: auto;
             }
 
-            .top-nav {
-                flex-direction: column;
-                gap: 10px;
-                padding: 10px 15px;
-                text-align: center;
+            .menu-trigger {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- Navigation Trigger -->
+    <div class="menu-trigger" onclick="toggleDrawer()" title="Menu">
+        <i data-lucide="menu"></i>
+    </div>
+
+    <!-- Background Overlay -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+
+    <!-- Sliding Navigation Drawer -->
+    <div class="nav-drawer" id="nav-drawer">
+        <div class="drawer-header">
+            <h3>ID Designer Menu</h3>
+            <div class="close-drawer" onclick="toggleDrawer()">
+                <i data-lucide="x" size="20"></i>
+            </div>
+        </div>
+
+        <nav style="display: flex; flex-direction: column; gap: 5px;">
+            <a href="index.html" class="drawer-nav-item">
+                <i data-lucide="layout"></i> ID Designer
+            </a>
+            <a href="view.html" class="drawer-nav-item active">
+                <i data-lucide="database"></i> Generated Library
+            </a>
+            <a href="admin.html" class="drawer-nav-item">
+                <i data-lucide="shield"></i> Admin Panel
+            </a>
+        </nav>
+
+        <div class="drawer-footer">
+            <p>MMP CWC ID Card Designer</p>
+            <p>v2.5.0 • Glassmorphism Edition</p>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="top-nav">
@@ -339,6 +532,17 @@
     <script>
         // 1. Initialize Icons
         lucide.createIcons();
+
+        // 2. Navigation Drawer Toggle
+        function toggleDrawer() {
+            const drawer = document.getElementById('nav-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            if (drawer && overlay) {
+                drawer.classList.toggle('open');
+                overlay.classList.toggle('active');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
 
         // 2. Initialize Firebase
         const firebaseConfig = {
