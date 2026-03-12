@@ -598,8 +598,34 @@
         }
 
         @media (max-width: 768px) {
+            /* On mobile, sidebar hides off-screen to the left */
             .sidebar {
-                padding: 1rem;
+                left: -520px;
+                transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1500;
+                padding: 1.5rem 1rem;
+                padding-top: 4.5rem;
+                width: 90vw;
+                max-width: 380px;
+            }
+
+            /* When sidebar is open on mobile */
+            .sidebar.mobile-open {
+                left: 0;
+                box-shadow: 10px 0 60px rgba(0,0,0,0.25);
+            }
+
+            /* Main canvas takes full width on mobile */
+            main#canvas-area {
+                margin-left: 0 !important;
+            }
+
+            /* Show mobile-only nav section, hide desktop title */
+            .mobile-nav-header {
+                display: block !important;
+            }
+            .sidebar-desktop-title {
+                display: none !important;
             }
 
             .form-grid-3,
@@ -612,7 +638,6 @@
             .id-card {
                 transform: scale(0.35);
                 transform-origin: top left;
-                /* At 0.35 scale, physical box needs negative margins so it takes exactly 350x220 space */
                 margin-right: -650px;
                 margin-bottom: -409px;
             }
@@ -858,7 +883,38 @@
     </div>
 
     <aside class="sidebar">
-        <h2 style="margin-bottom: 5px; margin-top: 50px;">ID Designer Pro</h2>
+
+        <!-- Mobile-only: Close button + Quick Nav -->
+        <div class="mobile-nav-header" style="display:none; margin-bottom: 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0; color: var(--primary-blue); font-size:1.1rem;">ID Designer Pro</h3>
+                <div onclick="toggleDrawer()" style="cursor:pointer; padding:6px; color:#666;">
+                    <i data-lucide="x" size="20"></i>
+                </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px;">
+                <a href="view.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#444;font-weight:600;font-size:0.85rem;background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.15);">
+                    <i data-lucide="database" style="width:16px;height:16px;"></i> Generated Library
+                </a>
+                <a href="admin.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#444;font-weight:600;font-size:0.85rem;background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.15);">
+                    <i data-lucide="shield" style="width:16px;height:16px;"></i> Admin Panel
+                </a>
+                <a href="#" id="btn-show-approvals-mobile" onclick="toggleDrawer()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#444;font-weight:600;font-size:0.85rem;background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.15);">
+                    <i data-lucide="check-square" style="width:16px;height:16px;color:#F7931E;"></i> Checker Dashboard
+                    <span id="badge-pending-mobile" style="background:red;color:white;border-radius:10px;padding:2px 6px;font-size:0.6rem;display:none;margin-left:auto;">0</span>
+                </a>
+                <a href="#" id="btn-show-rejected-mobile" onclick="toggleDrawer()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#444;font-weight:600;font-size:0.85rem;background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.15);">
+                    <i data-lucide="x-circle" style="width:16px;height:16px;color:#666;"></i> My Rejected Cards
+                    <span id="badge-rejected-mobile" style="background:red;color:white;border-radius:10px;padding:2px 6px;font-size:0.6rem;display:none;margin-left:auto;">0</span>
+                </a>
+                <a href="#" id="btn-show-admin-mobile" onclick="toggleDrawer()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#666;font-weight:600;font-size:0.85rem;border:1px dashed #ddd;">
+                    <i data-lucide="settings" style="width:16px;height:16px;"></i> Admin Settings
+                </a>
+            </div>
+            <hr style="border:none;border-top:1px solid #eee;margin-bottom:10px;">
+        </div>
+
+        <h2 style="margin-bottom: 5px; margin-top: 50px;" class="sidebar-desktop-title">ID Designer Pro</h2>
         <!-- Old navigation buttons removed and moved to Nav Drawer -->
 
         <div class="mode-toggle">
@@ -3069,23 +3125,47 @@
             });
         }
 
-        // --- Robust Sidebar Button Initialization ---
-        // Navigation Drawer Toggle
+        // Navigation Drawer / Mobile Sidebar Toggle
         function toggleDrawer() {
-            const drawer = document.getElementById('nav-drawer');
+            const isMobile = window.innerWidth <= 768;
             const overlay = document.getElementById('drawer-overlay');
-            if (drawer && overlay) {
-                drawer.classList.toggle('open');
-                overlay.classList.toggle('active');
+
+            if (isMobile) {
+                // On mobile: toggle the sidebar panel
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) {
+                    const isOpen = sidebar.classList.toggle('mobile-open');
+                    if (overlay) {
+                        overlay.classList.toggle('active', isOpen);
+                    }
+                }
+            } else {
+                // On desktop: toggle the sliding nav drawer
+                const drawer = document.getElementById('nav-drawer');
+                if (drawer && overlay) {
+                    drawer.classList.toggle('open');
+                    overlay.classList.toggle('active');
+                }
             }
             if (window.lucide) lucide.createIcons();
         }
+
+        // Close sidebar/drawer on overlay click
+        document.getElementById('drawer-overlay')?.addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            const drawer = document.getElementById('nav-drawer');
+            if (drawer) drawer.classList.remove('open');
+            const overlay = document.getElementById('drawer-overlay');
+            if (overlay) overlay.classList.remove('active');
+        });
 
         function initSidebarDashboardButtons() {
             console.log("Initializing Dashboard Buttons...");
 
             const bRejected = document.getElementById('btn-show-rejected');
             const bRejectedDrawer = document.getElementById('btn-show-rejected-drawer');
+            const bRejectedMobile = document.getElementById('btn-show-rejected-mobile');
             const handleRejected = (e) => {
                 e.preventDefault();
                 if (!unsubscribeApprovals) listenToApprovals();
@@ -3095,9 +3175,11 @@
             };
             if (bRejected) bRejected.addEventListener('click', handleRejected);
             if (bRejectedDrawer) bRejectedDrawer.addEventListener('click', handleRejected);
+            if (bRejectedMobile) bRejectedMobile.addEventListener('click', handleRejected);
 
             const bApprovals = document.getElementById('btn-show-approvals');
             const bApprovalsDrawer = document.getElementById('btn-show-approvals-drawer');
+            const bApprovalsMobile = document.getElementById('btn-show-approvals-mobile');
             const handleApprovals = (e) => {
                 e.preventDefault();
                 if (!unsubscribeApprovals) listenToApprovals();
@@ -3107,9 +3189,11 @@
             };
             if (bApprovals) bApprovals.addEventListener('click', handleApprovals);
             if (bApprovalsDrawer) bApprovalsDrawer.addEventListener('click', handleApprovals);
+            if (bApprovalsMobile) bApprovalsMobile.addEventListener('click', handleApprovals);
 
             const bAdmin = document.getElementById('btn-show-admin-settings');
             const bAdminDrawer = document.getElementById('btn-show-admin-drawer');
+            const bAdminMobile = document.getElementById('btn-show-admin-mobile');
             const handleAdmin = (e) => {
                 e.preventDefault();
                 console.log("Admin Settings button clicked!");
@@ -3118,6 +3202,7 @@
             };
             if (bAdmin) bAdmin.addEventListener('click', handleAdmin);
             if (bAdminDrawer) bAdminDrawer.addEventListener('click', handleAdmin);
+            if (bAdminMobile) bAdminMobile.addEventListener('click', handleAdmin);
         }
 
         // Immediately try to attach (in case script is at end of body)
