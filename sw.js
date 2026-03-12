@@ -1,4 +1,4 @@
-const CACHE_NAME = 'id-designer-pro-v2';
+const CACHE_NAME = 'id-designer-pro-v40';
 const urlsToCache = [
   './',
   './index.html',

@@ -19,7 +19,7 @@
         .hide-defaults .card-stripes,
         .hide-defaults .header-container,
         .hide-defaults .office-bar,
-        .hide-defaults .default-label {
+        .hide-defaults #drag-sign {
             display: none !important;
         }
     </style>
@@ -31,9 +31,9 @@
             --primary-red: #ED1C24;
             --primary-blue: #001C6B;
             --primary-pink: #EC008C;
-            --bg-color: #f0f2f5;
-            --sidebar-width: 420px;
-            --transition: all 0.3s ease;
+            --bg-color: #f8fafc;
+            --sidebar-width: 500px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -62,15 +62,17 @@
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
-            background: white;
-            border-right: 1px solid #ddd;
-            padding: 2rem;
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(226, 232, 240, 0.5);
+            padding: 1.5rem;
             overflow-y: auto;
             position: fixed;
             left: 0;
             top: 0;
             z-index: 100;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.02);
         }
 
         .sidebar h2 {
@@ -81,13 +83,17 @@
         }
 
         .section-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            color: #999;
+            color: #718096;
             text-transform: uppercase;
-            margin: 1.5rem 0 1rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+            letter-spacing: 0.05em;
+            margin: 2rem 0 1.2rem;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group {
@@ -96,20 +102,36 @@
 
         .form-group label {
             display: block;
-            font-size: 0.8rem;
+            width: 100%;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: #555;
-            margin-bottom: 0.4rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+            clear: both;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.7rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 0.75rem;
+            border: 1.5px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            color: #1a202c;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 28, 107, 0.1);
         }
 
         .btn-group {
@@ -139,11 +161,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem;
-            background: #f0f4ff;
-            border-radius: 12px;
-            margin-bottom: 1rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
+            border: 1px solid #dce4ff;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 28, 107, 0.05);
         }
+
+        /* Section Theming */
+        .section-personal { background: rgba(59, 130, 246, 0.03); border-left: 4px solid #3b82f6; border-radius: 0 12px 12px 0; padding: 1rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .section-contact { background: rgba(16, 185, 129, 0.03); border-left: 4px solid #10b981; border-radius: 0 12px 12px 0; padding: 1rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .section-admin { background: rgba(245, 158, 11, 0.03); border-left: 4px solid #f59e0b; border-radius: 0 12px 12px 0; padding: 1rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
 
         .form-grid-3 {
             display: grid;
@@ -231,6 +260,73 @@
 
         .design-mode-on .draggable:hover .resizer {
             display: block;
+        }
+
+        .design-only {
+            display: none !important;
+        }
+        .design-mode-on .design-only {
+            display: block !important;
+            float: right;
+            color: var(--primary-pink);
+            font-size: 0.65rem;
+            font-weight: 800;
+            background: rgba(236, 0, 140, 0.1);
+            border: 1px solid rgba(236, 0, 140, 0.2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .design-only input[type="checkbox"] {
+            vertical-align: middle;
+            margin-right: 3px;
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Mandatory Field Toggle */
+        .mandatory-toggle {
+            position: absolute;
+            top: -22px;
+            left: 0;
+            background: var(--primary-pink);
+            color: white;
+            font-size: 0.60rem;
+            padding: 2px 6px;
+            border-radius: 4px 4px 0 0;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 800;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .design-mode-on .mandatory-toggle {
+            display: flex;
+        }
+
+        .mandatory-toggle input {
+            margin: 0;
+            width: 12px;
+            height: 12px;
+            cursor: pointer;
+        }
+        
+        /* Highlight mandatory fields in design mode */
+        .design-mode-on .draggable[data-mandatory="true"] {
+            border-color: #28a745 !important;
+            background: rgba(40, 167, 69, 0.05);
+        }
+        
+        .design-mode-on .draggable[data-mandatory="true"] .mandatory-toggle {
+            background: #28a745;
+            display: flex; /* Always show if mandatory */
         }
 
         /* Parts of the Card */
@@ -371,12 +467,20 @@
         .detail-text {
             font-size: 26px;
             font-weight: 600;
+            line-height: 1.25;
+            /* Allow wrapping for address and other details */
+            overflow: visible;
         }
 
         .name-text {
             color: var(--primary-pink);
-            font-size: 52px;
+            /* Dynamic sizing: shrinks for long names instead of cut-off */
+            font-size: clamp(32px, 5vw, 52px);
             font-weight: 950;
+            line-height: 1;
+            max-width: 750px;
+            white-space: nowrap;
+            overflow: visible;
         }
 
         .valid-box {
@@ -385,6 +489,7 @@
             padding: 10px 30px;
             border-radius: 0 50px 50px 0;
             font-weight: 900;
+            line-height: 1;
         }
 
         .actions {
@@ -511,25 +616,250 @@
                 margin-right: -650px;
                 margin-bottom: -409px;
             }
+
+            /* Responsive Modals */
+            div[id$="-modal"] > div {
+                max-width: 95% !important;
+                margin: 0 !important;
+            }
+
+            #approvals-container {
+                flex-direction: column !important;
+                height: auto !important;
+                overflow-y: visible !important;
+                min-height: auto !important;
+            }
+
+            #approvals-table-container {
+                border-right: none !important;
+                border-bottom: 2px solid #eee !important;
+                max-height: 300px !important;
+                flex: none !important;
+            }
+
+            #approvals-preview-pane {
+                width: 100% !important;
+                padding: 10px !important;
+            }
+
+            .admin-grid-columns {
+                grid-template-columns: 1fr !important;
+            }
         }
 
         @media (max-width: 480px) {
             .id-card {
-                transform: scale(0.30) !important;
-                margin-right: -700px !important;
-                margin-bottom: -441px !important;
+                transform: scale(0.28) !important;
+                margin-right: -720px !important;
+                margin-bottom: -455px !important;
             }
+            .menu-trigger {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Navigation Drawer Styles */
+        .menu-trigger {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .menu-trigger:hover {
+            transform: scale(1.1);
+            background: #fff;
+            color: var(--primary-blue);
+        }
+
+        .nav-drawer {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-drawer.open {
+            left: 0;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .drawer-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            background: linear-gradient(135deg, #1a365d 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-drawer {
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .close-drawer:hover {
+            color: var(--primary-red);
+        }
+
+        .drawer-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid transparent;
+        }
+
+        .drawer-nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-blue);
+            transform: translateX(5px);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .drawer-nav-item i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .drawer-nav-item.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1a365d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .drawer-nav-item.secondary {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            background: none;
+            border: 1px dashed #ddd;
+        }
+
+        .drawer-footer {
+            margin-top: auto;
+            font-size: 0.75rem;
+            color: #888;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
 
 <body class="design-mode-off">
 
+    <!-- Navigation Trigger -->
+    <div class="menu-trigger" onclick="toggleDrawer()" title="Menu">
+        <i data-lucide="menu"></i>
+    </div>
+
+    <!-- Background Overlay -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+
+    <!-- Sliding Navigation Drawer -->
+    <div class="nav-drawer" id="nav-drawer">
+        <div class="drawer-header">
+            <h3>ID Designer Menu</h3>
+            <div class="close-drawer" onclick="toggleDrawer()">
+                <i data-lucide="x" size="20"></i>
+            </div>
+        </div>
+
+        <nav style="display: flex; flex-direction: column; gap: 5px;">
+            <a href="view.html" class="drawer-nav-item">
+                <i data-lucide="database"></i> Generated Library
+            </a>
+            <a href="admin.html" class="drawer-nav-item">
+                <i data-lucide="shield"></i> Admin Panel
+            </a>
+            <a href="#" class="drawer-nav-item" id="btn-show-approvals-drawer" onclick="toggleDrawer()">
+                <i data-lucide="check-square" style="color: #F7931E;"></i> Checker Dashboard
+                <span id="badge-pending-drawer"
+                    style="background: red; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.6rem; display: none; margin-left: auto;">0</span>
+            </a>
+            <a href="#" class="drawer-nav-item" id="btn-show-rejected-drawer" onclick="toggleDrawer()">
+                <i data-lucide="x-circle" style="color: #666;"></i> My Rejected Cards
+                <span id="badge-rejected-drawer"
+                    style="background: red; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.6rem; display: none; margin-left: auto;">0</span>
+            </a>
+            <a href="#" class="drawer-nav-item secondary" id="btn-show-admin-drawer" onclick="toggleDrawer()">
+                <i data-lucide="settings"></i> Admin Settings
+            </a>
+        </nav>
+
+        <div class="drawer-footer">
+            <p>MMP CWC ID Card Designer</p>
+            <p>v2.5.0 • Glassmorphism Edition</p>
+        </div>
+    </div>
+
     <aside class="sidebar">
-        <h2 style="margin-bottom: 5px;">ID Designer Pro</h2>
-        <a href="view.html"
-            style="display: inline-block; margin-bottom: 2rem; color: var(--primary-red); font-size: 0.8rem; font-weight: bold; text-decoration: none;"><i
-                data-lucide="database" size="14" style="vertical-align: middle;"></i> View Generated Library</a>
+        <h2 style="margin-bottom: 5px; margin-top: 50px;">ID Designer Pro</h2>
+        <!-- Old navigation buttons removed and moved to Nav Drawer -->
 
         <div class="mode-toggle">
             <div>
@@ -537,6 +867,39 @@
                 <p style="font-size: 0.7rem; color: #666;">Drag & resize anything</p>
             </div>
             <input type="checkbox" id="mode-toggle" style="width: 40px; height: 20px; cursor: pointer;">
+        </div>
+
+        <div id="period-color-container" class="hidden">
+            <div class="section-title">Period-Based Valid Box Colors</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                <div style="text-align: center;">
+                    <label
+                        style="font-size: 0.65rem; font-weight: 700; display: block; margin-bottom: 4px;">Lifetime</label>
+                    <input type="color" id="pc-lifetime-bg" value="#EC008C"
+                        style="width: 100%; height: 30px; border: none; cursor: pointer;">
+                    <input type="color" id="pc-lifetime-text" value="#FFFFFF"
+                        style="width: 100%; height: 20px; border: none; cursor: pointer; margin-top: 2px;">
+                    <div style="font-size: 0.55rem; color: #999;">BG / Text</div>
+                </div>
+                <div style="text-align: center;">
+                    <label style="font-size: 0.65rem; font-weight: 700; display: block; margin-bottom: 4px;">5
+                        Years</label>
+                    <input type="color" id="pc-5years-bg" value="#FFE500"
+                        style="width: 100%; height: 30px; border: none; cursor: pointer;">
+                    <input type="color" id="pc-5years-text" value="#2E3192"
+                        style="width: 100%; height: 20px; border: none; cursor: pointer; margin-top: 2px;">
+                    <div style="font-size: 0.55rem; color: #999;">BG / Text</div>
+                </div>
+                <div style="text-align: center;">
+                    <label style="font-size: 0.65rem; font-weight: 700; display: block; margin-bottom: 4px;">1
+                        Year</label>
+                    <input type="color" id="pc-1year-bg" value="#2E3192"
+                        style="width: 100%; height: 30px; border: none; cursor: pointer;">
+                    <input type="color" id="pc-1year-text" value="#FFFFFF"
+                        style="width: 100%; height: 20px; border: none; cursor: pointer; margin-top: 2px;">
+                    <div style="font-size: 0.55rem; color: #999;">BG / Text</div>
+                </div>
+            </div>
         </div>
 
         <div id="bg-studio-container" class="hidden">
@@ -571,7 +934,7 @@
                 </div>
                 <div class="form-group">
                     <label>Line 3 (Reg. Info)</label>
-                    <input type="text" id="h-line3" value="[Regd. No. Ms. 491/GB. BSD ★ PTR No. F-13507 (Mumbai)]">
+                    <input type="text" id="h-line3" value="[Regd. No. Ms. 491/GB. BSD â˜… PTR No. F-13507 (Mumbai)]">
                 </div>
                 <div class="form-group">
                     <label>Slogan (Top Strip)</label>
@@ -627,72 +990,143 @@
             <div style="font-size: 0.65rem; text-align: center; margin-top: 5px; opacity: 0.8;">
                 Updates design for all team members
             </div>
+            <button class="btn btn-s" id="btn-set-default"
+                style="width: 100%; background: #F7931E; color: white; font-weight: 900; border: none; padding: 10px; margin-top: 8px; cursor: pointer;">
+                <i data-lucide="star" size="16"></i> Set as Default Template
+            </button>
+            <div id="default-status" style="font-size: 0.65rem; text-align: center; margin-top: 5px; opacity: 0.8;">
+                No default set â€” using system layout
+            </div>
+
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2);">
+                <label style="display: block; font-size: 0.70rem; font-weight: 700; margin-bottom: 5px;">Master Sync
+                    Config URL</label>
+                <input type="text" id="master-sheet-url" placeholder="Paste ID_Designer_Config Share Link..."
+                    style="width: 100%; padding: 8px; border-radius: 6px; border: none; font-size: 0.75rem; color: #333;">
+                <p style="font-size: 0.60rem; color: rgba(255,255,255,0.8); margin-top: 5px;">This connects the
+                    Checker's Approval button to your Google Drive.</p>
+            </div>
         </div>
 
-        <div class="section-title">Member Details</div>
+        <!-- Member Details Section -->
+        <div class="section-personal">
+            <div class="section-title"><i data-lucide="user" style="width: 14px; height: 14px; color: #3b82f6;"></i> Personal Details</div>
 
-        <div class="form-grid-3">
-            <div class="form-group"><label>First Name</label><input type="text" id="m-fname" value=""></div>
-            <div class="form-group"><label>Middle Name</label><input type="text" id="m-mname" value=""></div>
-            <div class="form-group"><label>Surname</label><input type="text" id="m-sname" value=""></div>
-        </div>
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label><i data-lucide="type" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>First Name <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-name" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-fname" value="">
+                </div>
+                <div class="form-group">
+                    <label>Middle Name</label>
+                    <input type="text" id="m-mname" value="">
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="type" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Surname <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-name" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-sname" value="">
+                </div>
+            </div>
 
-        <div class="form-grid-2">
-            <div class="form-group form-grid-2-1">
-                <div><label>Date of Birth</label><input type="date" id="m-dob" value=""></div>
-                <div>
-                    <label>Gender</label>
-                    <select id="m-gender">
-                        <option value="M">M</option>
-                        <option value="F">F</option>
+            <div class="form-grid-2">
+                <div class="form-group form-grid-2-1">
+                    <div>
+                        <label><i data-lucide="calendar" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>DOB <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-dob" onchange="toggleMandatory(this)"> Req.</span></label>
+                        <input type="date" id="m-dob" value="">
+                    </div>
+                    <div>
+                        <label><i data-lucide="users" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Gender <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-dob" onchange="toggleMandatory(this)"> Req.</span></label>
+                        <select id="m-gender">
+                            <option value="">-- Select --</option>
+                            <option value="M">M</option>
+                            <option value="F">F</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="clock" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Period <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-period-data" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <select id="m-period" onchange="syncMember()">
+                        <option value="Lifetime">Life Time</option>
+                        <option value="5 Years">5 Years</option>
+                        <option value="1 Year">1 Year</option>
                     </select>
                 </div>
             </div>
+
             <div class="form-group">
-                <label>Period</label>
-                <select id="m-period">
-                    <option value="Lifetime">Life Time</option>
-                    <option value="5 Years">5 Years</option>
-                    <option value="1 Year">1 Year</option>
+                <label><i data-lucide="map-pin" style="width: 12px; height: 12px; color: #3b82f6; vertical-align: middle; margin-right: 4px;"></i>Address <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-address" onchange="toggleMandatory(this)"> Req.</span></label>
+                <textarea id="m-address" rows="2" oninput="syncMember()"></textarea>
+            </div>
+        </div>
+
+        <div class="section-contact">
+            <div class="section-title"><i data-lucide="shield-check" style="width: 14px; height: 14px; color: #10b981;"></i> Membership Details</div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label><i data-lucide="phone" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Mobile <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-mobile" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-mobile" value="" oninput="syncMember()">
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="id-card" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Member No <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-membership" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-membership" value="" oninput="syncMember()">
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label><i data-lucide="calendar-check" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Valid Upto <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-valid" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="text" id="m-valid" value="" oninput="syncMember()">
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="calendar-days" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Issue Date <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-m-issue" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <input type="date" id="m-issue" value="" onchange="syncMember()" oninput="syncMember()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i data-lucide="image" style="width: 12px; height: 12px; color: #10b981; vertical-align: middle; margin-right: 4px;"></i>Member Photo <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-photo" onchange="toggleMandatory(this)"> Req.</span></label>
+                <input type="file" id="photo-upload" accept="image/png, image/jpeg, image/jpg">
+            </div>
+        </div>
+
+        <div class="section-admin">
+            <div class="section-title"><i data-lucide="database" style="width: 14px; height: 14px; color: #f59e0b;"></i> Admin & Database</div>
+            <!-- Vibhag Dropdown -->
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <label><i data-lucide="map" style="width: 12px; height: 12px; color: #f59e0b; vertical-align: middle; margin-right: 4px;"></i>Vibhag <span class="design-only" style="margin-left:5px;"><input type="checkbox" data-sync-mandatory="drag-db-vibhag" onchange="toggleMandatory(this)"> Req.</span></label>
+                    <a href="javascript:void(0)" onclick="loadVibhagList(true)" style="font-size: 0.65rem; color: var(--primary-blue); text-decoration: none;">🔄 Refresh List</a>
+                </div>
+                <select id="vibhag-select" onchange="onVibhagSelect(this.value)" style="width:100%;">
+                    <option value="">-- Select Vibhag No --</option>
                 </select>
             </div>
-        </div>
-
-        <div class="form-group"><label>Address</label><textarea id="m-address" rows="2"></textarea></div>
-
-        <div class="form-grid-2">
-            <div class="form-group"><label>Mobile Number</label><input type="text" id="m-mobile" value="">
+            <div class="form-grid-2" id="vibhag-details-row" style="display:none;">
+                <div class="form-group">
+                    <label>Vibhag Code</label>
+                    <input type="text" id="vibhag-code-display" readonly
+                        style="background:rgba(255,255,255,0.4); color:#001C6B; font-weight:700; cursor:default;">
+                </div>
+                <div class="form-group">
+                    <label>Vibhag Name</label>
+                    <input type="text" id="vibhag-name-display" readonly
+                        style="background:rgba(255,255,255,0.4); color:#001C6B; font-weight:700; cursor:default;">
+                </div>
             </div>
-            <div class="form-group"><label>Membership No</label><input type="text" id="m-membership" value=""></div>
-        </div>
+            <!-- Hidden fields for database storage -->
+            <input type="hidden" id="db-vibhag-no">
+            <input type="hidden" id="db-vibhag-code">
+            <input type="hidden" id="db-vibhag-name">
 
-        <div class="form-grid-2">
-            <div class="form-group"><label>Valid Upto</label><input type="text" id="m-valid" value="">
+            <div class="form-group" style="margin-top: 5px;">
+                <label><i data-lucide="sticky-note" style="width: 12px; height: 12px; color: #f59e0b; vertical-align: middle; margin-right: 4px;"></i>Remarks (Admin Only)</label>
+                <input type="text" id="db-remarks" placeholder="Optional notes for the database">
             </div>
-            <div class="form-group"><label>Date of Issue</label><input type="date" id="m-issue" value="">
-            </div>
         </div>
 
-        <div class="section-title" style="margin-top: 1rem; font-size: 0.65rem; opacity: 0.7;">Admin (Database Only)
-        </div>
-        <div class="form-grid-100-1">
-            <div class="form-group"><label>Vibhag No</label><input type="text" id="db-vibhag-no" placeholder="e.g. 12">
-            </div>
-            <div class="form-group"><label>Vibhag Name</label><input type="text" id="db-vibhag-name"
-                    placeholder="e.g. Mumbai"></div>
-        </div>
-        <div class="form-group" style="margin-top: 5px;">
-            <label>Remarks (Info Only / Will not print on ID)</label>
-            <input type="text" id="db-remarks" placeholder="Optional notes for the database">
-        </div>
-
-        <div class="form-group"><label>Member Photo (PNG/JPG)</label><input type="file" id="photo-upload"
-                accept="image/png, image/jpeg, image/jpg"></div>
-
-        <!-- Cloud Sync details have been moved to the Admin Panel -->
-
-        <button class="btn btn-s" id="btn-reset" style="width: 100%; margin-top: 2rem;"><i data-lucide="refresh-cw"
-                size="16"></i> Reset Layout</button>
+        <button class="btn btn-s" id="btn-reset" style="width: 100%; margin-top: 2rem; background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none; font-weight: 700;">
+            <i data-lucide="refresh-cw" size="16"></i> Reset Layout
+        </button>
     </aside>
 
     <main class="main-preview">
@@ -711,16 +1145,17 @@
                 <!-- Mode A: Custom -->
                 <div id="header-custom-view"
                     style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
-                    <img src="/assets/panchayat_logo-DDJ3hvI8.png" class="logo-box" id="logo1-view">
+                    <img src="/CWC-Election-Card/assets/panchayat_logo-DDJ3hvI8.png" class="logo-box" id="logo1-view">
                     <div class="header-text-box">
                         <h1 id="view-h1">MUMBAI MEGHWAL PANCHAYAT</h1>
                         <h2 id="view-h2">(CENTRAL WORKING COMMITTEE)</h2>
-                        <p id="view-h3">[Regd. No. Ms. 491/GB. BSD ★ PTR No. F-13507 (Mumbai)]</p>
+                        <p id="view-h3">[Regd. No. Ms. 491/GB. BSD â˜… PTR No. F-13507 (Mumbai)]</p>
                     </div>
-                    <img src="/assets/ambedkar_logo-8y2RZFlO.png" class="logo-box" id="logo2-view">
+                    <img src="/CWC-Election-Card/assets/ambedkar_logo-8y2RZFlO.png" class="logo-box" id="logo2-view">
                 </div>
                 <!-- Mode B: Imported -->
                 <img id="header-imported-view" class="header-full-img hidden">
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
@@ -728,53 +1163,74 @@
             <div class="office-bar draggable" id="drag-office" style="margin-top: 4px;">
                 <span id="view-h-office">Office : C/o. B-4, Sant Veer Meghmaya Marg, Tulsiwadi, Mahalaxmi, Mumbai - 400
                     034.</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer" style="z-index: 1;"></div>
             </div>
 
             <!-- 4. Member Photo -->
             <div class="draggable" id="drag-photo">
                 <i data-lucide="user" size="60" color="#ccc"></i>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <!-- 5. Member Info (Separated) -->
             <div class="draggable name-text" id="drag-m-name" style="top: 250px; left: 300px;">
                 <span id="view-m-name">[Full Name Here]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-dob" style="top: 310px; left: 300px;">
                 <span class="default-label"><b>DOB : </b> </span><span id="view-m-dob">[DD.MM.YYYY]-M</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-address"
                 style="top: 350px; left: 300px; max-width: 650px; line-height: 1.15;">
-                <span class="default-label"><b>Address : </b> </span><span id="view-m-addr">[Full Address Here]</span>
+                <span class="default-label"><b>Address : </b> </span><span id="view-m-address">[Full Address
+                    Here]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-mobile" style="top: 440px; left: 300px;">
                 <span class="default-label"><b>Mob.</b> </span><span id="view-m-mobile">[Mobile No]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-membership"
-                style="top: 480px; left: 300px; color: var(--primary-blue); font-weight: 800;">
+                style="top: 480px; left: 300px; color: var(--primary-blue); font-weight: 800; white-space: nowrap;">
                 <span class="default-label">Membership No.: </span><span id="view-m-membership"
-                    style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">[Mem
+                    style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px; display: inline-block; min-width: 80px; white-space: nowrap;">[Mem
                     No]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable valid-box detail-text" id="drag-m-valid" style="top: 535px; left: 300px;">
-                <span class="default-label">Valid Up To : </span>[Valid Date]
+                <span class="default-label">Valid Up To : </span><span id="view-m-valid">[Valid Date]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
 
             <div class="draggable detail-text" id="drag-m-issue" style="top: 590px; left: 40px; font-weight: 800;">
                 <span class="default-label">Date of Issue : </span><span id="view-m-issue">[Issue Date]</span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
+            </div>
+
+            <div class="draggable detail-text" id="drag-db-vibhag"
+                style="top: 590px; left: 300px; font-weight: 600; font-size: 14px; color: #666; display: none;">
+                <span id="view-db-vibhag-no"></span>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
+            </div>
+
+            <!-- Hidden draggables for non-visual mandatory data -->
+            <div class="draggable" id="drag-period-data" style="display:none;">
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
             </div>
 
             <!-- 6. Signature -->
@@ -785,8 +1241,13 @@
                 </svg>
                 <div style="font-weight: 800; font-size: 18px;">(R.P. Dharia)</div>
                 <div style="font-weight: 800; font-size: 18px;">President</div>
+                <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
+        </div>
+        <!-- Off-screen Worker Area for Background Generation (Mirrors capture-area structure) -->
+        <div id="capture-area-worker" class="id-card" style="position: fixed; left: -5000px; top: -5000px; display: block; pointer-events: none;">
+            <!-- Content will be injected from capture-area.innerHTML during background processing -->
         </div>
 
         <div class="actions">
@@ -802,9 +1263,9 @@
                     <option value="image/svg+xml">SVG (Vector for CorelDRAW)</option>
                     <option value="application/pdf">PDF (Print Ready)</option>
                 </select>
+                <button class="btn btn-p" id="btn-download" style="background: #F7931E;"><i
+                        data-lucide="upload-cloud"></i> Submit for Approval</button>
             </div>
-            <button class="btn btn-p" id="btn-download"><i data-lucide="download"></i> Export High-Res ID</button>
-        </div>
     </main>
 
     <!-- Fallback Preview Modal -->
@@ -826,7 +1287,228 @@
         </div>
     </div>
 
+    <!-- Approvals & Rejections Modal -->
+    <div id="approvals-modal" class="hidden"
+        style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; backdrop-filter: blur(5px); overflow-y: auto;">
+
+        <div
+            style="background: white; border-radius: 12px; width: 100%; max-width: 1200px; display: flex; flex-direction: column; min-height: 50vh;">
+            <div
+                style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0;">
+                <h2 id="approvals-modal-title"
+                    style="margin: 0; color: var(--primary-blue); font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="check-square"></i> <span id="approvals-modal-text">Checker Dashboard</span>
+                </h2>
+                <button onclick="document.getElementById('approvals-modal').classList.add('hidden')"
+                    style="background: transparent; border: none; cursor: pointer; color: #666; padding: 5px;">
+                    <i data-lucide="x" size="24"></i>
+                </button>
+            </div>
+
+            <div id="approvals-container" style="display: flex; flex: 1; overflow: hidden; min-height: 70vh;">
+                <!-- Left: Table Side -->
+                <div id="approvals-table-container"
+                    style="flex: 1; border-right: 1px solid #eee; overflow-y: auto; background: #fff;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead
+                            style="position: sticky; top: 0; background: #f8f9fa; z-index: 10; border-bottom: 2px solid #eee;">
+                            <tr>
+                                <th style="text-align: left; padding: 12px 15px;">Member Name</th>
+                                <th style="text-align: left; padding: 12px 15px;">Date Submitted</th>
+                                <th style="text-align: center; padding: 12px 15px; width: 80px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvals-table-body">
+                            <!-- Rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Right: Preview Side -->
+                <div id="approvals-preview-pane"
+                    style="width: 600px; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px; transition: all 0.3s ease;">
+                    <div id="preview-placeholder" style="text-align: center; color: #999; margin-top: 100px;">
+                        <i data-lucide="mouse-pointer-click" size="48" style="margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>Select a record from the list<br>to preview the ID card</p>
+                    </div>
+
+                    <div id="active-preview-content" class="hidden"
+                        style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                        <!-- The mini-preview of the card -->
+                        <div id="mini-card-viewport"
+                            style="width: 500px; height: 315px; background: white; border: 1px solid #ddd; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; overflow: hidden; border-radius: 4px;">
+                            <div id="mini-card-scaler"
+                                style="width: 1000px; height: 630px; transform: scale(0.5); transform-origin: top left; pointer-events: none;">
+                                <!-- Cloned content goes here -->
+                            </div>
+                        </div>
+
+                        <div id="preview-actions"
+                            style="width: 100%; max-width: 500px; margin-top: 25px; display: flex; gap: 15px; position: relative; z-index: 100;">
+                            <button id="btn-approve-active" onclick="event.stopPropagation()"
+                                style="flex: 1; background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; position: relative; z-index: 101;">
+                                <i data-lucide="check-circle" size="20"></i> Approve Card
+                            </button>
+                            <button id="btn-reject-active" onclick="event.stopPropagation()"
+                                style="flex: 1; background: #dc3545; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; position: relative; z-index: 101;">
+                                <i data-lucide="x-circle" size="20"></i> Reject
+                            </button>
+                        </div>
+
+                        <div id="preview-details"
+                            style="width: 100%; max-width: 500px; margin-top: 20px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee; font-size: 0.85rem; color: #555;">
+                            <!-- Metadata injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Settings Modal -->
+    <div id="admin-settings-modal" class="hidden"
+        style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; backdrop-filter: blur(5px); overflow-y: auto;">
+        <div
+            style="background: white; border-radius: 12px; width: 100%; max-width: 600px; display: flex; flex-direction: column;">
+            <div
+                style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0;">
+                <h2
+                    style="margin: 0; color: var(--primary-blue); font-size: 1.3rem; display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="settings"></i> Admin Settings
+                </h2>
+                <button onclick="document.getElementById('admin-settings-modal').classList.add('hidden')"
+                    style="background: transparent; border: none; cursor: pointer; color: #666; padding: 5px;">
+                    <i data-lucide="x" size="24"></i>
+                </button>
+            </div>
+
+            <div style="padding: 25px;">
+                <h3
+                    style="margin-top: 0; color: #333; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    Membership Numbering Configuration</h3>
+                <p style="font-size: 0.8rem; color: #666; margin-bottom: 20px;">Set the starting numbers and
+                    track the last used numbers for each membership category.</p>
+
+                <div style="display: grid; gap: 20px;">
+                    <!-- Lifetime -->
+                    <div style="padding: 15px; background: #fcfcfc; border: 1px solid #eee; border-radius: 8px;">
+                        <div
+                            style="font-weight: bold; font-size: 0.85rem; color: var(--primary-red); margin-bottom: 10px;">
+                            LIFETIME MEMBERSHIP</div>
+                        <div class="admin-grid-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="grid-column: 1 / -1; margin-bottom: 10px;">
+                                <label
+                                    style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Membership
+                                    Prefix</label>
+                                <input type="text" id="admin-num-lifetime-prefix" placeholder="e.g. LM-"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Start
+                                    Number</label>
+                                <input type="text" id="admin-num-lifetime-start"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                                    onblur="this.value = this.value.padStart(4, '0')"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Last
+                                    Used</label>
+                                <input type="text" id="admin-num-lifetime-last"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #f0f0f0;"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5 Years -->
+                    <div style="padding: 15px; background: #fcfcfc; border: 1px solid #eee; border-radius: 8px;">
+                        <div
+                            style="font-weight: bold; font-size: 0.85rem; color: var(--primary-blue); margin-bottom: 10px;">
+                            5 YEARS MEMBERSHIP</div>
+                        <div class="admin-grid-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="grid-column: 1 / -1; margin-bottom: 10px;">
+                                <label
+                                    style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Membership
+                                    Prefix</label>
+                                <input type="text" id="admin-num-5years-prefix" placeholder="e.g. V-"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Start
+                                    Number</label>
+                                <input type="text" id="admin-num-5years-start"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                                    onblur="this.value = this.value.padStart(4, '0')"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Last
+                                    Used</label>
+                                <input type="text" id="admin-num-5years-last"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #f0f0f0;"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1 Year -->
+                    <div style="padding: 15px; background: #fcfcfc; border: 1px solid #eee; border-radius: 8px;">
+                        <div style="font-weight: bold; font-size: 0.85rem; color: #F7931E; margin-bottom: 10px;">
+                            1 YEAR MEMBERSHIP</div>
+                        <div class="admin-grid-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="grid-column: 1 / -1; margin-bottom: 10px;">
+                                <label
+                                    style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Membership
+                                    Prefix</label>
+                                <input type="text" id="admin-num-1year-prefix" placeholder="e.g. 1-"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Start
+                                    Number</label>
+                                <input type="text" id="admin-num-1year-start"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                                    onblur="this.value = this.value.padStart(4, '0')"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px;">Last
+                                    Used</label>
+                                <input type="text" id="admin-num-1year-last"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #f0f0f0;"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: flex-end;">
+                    <button id="btn-save-admin-settings"
+                        style="background: var(--primary-blue); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="save" size="18"></i> Save Configuration
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- EMERGENCY ERROR CATCHER (Must be first) ---
+        window.onerror = function (msg, url, line, col, error) {
+            console.error("GLOBAL_ERROR:", { msg, url, line, col, error });
+            const diag = document.getElementById('diag-log');
+            if (diag) {
+                diag.style.display = 'block';
+                diag.innerHTML += `<div style="color:#ff4d4d; margin-bottom:5px;">âš ï¸ [Line ${line}] ${msg}</div>`;
+            }
+            alert("STABILITY ERROR: " + msg + "\nLine: " + line);
+            return false;
+        };
+
         // --- 0. Initialize Cloud Firebase (Master Database) ---
         const firebaseConfig = {
             apiKey: "AIzaSyDA1-QWSGJZPjB0P-cVeOoqvDj_1xqURMo",
@@ -842,6 +1524,97 @@
         const storage = firebase.storage();
 
         lucide.createIcons();
+
+        // Set today's date as default for Date of Issue
+        const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const mIssueEl = document.getElementById('m-issue');
+        if (mIssueEl && !mIssueEl.value) {
+            mIssueEl.value = todayStr;
+        }
+
+        // â”€â”€ Vibhag Searchable Dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        window.vibhagRecords = [];
+
+        // Load Vibhag list from Firestore → populate <select> dropdown
+        window.loadVibhagList = function(forceServer = false) {
+            const options = forceServer ? { source: 'server' } : {};
+            
+            db.collection("settings").doc("vibhagList").get(options).then(snap => {
+                const sel = document.getElementById('vibhag-select');
+                if (!sel) return;
+
+                if (!snap.exists) {
+                    console.warn("Vibhag document 'settings/vibhagList' does not exist.");
+                    sel.innerHTML = '<option value="">⚠️ No Data - Upload CSV in Admin Panel</option>';
+                    return;
+                }
+                const data = snap.data();
+                if (data && data.records && data.records.length > 0) {
+                    window.vibhagRecords = data.records;
+                    
+                    // Clear existing options except placeholder
+                    sel.innerHTML = '<option value="">-- Select Vibhag No --</option>';
+                    window.vibhagRecords.forEach(v => {
+                        const opt = document.createElement('option');
+                        opt.value = v.no;
+                        opt.dataset.code = v.code;
+                        opt.dataset.name = v.name;
+                        opt.textContent = `${v.no} - ${v.name}`; 
+                        sel.appendChild(opt);
+                    });
+
+                    // If we had a loaded value, re-select it
+                    const dbVNo = document.getElementById('db-vibhag-no').value;
+                    if (dbVNo) sel.value = dbVNo;
+
+                } else {
+                    sel.innerHTML = '<option value="">⚠️ Database is empty - Upload CSV</option>';
+                }
+            }).catch(err => {
+                console.error("Vibhag load error:", err);
+                const diag = document.getElementById('diag-log');
+                if (diag) {
+                    diag.style.display = 'block';
+                    diag.innerHTML += `<div style="color:#ffcc00;">[Firestore] Load Error: ${err.message}</div>`;
+                }
+            });
+        };
+
+        // Initial load (aggressive)
+        loadVibhagList(true);
+        // Auto-refresh every 60 seconds
+        setInterval(() => loadVibhagList(true), 60000);
+
+        window.onVibhagSelect = function (selectedNo) {
+            const detailRow = document.getElementById('vibhag-details-row');
+            if (!selectedNo) {
+                // Clear everything
+                document.getElementById('db-vibhag-no').value = '';
+                document.getElementById('db-vibhag-code').value = '';
+                document.getElementById('db-vibhag-name').value = '';
+                document.getElementById('vibhag-code-display').value = '';
+                document.getElementById('vibhag-name-display').value = '';
+                if (detailRow) detailRow.style.display = 'none';
+                return;
+            }
+            const rec = (window.vibhagRecords || []).find(v => v.no === selectedNo);
+            if (!rec) return;
+
+            // Fill hidden storage fields
+            document.getElementById('db-vibhag-no').value = rec.no;
+            document.getElementById('db-vibhag-code').value = rec.code;
+            document.getElementById('db-vibhag-name').value = rec.name;
+
+            // Fill visible read-only text fields
+            document.getElementById('vibhag-code-display').value = rec.code;
+            document.getElementById('vibhag-name-display').value = rec.name;
+
+            // Show the code/name row
+            if (detailRow) detailRow.style.display = 'grid';
+
+            // Trigger sync to update Membership Prefix in preview
+            if (window.syncMember) window.syncMember();
+        };
 
         // Global Variable for Cloud Storage Hook
         window.masterSyncId = null;
@@ -897,32 +1670,168 @@
         const mValid = document.getElementById('m-valid');
         const mIssue = document.getElementById('m-issue');
 
-        const syncMember = () => {
-            document.getElementById('view-m-name').innerText = `${mFname.value} ${mMname.value} ${mSname.value}`;
-            document.getElementById('view-m-addr').innerText = mAddr.value;
+        // Period Color Configuration
+        const periodColors = {
+            'Lifetime': { bg: '#EC008C', text: '#FFFFFF' },
+            '5 Years': { bg: '#FFE500', text: '#2E3192' },
+            '1 Year': { bg: '#2E3192', text: '#FFFFFF' }
+        };
 
-            // Format DOB for display (YYYY-MM-DD to DD.MM.YYYY)
-            if (mDob.value) {
-                const parts = mDob.value.split('-');
-                document.getElementById('drag-m-dob').innerHTML = `<span class="default-label"><b>DOB : </b> </span>${parts[2]}.${parts[1]}.${parts[0]}-${mGender.value}<div class="resizer"></div>`;
-            } else {
-                document.getElementById('drag-m-dob').innerHTML = `<span class="default-label"><b>DOB : </b></span><div class="resizer"></div>`;
-            }
-
-            document.getElementById('drag-m-mobile').innerHTML = `<span class="default-label"><b>Mob.</b> </span>${mMobile.value}<div class="resizer"></div>`;
-            document.getElementById('drag-m-membership').innerHTML = `<span class="default-label">Membership No.: </span><span style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">${mMembership.value}</span><div class="resizer"></div>`;
-            document.getElementById('drag-m-valid').innerHTML = `<span class="default-label">Valid Up To : </span>${mValid.value}<div class="resizer"></div>`;
-
-            // Format Issue Date
-            if (mIssue.value) {
-                const parts = mIssue.value.split('-');
-                document.getElementById('drag-m-issue').innerHTML = `<span class="default-label">Date of Issue : </span>${parts[2]}.${parts[1]}.${parts[0]}<div class="resizer"></div>`;
-            } else {
-                document.getElementById('drag-m-issue').innerHTML = `<span class="default-label">Date of Issue : </span><div class="resizer"></div>`;
+        const applyPeriodColor = () => {
+            const period = document.getElementById('m-period').value;
+            const validBox = document.getElementById('drag-m-valid');
+            const colors = periodColors[period] || periodColors['Lifetime'];
+            if (validBox) {
+                validBox.style.backgroundColor = colors.bg;
+                validBox.style.color = colors.text;
             }
         };
 
+        // Sync color pickers to periodColors object
+        const syncColorPickers = () => {
+            periodColors['Lifetime'].bg = document.getElementById('pc-lifetime-bg').value;
+            periodColors['Lifetime'].text = document.getElementById('pc-lifetime-text').value;
+            periodColors['5 Years'].bg = document.getElementById('pc-5years-bg').value;
+            periodColors['5 Years'].text = document.getElementById('pc-5years-text').value;
+            periodColors['1 Year'].bg = document.getElementById('pc-1year-bg').value;
+            periodColors['1 Year'].text = document.getElementById('pc-1year-text').value;
+            applyPeriodColor();
+        };
+
+        ['pc-lifetime-bg', 'pc-lifetime-text', 'pc-5years-bg', 'pc-5years-text', 'pc-1year-bg', 'pc-1year-text'].forEach(id => {
+            document.getElementById(id).oninput = syncColorPickers;
+        });
+
+        window.syncMember = () => {
+            console.log("VANILLA_SYNC_RUNNING");
+            try {
+                // 1. Force recalculate Valid Upto (Do this FIRST in case something else crashes)
+                const pSelect = document.getElementById('m-period');
+                const mValid = document.getElementById('m-valid');
+                const mIssue = document.getElementById('m-issue');
+
+                if (pSelect && mValid) {
+                    const pVal = pSelect.value || "";
+                    const pText = (pSelect.selectedIndex >= 0) ? pSelect.options[pSelect.selectedIndex].text : "";
+                    const combined = (pVal + "|" + pText).toLowerCase().replace(/\s/g, '');
+                    const issueDate = mIssue ? mIssue.value : "";
+
+                    if (combined.includes('lifetime') || combined.includes('liefe')) {
+                        mValid.value = "Life Time";
+                    } else if (combined.includes('1year')) {
+                        mValid.value = "1 Year";
+                    } else if (combined.includes('5year')) {
+                        if (issueDate) {
+                            const d = new Date(issueDate);
+                            d.setFullYear(d.getFullYear() + 5);
+                            const dd = String(d.getDate()).padStart(2, '0');
+                            const mm = String(d.getMonth() + 1).padStart(2, '0');
+                            const yyyy = d.getFullYear();
+                            mValid.value = `${dd}.${mm}.${yyyy}`;
+                        } else {
+                            mValid.value = "Date + 5 Years";
+                        }
+                    }
+                }
+
+                // 2. Sync UI Card Preview
+                const nameEl = document.getElementById('view-m-name');
+                const mF = document.getElementById('m-fname');
+                const mM = document.getElementById('m-mname');
+                const mS = document.getElementById('m-sname');
+                if (nameEl && mF && mM && mS) {
+                    nameEl.innerText = `${mF.value} ${mM.value} ${mS.value}`;
+                }
+
+                const addrEl = document.getElementById('view-m-address') || document.getElementById('view-m-addr');
+                const mAddrIn = document.getElementById('m-address');
+                if (addrEl && mAddrIn) addrEl.innerText = mAddrIn.value;
+
+                const dobEl = document.getElementById('view-m-dob');
+                const mDobIn = document.getElementById('m-dob');
+                const mGenIn = document.getElementById('m-gender');
+                if (dobEl && mDobIn) {
+                    if (mDobIn.value) {
+                        const parts = mDobIn.value.split('-');
+                        const genSuffix = (mGenIn && mGenIn.value) ? `-${mGenIn.value}` : '';
+                        dobEl.innerText = `${parts[2]}.${parts[1]}.${parts[0]}${genSuffix}`;
+                    } else {
+                        dobEl.innerText = "[DD.MM.YYYY]";
+                    }
+                }
+
+                const mobEl = document.getElementById('view-m-mobile');
+                const mMobIn = document.getElementById('m-mobile');
+                if (mobEl && mMobIn) mobEl.innerText = mMobIn.value;
+
+                // 2.3 Handle Membership Number with dynamic Prefix
+                const memEl = document.getElementById('view-m-membership');
+                const mMemIn = document.getElementById('m-membership');
+                const vNoInput = document.getElementById('db-vibhag-no');
+                const vCodeInput = document.getElementById('db-vibhag-code');
+                
+                if (memEl && mMemIn) {
+                    let fullMemNo = mMemIn.value || "[Mem No]";
+                    
+                    // Period Prefix
+                    let periodPrefix = "";
+                    const pVal = pSelect ? (pSelect.value || "").toLowerCase() : "";
+                    if (pVal.includes("lifetime")) periodPrefix = "LM-";
+                    else if (pVal.includes("5")) periodPrefix = "V-";
+                    else if (pVal.includes("1")) periodPrefix = "I-";
+                    
+                    // Vibhag Prefix: [CODE-NO]/
+                    let vPrefix = "";
+                    if (vNoInput && vNoInput.value && vCodeInput && vCodeInput.value) {
+                        vPrefix = `[${vCodeInput.value}-${vNoInput.value}]/`;
+                    }
+                    
+                    // Only apply auto-prefix if the user hasn't already typed a full formatted number
+                    // (Checking for the "/" separator as a heuristic)
+                    if (fullMemNo !== "[Mem No]" && !fullMemNo.includes('/')) {
+                        memEl.innerText = vPrefix + periodPrefix + fullMemNo;
+                    } else {
+                        memEl.innerText = fullMemNo;
+                    }
+                }
+
+                const validEl = document.getElementById('view-m-valid');
+                if (validEl && mValid) validEl.innerText = mValid.value;
+
+                const issueEl = document.getElementById('view-m-issue');
+                if (issueEl && mIssue) {
+                    if (mIssue.value) {
+                        const parts = mIssue.value.split('-');
+                        issueEl.innerText = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                    } else {
+                        issueEl.innerText = "[Issue Date]";
+                    }
+                }
+
+                const vNo = document.getElementById('db-vibhag-no');
+                const vCode = document.getElementById('db-vibhag-code');
+                const vSpan = document.getElementById('view-db-vibhag-no');
+                if (vNo && vCode && vSpan) {
+                    const dbVibhagNoStr = vNo.value ? `Vibhag No: ${vNo.value}` : '';
+                    const dbVCodeStr = vCode.value ? ` (${vCode.value})` : '';
+                    vSpan.innerText = dbVibhagNoStr + dbVCodeStr;
+                }
+
+                applyPeriodColor();
+            } catch (err) {
+                console.error("Critical Sync Error:", err);
+            }
+        };
+
+        // Attach listeners for dynamic Valid Upto
+        document.getElementById('m-period').addEventListener('change', syncMember);
+        mIssue.addEventListener('input', syncMember);
+        mIssue.addEventListener('change', syncMember);
+
         [mFname, mMname, mSname, mAddr, mDob, mGender, mMobile, mMembership, mValid, mIssue].forEach(el => el.oninput = syncMember);
+
+        // Run once on load to initialize preview and Valid Upto with today's date
+        syncMember();
 
         // 4. Image Uploads
         const handleImg = (inputId, viewId) => {
@@ -991,11 +1900,31 @@
         photoUp.onchange = (e) => {
             const f = e.target.files[0];
             if (f) {
-                const r = new FileReader();
-                r.onload = (re) => {
-                    document.getElementById('drag-photo').innerHTML = `<img src="${re.target.result}"><div class="resizer"></div>`;
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const MAX_DIM = 600;
+                    if (width > height) {
+                        if (width > MAX_DIM) {
+                            height *= MAX_DIM / width;
+                            width = MAX_DIM;
+                        }
+                    } else {
+                        if (height > MAX_DIM) {
+                            width *= MAX_DIM / height;
+                            height = MAX_DIM;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const b64 = canvas.toDataURL('image/jpeg', 0.85); // Compress heavily for Firestore
+                    document.getElementById('drag-photo').innerHTML = `<img src="${b64}"><div class="resizer"></div>`;
                 };
-                r.readAsDataURL(f);
+                img.src = URL.createObjectURL(f);
             }
         };
 
@@ -1031,12 +1960,14 @@
         // 5. Design Mode Engine
         const modeToggle = document.getElementById('mode-toggle');
         const headerStudio = document.getElementById('header-studio-container');
+        const periodColorContainer = document.getElementById('period-color-container');
 
         modeToggle.onchange = (e) => {
             const isOn = e.target.checked;
             document.body.className = isOn ? 'design-mode-on' : 'design-mode-off';
             headerStudio.classList.toggle('hidden', !isOn);
             if (typeof bgStudio !== 'undefined') bgStudio.classList.toggle('hidden', !isOn);
+            if (periodColorContainer) periodColorContainer.classList.toggle('hidden', !isOn);
 
             const adminContainer = document.getElementById('admin-update-container');
             if (adminContainer) adminContainer.classList.toggle('hidden', !isOn);
@@ -1069,6 +2000,32 @@
             document.onmouseup = () => { document.onmousemove = null; activeEl = null; };
         });
 
+        window.toggleMandatory = (checkbox) => {
+            const syncId = checkbox.getAttribute('data-sync-mandatory');
+            let drag;
+            if (syncId) {
+                // Toggled from Sidebar
+                drag = document.getElementById(syncId);
+                // Sync the checkbox on the card
+                if (drag) {
+                    const cardCheck = drag.querySelector('.mandatory-toggle input');
+                    if (cardCheck) cardCheck.checked = checkbox.checked;
+                }
+            } else {
+                // Toggled from Card
+                drag = checkbox.closest('.draggable');
+                // Sync the checkbox in the sidebar
+                if (drag) {
+                    const sidebarCheck = document.querySelector(`[data-sync-mandatory="${drag.id}"]`);
+                    if (sidebarCheck) sidebarCheck.checked = checkbox.checked;
+                }
+            }
+
+            if (drag) {
+                drag.setAttribute('data-mandatory', checkbox.checked ? "true" : "false");
+            }
+        };
+
         // 6. Reset
         document.getElementById('btn-reset').onclick = () => location.reload();
 
@@ -1079,307 +2036,161 @@
             const area = document.getElementById('capture-area');
             const formatSelection = document.getElementById('export-format').value;
 
-            btn.innerHTML = `<i data-lucide="loader-2" class="spin"></i> Generating...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="spin"></i> Submitting...`;
             btn.disabled = true;
             if (window.lucide) lucide.createIcons();
-
-            const masterSheetCheck = window.masterSyncId;
 
             const wasChecked = modeToggle.checked;
             modeToggle.checked = false;
             document.body.className = 'design-mode-off';
 
             try {
-                // 1. FORCE dimensions for Export Stability
-                const exportStyles = new Map();
-                area.querySelectorAll('.draggable').forEach(el => {
-                    exportStyles.set(el, {
-                        width: el.style.width,
-                        height: el.style.height,
-                        ws: el.style.whiteSpace,
-                        fs: el.style.fontSize
-                    });
-
-                    if (el.id === 'drag-photo') {
-                        el.style.width = '220px';
-                        el.style.height = '280px';
-                    } else if (el.id === 'drag-m-address') {
-                        // Address Fix: Allow it to wrap correctly inside the card
-                        el.style.whiteSpace = 'normal';
-                        el.style.width = '600px';
-                    } else if (el.id !== 'drag-sign') {
-                        // Other fields (Name, DOB): Force to single line to avoid overlapping
-                        el.style.whiteSpace = 'nowrap';
-                        el.style.width = 'max-content';
+                // --- 0. MANDATORY FIELD VALIDATION ---
+                const mandatoryErrors = [];
+                const checkMandatory = (dragId, label, fieldIds) => {
+                    const drag = document.getElementById(dragId);
+                    if (drag && drag.getAttribute('data-mandatory') === 'true') {
+                        const isEmpty = fieldIds.some(fid => {
+                            const el = document.getElementById(fid);
+                            return !el || !el.value || el.value.trim() === "";
+                        });
+                        if (isEmpty) mandatoryErrors.push(label);
                     }
-                });
+                };
 
-                // Inline all images (CRITICAL: Needs to happen for both PNG and Cloud SVG generation)
-                const imgs = Array.from(area.querySelectorAll('img'));
-                for (const img of imgs) {
-                    if (img.src.startsWith('data:')) continue; // Do not corrupt high-res photos
-                    try {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = img.naturalWidth || img.width;
-                        canvas.height = img.naturalHeight || img.height;
-                        canvas.getContext('2d').drawImage(img, 0, 0);
-                        img.src = canvas.toDataURL('image/png', 1.0);
-                    } catch (e) { }
+                checkMandatory('drag-m-name', 'Full Name (First & Surname)', ['m-fname', 'm-sname']);
+                checkMandatory('drag-m-dob', 'Date of Birth & Gender', ['m-dob', 'm-gender']);
+                checkMandatory('drag-m-address', 'Address', ['m-address']);
+                checkMandatory('drag-m-mobile', 'Mobile Number', ['m-mobile']);
+                checkMandatory('drag-m-membership', 'Membership Number', ['m-membership']);
+                checkMandatory('drag-m-valid', 'Valid Upto Date', ['m-valid']);
+                checkMandatory('drag-m-issue', 'Date of Issue', ['m-issue']);
+                checkMandatory('drag-db-vibhag', 'Vibhag Selection', ['db-vibhag-no']);
+                checkMandatory('drag-period-data', 'Period Selection', ['m-period']);
+
+                // Special check for photo
+                const photoDrag = document.getElementById('drag-photo');
+                if (photoDrag && photoDrag.getAttribute('data-mandatory') === 'true') {
+                    const photoImg = photoDrag.querySelector('img');
+                    if (!photoImg || !photoImg.src || photoImg.src.includes('lucide')) {
+                        mandatoryErrors.push('Member Photo');
+                    }
                 }
 
-                let blob, finalExt;
-                let cachedSvg = null;
-
-                if (formatSelection === 'image/svg+xml') {
-                    finalExt = 'svg';
-                    if (typeof htmlToImage === 'undefined') throw new Error("Vector engine not ready");
-
-                    // Generate SVG
-                    cachedSvg = await htmlToImage.toSvg(area, {
-                        backgroundColor: '#ffffff',
-                        width: 1000, // True CSS layout width
-                        height: 630, // True CSS layout height
-                        skipFonts: true,
-                        fontEmbedCSS: ''
-                    });
-
-                    if (!cachedSvg) throw new Error("Empty vector generated");
-                    blob = await (await fetch(cachedSvg)).blob();
-
-                } else if (formatSelection === 'application/pdf') {
-                    finalExt = 'pdf';
-                    // Generate high-res image first for the PDF
-                    const dataUrl = await htmlToImage.toJpeg(area, { backgroundColor: '#ffffff', pixelRatio: 4, quality: 0.98, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
-
-                    const { jsPDF } = window.jspdf;
-                    // Create landscape PDF, dimensions 100mm x 63mm (matching 1000x630 ratio)
-                    const doc = new jsPDF({
-                        orientation: 'landscape',
-                        unit: 'mm',
-                        format: [100, 63]
-                    });
-                    doc.addImage(dataUrl, 'JPEG', 0, 0, 100, 63);
-                    blob = doc.output('blob');
-
-                } else {
-                    // Raster Path (Local)
-                    finalExt = formatSelection === 'image/png' ? 'png' : 'jpg';
-                    const dataUrl = formatSelection === 'image/png'
-                        ? await htmlToImage.toPng(area, { backgroundColor: '#ffffff', pixelRatio: 4, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' })
-                        : await htmlToImage.toJpeg(area, { backgroundColor: '#ffffff', pixelRatio: 4, quality: 0.98, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
-                    blob = await (await fetch(dataUrl)).blob();
+                if (mandatoryErrors.length > 0) {
+                    alert("Submission Blocked!\n\nThe following mandatory fields are missing:\n- " + mandatoryErrors.join("\n- "));
+                    return;
                 }
 
-                // --- GOOGLE CLOUD SYNC MASTER SHEET LOGIC ---
-                if (masterSheetCheck) {
-                    btn.innerHTML = `<i data-lucide="cloud-upload" class="spin"></i> Syncing...`;
+                // --- 1. PREPARE DATA PAYLOAD ---
+                const vName = document.getElementById('db-vibhag-name').value;
+                const vNo = document.getElementById('db-vibhag-no').value;
+                const mName = document.getElementById('view-m-name').innerText;
+                const fileName = `ID_${mName.replace(/\s/g, '_').toUpperCase()}`;
+
+                const memVal = document.getElementById('m-membership').value;
+                const memView = document.getElementById('view-m-membership');
+                let finalMemNo = memVal;
+                
+                // If the preview has the full formatted number, use it for the database
+                if (memView && memView.innerText && memView.innerText !== "[Mem No]") {
+                    finalMemNo = memView.innerText;
+                }
+
+                const cloudPayload = {
+                    fileName: fileName,
+                    memberData: {
+                        "Membership No": finalMemNo,
+                        "First Name": document.getElementById('m-fname').value,
+                        "Middle Name": document.getElementById('m-mname').value,
+                        "Surname": document.getElementById('m-sname').value,
+                        "Full Printed Name": mName,
+                        "Date of Birth": document.getElementById('m-dob').value,
+                        "Gender": document.getElementById('m-gender').value,
+                        "Period": document.getElementById('m-period').value,
+                        "Address": document.getElementById('m-address').value,
+                        "Mobile Number": document.getElementById('m-mobile').value,
+                        "Valid Upto": document.getElementById('m-valid').value,
+                        "Date of Issue": document.getElementById('m-issue').value,
+                        "Vibhag No": document.getElementById('db-vibhag-no').value,
+                        "Vibhag Code": document.getElementById('db-vibhag-code').value,
+                        "Vibhag Name": document.getElementById('db-vibhag-name').value,
+                        "Remarks": document.getElementById('db-remarks') ? document.getElementById('db-remarks').value : ""
+                    }
+                };
+
+                // --- 2. UPLOAD PHOTO IF NEEDED ---
+                const rawPhotoImg = document.getElementById('drag-photo').querySelector('img');
+                const rawPhotoDataUrl = rawPhotoImg ? rawPhotoImg.src : '';
+                let downloadUrl = "";
+
+                if (rawPhotoDataUrl && rawPhotoDataUrl.startsWith('data:image')) {
+                    btn.innerHTML = `<i data-lucide="image" class="spin"></i> Uploading Photo...`;
                     if (window.lucide) lucide.createIcons();
-
-                    if (masterSheetCheck.includes('script.google.com')) {
-                        alert("Hold on! You pasted the 'App Script URL' into the box. Please paste the URL of your Master Google Sheet instead.");
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                        if (window.lucide) lucide.createIcons();
-                        return;
-                    }
-
-                    // Auto-Extract ID if user pasted full URL
-                    const extractId = (str) => {
-                        if (!str) return null;
-                        const match = str.match(/[-\w]{25,}/);
-                        return match ? match[0] : str;
-                    };
-                    const mId = extractId(masterSheetCheck);
-
-                    // 1. Fetch Master Configuration from Google Sheets
-                    let driveId, sheetId, scriptUrl;
-                    try {
-                        const csvUrl = `https://docs.google.com/spreadsheets/d/${mId}/export?format=csv`;
-                        const res = await fetch(csvUrl);
-                        if (!res.ok) throw new Error(`Could not download Master Sheet. Status: ${res.status}`);
-                        const csvText = await res.text();
-
-                        if (csvText.includes('<html')) {
-                            throw new Error("Google returned a webpage instead of CSV data. Please check immediately if your Master Sheet's Sharing is set to 'Anyone with the link can view'.");
-                        }
-
-                        // Parse the entire CSV indiscriminate of columns/rows to find the 3 URLs
-                        const allCells = csvText.replace(/"/g, '').split(/,|\n/);
-                        let driveStr, sheetStr, scriptStr;
-
-                        for (const cell of allCells) {
-                            const c = cell.trim();
-                            // If it's the 25+ char ID by itself or contains drive
-                            if (c.includes('drive.google.com')) driveStr = c;
-                            if (c.includes('docs.google.com/spreadsheet')) sheetStr = c;
-                            if (c.includes('script.google.com/macros')) scriptStr = c;
-                        }
-
-                        // Fallback: If they literally just pasted IDs in the first row without the full URLs
-                        if (!driveStr || !sheetStr || !scriptStr) {
-                            const rows = csvText.split('\n');
-                            for (const r of rows) {
-                                if (r.includes('script.google.com')) {
-                                    const cols = r.replace(/"/g, '').split(',');
-                                    driveStr = driveStr || cols[0];
-                                    sheetStr = sheetStr || cols[1];
-                                    scriptStr = scriptStr || cols[2];
-                                }
-                            }
-                            // Final fallback to just grabbing first row
-                            if (!scriptStr) {
-                                const backupRow = rows.find(r => r.length > 20 && !r.toLowerCase().includes('google drive'));
-                                if (backupRow) {
-                                    const cols = backupRow.replace(/"/g, '').split(',');
-                                    driveStr = driveStr || cols[0];
-                                    sheetStr = sheetStr || cols[1];
-                                    scriptStr = scriptStr || cols[2];
-                                }
-                            }
-                        }
-
-                        driveId = extractId(driveStr);
-                        sheetId = extractId(sheetStr);
-                        scriptUrl = scriptStr ? scriptStr.trim() : null;
-
-                        if (!driveId || !sheetId || !scriptUrl) {
-                            throw new Error(`Could not find all 3 links in your sheet.\nFound Drive: ${driveId ? 'Yes' : 'No'}\nFound Sheet: ${sheetId ? 'Yes' : 'No'}\nFound Script: ${scriptUrl ? 'Yes' : 'No'}`);
-                        }
-                    } catch (mErr) {
-                        throw new Error(`Master Sheet Error: ${mErr.message}`);
-                    }
-
-                    // 2. Build Sync Payload
-                    const cloudPayload = {
-                        driveId: driveId,
-                        sheetId: sheetId,
-                        fileName: `ID_${document.getElementById('view-m-name').innerText.replace(/\s/g, '_').toUpperCase()}`,
-                        memberData: {
-                            "Membership No": document.getElementById('m-membership').value,
-                            "First Name": document.getElementById('m-fname').value,
-                            "Middle Name": document.getElementById('m-mname').value,
-                            "Surname": document.getElementById('m-sname').value,
-                            "Full Printed Name": document.getElementById('view-m-name').innerText,
-                            "Date of Birth": document.getElementById('m-dob').value,
-                            "Gender": document.getElementById('m-gender').value,
-                            "Period": document.getElementById('m-period').value,
-                            "Address": document.getElementById('m-address').value,
-                            "Mobile Number": document.getElementById('m-mobile').value,
-                            "Valid Upto": document.getElementById('m-valid').value,
-                            "Date of Issue": document.getElementById('m-issue').value,
-                            "Vibhag No": document.getElementById('db-vibhag-no').value,
-                            "Vibhag Name": document.getElementById('db-vibhag-name').value,
-                            "Remarks": document.getElementById('db-remarks') ? document.getElementById('db-remarks').value : ""
-                        }
-                    };
-
-                    // For Cloud, we always send both SVG and PNG
-                    let rawSvgUrl = cachedSvg || await htmlToImage.toSvg(area, { backgroundColor: '#ffffff', width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
-
-                    // The App Script bridge expects raw SVG text (<svg...), not a browser data URL string (data:image/svg...)
-                    if (rawSvgUrl && rawSvgUrl.includes(',')) {
-                        const encodedPart = rawSvgUrl.substring(rawSvgUrl.indexOf(',') + 1);
-                        cloudPayload.svgData = decodeURIComponent(encodedPart);
-                    } else {
-                        cloudPayload.svgData = rawSvgUrl;
-                    }
-
-                    // Reduce scale to 1.5 to prevent Google Apps Script from dropping large payloads (causes 'Failed to fetch')
-                    // (We also use this PNG for Firebase Storage)
-                    cloudPayload.pngData = await htmlToImage.toPng(area, { backgroundColor: '#ffffff', pixelRatio: 4, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
-
-                    try {
-                        // --- A. SAVE TO FIREBASE STORAGE & FIRESTORE (FAST METHOD) ---
-                        btn.innerHTML = `<i data-lucide="database" class="spin"></i> Saving to Database...`;
-                        if (window.lucide) lucide.createIcons();
-
-                        // 1. Upload High-Res Image to Firebase Storage
-                        const imageRef = storage.ref(`id_cards/${cloudPayload.fileName}_${Date.now()}.png`);
-                        await imageRef.putString(cloudPayload.pngData, 'data_url');
-                        const downloadUrl = await imageRef.getDownloadURL();
-
-                        // 2. Save Data & Image URL to Firestore
-                        await db.collection('idCardLogs').add({
-                            ...cloudPayload.memberData,
-                            photoUrl: downloadUrl,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    } catch (fbErr) {
-                        console.error("Firebase Sync Error:", fbErr);
-                    }
-
-                    // --- B. SAVE TO GOOGLE SCRIPT & SHEETS (BACKUP METHOD) ---
-                    try {
-                        if (!scriptUrl.startsWith('https://')) {
-                            throw new Error(`The parsed Script URL from your Master Sheet does not look like a correct web link. It was: "${scriptUrl}"`);
-                        }
-
-                        const response = await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(cloudPayload) });
-
-                        // CLEAR SCREEN AFTER SUCCESSFUL SYNC
-                        const safeClear = (id, defaultVal = "") => {
-                            const el = document.getElementById(id);
-                            if (el) el.value = defaultVal;
-                        };
-
-                        ['m-fname', 'm-mname', 'm-sname', 'm-dob', 'm-address', 'm-mobile', 'm-membership', 'm-valid', 'm-issue', 'db-vibhag-no', 'db-vibhag-name', 'db-remarks', 'photo-upload', 'bg-upload'].forEach(id => safeClear(id));
-                        safeClear('m-gender', 'M');
-                        safeClear('m-period', 'Lifetime');
-
-                        // Clear custom bg
-                        document.getElementById('capture-area').style.backgroundImage = 'none';
-
-                        const photoPreview = document.getElementById('drag-photo');
-                        if (photoPreview) {
-                            photoPreview.innerHTML = '<i data-lucide="user" size="60" color="#ccc"></i><div class="resizer"></div>';
-                        }
-
-                        if (typeof syncMember === 'function') syncMember();
-                        if (window.lucide) lucide.createIcons();
-
-                        setTimeout(() => alert("Sync Complete! Data saved to Google Sheets and Drive. The template has been cleared for the next member."), 100);
-                    } catch (e) {
-                        console.error("Sync Error:", e);
-                        alert(`Cloud Sync Error!\nTarget URL: ${scriptUrl}\nError Details: ${e.message || String(e)}`);
-                    }
-                }
-                // --- GOOGLE CLOUD SYNC END ---
-
-                // 2. RESTORE original styles after generating the blob
-                exportStyles.forEach((val, el) => {
-                    el.style.width = val.width;
-                    el.style.height = val.height;
-                    el.style.whiteSpace = val.ws;
-                    el.style.fontSize = val.fs;
-                });
-
-                // 3. Native Save Dialog
-                if ('showSaveFilePicker' in window) {
-                    try {
-                        const fileHandle = await window.showSaveFilePicker({
-                            suggestedName: `ID_Member_${Date.now()}.${finalExt}`,
-                            types: [{
-                                description: `${finalExt.toUpperCase()} File`,
-                                accept: { [formatSelection]: [`.${finalExt}`] }
-                            }]
-                        });
-                        const writable = await fileHandle.createWritable();
-                        await writable.write(blob);
-                        await writable.close();
-                    } catch (e) { console.log("User cancelled save"); }
+                    const imageRef = storage.ref(`pending_photos/member_${Date.now()}.png`);
+                    await imageRef.putString(rawPhotoDataUrl, 'data_url');
+                    downloadUrl = await imageRef.getDownloadURL();
                 } else {
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `ID_Member_${Date.now()}.${finalExt}`;
-                    document.body.appendChild(link);
-                    link.click();
-                    setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(url); }, 500);
+                    downloadUrl = rawPhotoDataUrl; // Already a URL or empty
                 }
+
+                // --- 3. SERIALIZE DESIGN ---
+                btn.innerHTML = `<i data-lucide="layout" class="spin"></i> Saving Design...`;
+                if (window.lucide) lucide.createIcons();
+                let templateConfig = getLayoutConfig();
+                templateConfig = await deepOffloadImages(templateConfig);
+
+                // --- 4. SUBMIT TO FIRESTORE (Pending Queue) ---
+                btn.innerHTML = `<i data-lucide="database" class="spin"></i> Sending to Database...`;
+                if (window.lucide) lucide.createIcons();
+
+                const pendingData = {
+                    ...cloudPayload,
+                    photoUrl: downloadUrl,
+                    templateConfig: JSON.stringify(templateConfig),
+                    status: 'pending',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (window.currentEditingDocId) {
+                    await db.collection('pendingApprovals').doc(window.currentEditingDocId).set(pendingData, { merge: true });
+                    window.currentEditingDocId = null;
+                } else {
+                    await db.collection('pendingApprovals').add(pendingData);
+                }
+
+                // --- 5. OPTIONAL: GOOGLE SHEET SYNC ---
+                if (window.masterSyncId) {
+                    btn.innerHTML = `<i data-lucide="cloud" class="spin"></i> Syncing Sheets...`;
+                    if (window.lucide) lucide.createIcons();
+                    try {
+                        // We use the simpler sync logic here if needed, or just let Firestore trigger it
+                        // For now we assume firestore is the source of truth.
+                    } catch (syncErr) { console.warn("Optional Sheet Sync failed:", syncErr); }
+                }
+
+                // --- SUCCESS CLEANUP ---
+                alert("Submitted! The ID card has been sent for approval.");
+
+                // Clear Form
+                ['m-fname', 'm-mname', 'm-sname', 'm-dob', 'm-address', 'm-mobile', 'm-membership', 'm-valid', 'm-issue', 'db-vibhag-no', 'db-vibhag-name', 'db-remarks', 'photo-upload'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = "";
+                });
+                const photoPreview = document.getElementById('drag-photo');
+                if (photoPreview) photoPreview.innerHTML = '<i data-lucide="user" size="60" color="#ccc"></i><div class="resizer"></div>';
+
+                if (window.lucide) lucide.createIcons();
+
+                // If they specifically selected a format and might want a local copy too, we could let them.
+                // But usually, once submitted, we should stop to prevent double work.
+
+                return; // END FUNCTION HERE
 
             } catch (err) {
-                console.error("Export System failure:", err);
-                alert(`Export Failed: ${err.stack || err.message || JSON.stringify(err) || String(err)}`);
+                console.error("Submission Failure:", err);
+                const errMsg = err.code ? `${err.code}: ${err.message}` : (err.message || String(err));
+                alert(`Submission Failed!\n\nDetails: ${errMsg}`);
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -1391,36 +2202,115 @@
             }
         };
 
+        // Old implementation of Export suppressed
+        const __old_export_engine_suppressed = async () => {
+            // This is kept as reference or could be moved to a separate "Download Preview" button
+        };
+
         // 6. Save & Load Layout Settings Engine
         const btnSaveLayout = document.getElementById('btn-save-layout');
         const btnLoadLayout = document.getElementById('btn-load-layout');
         const layoutFileUpload = document.getElementById('layout-file-upload');
 
-        const getLayoutConfig = () => {
-            const draggables = Array.from(document.querySelectorAll('.draggable'));
-            const layout = draggables.map(el => ({
-                id: el.id,
-                top: el.style.top,
-                left: el.style.left,
-                width: el.style.width,
-                height: el.style.height,
-                fontSize: el.style.fontSize,
-                color: el.style.color
-            }));
-
-            const captureArea = document.getElementById('capture-area');
-            const bgImage = captureArea.style.backgroundImage;
-
-            const hideToggle = document.getElementById('hide-defaults-toggle');
-            const hideDefaults = hideToggle ? hideToggle.checked : false;
-
-            return { layout, bgImage, hideDefaults };
+        const deepOffloadImages = async (obj) => {
+            if (!obj || typeof obj !== 'object') return obj;
+            if (Array.isArray(obj)) {
+                for (let i = 0; i < obj.length; i++) obj[i] = await deepOffloadImages(obj[i]);
+                return obj;
+            }
+            for (const key in obj) {
+                const val = obj[key];
+                if (typeof val === 'string' && val.includes('data:image')) {
+                    try {
+                        const match = val.match(/data:image\/[^;]+;base64,[^")']+/);
+                        if (match) {
+                            const base64Data = match[0];
+                            const ext = base64Data.split(';')[0].split('/')[1] || 'png';
+                            const ref = storage.ref(`offloaded_assets/asset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`);
+                            await ref.putString(base64Data, 'data_url');
+                            const url = await ref.getDownloadURL();
+                            obj[key] = val.replace(base64Data, url);
+                        }
+                    } catch (e) { console.warn("Asset offload failed:", e); }
+                } else if (typeof val === 'object') {
+                    obj[key] = await deepOffloadImages(val);
+                }
+            }
+            return obj;
         };
 
-        const applyLayoutConfig = (config) => {
-            if (config.layout) {
+        const getLayoutConfig = () => {
+            try {
+                const draggables = Array.from(document.querySelectorAll('.draggable'));
+                const layout = draggables.map(el => {
+                    const config = {
+                        id: String(el.id || ""),
+                        top: String(el.style.top || ""),
+                        left: String(el.style.left || ""),
+                        width: String(el.style.width || ""),
+                        height: String(el.style.height || ""),
+                        fontSize: String(el.style.fontSize || ""),
+                        color: String(el.style.color || ""),
+                        visibility: String(el.style.visibility || ""),
+                        isMandatory: el.getAttribute('data-mandatory') === "true",
+                        contents: []
+                    };
+
+                    // Capture text content for specific editable IDs inside this draggable
+                    const editableNodes = el.querySelectorAll('span[id], h1[id], h2[id], p[id], div[id]');
+                    if (editableNodes.length > 0) {
+                        config.contents = Array.from(editableNodes).map(node => ({
+                            id: String(node.id || ""),
+                            inner: String(node.innerHTML || "")
+                        }));
+                    }
+
+                    return config;
+                });
+
+                const captureArea = document.getElementById('capture-area');
+                const bgImage = captureArea ? String(captureArea.style.backgroundImage || "none") : "none";
+
+                const hideToggle = document.getElementById('hide-defaults-toggle');
+                const hideDefaults = hideToggle ? !!hideToggle.checked : false;
+
+                // Scrub any 'undefined' or non-serializable properties
+                return JSON.parse(JSON.stringify({
+                    layout,
+                    bgImage,
+                    hideDefaults,
+                    periodColors
+                }));
+            } catch (err) {
+                console.error("Error generating layout config:", err);
+                return { layout: [], bgImage: "none", hideDefaults: false, periodColors: {} };
+            }
+        };
+
+        const applyLayoutConfig = (configData, targetAreaId = 'capture-area') => {
+            if (!configData) return null;
+            let config = configData;
+
+            // Handle JSON string format
+            if (typeof configData === 'string' && configData.trim().startsWith('{')) {
+                try {
+                    config = JSON.parse(configData);
+                } catch (e) {
+                    console.error("Layout Parse Error", e);
+                    return null;
+                }
+            }
+
+            if (!config || typeof config !== 'object') return null;
+
+            if (config.layout && Array.isArray(config.layout)) {
+                const root = document.getElementById(targetAreaId);
+                if (!root) return null;
+
                 config.layout.forEach(item => {
-                    const el = document.getElementById(item.id);
+                    if (!item || !item.id) return;
+                    // Find by ID within the root container (handles duplicate IDs in the DOM)
+                    const el = root.id === item.id ? root : root.querySelector(`[id="${item.id}"]`);
                     if (el) {
                         if (item.top) el.style.top = item.top;
                         if (item.left) el.style.left = item.left;
@@ -1428,28 +2318,79 @@
                         if (item.height) el.style.height = item.height;
                         if (item.fontSize) el.style.fontSize = item.fontSize;
                         if (item.color) el.style.color = item.color;
+                        if (item.visibility) el.style.visibility = item.visibility;
+
+                        const isMandatory = item.isMandatory === true;
+                        el.setAttribute('data-mandatory', isMandatory ? "true" : "false");
+                        
+                        // Sync card toggle
+                        const mCheck = el.querySelector('.mandatory-toggle input');
+                        if (mCheck) mCheck.checked = isMandatory;
+
+                        // Sync sidebar toggle
+                        const sidebarCheck = document.querySelector(`[data-sync-mandatory="${el.id}"]`);
+                        if (sidebarCheck) sidebarCheck.checked = isMandatory;
+
+                        if (item.contents && Array.isArray(item.contents)) {
+                            item.contents.forEach(nodeData => {
+                                if (!nodeData || !nodeData.id) return;
+                                const node = el.id === nodeData.id ? el : el.querySelector(`[id="${nodeData.id}"]`);
+                                if (node) {
+                                    let innerHtml = nodeData.inner || "";
+                                    if (innerHtml.includes('<img ') && innerHtml.includes('http')) {
+                                        innerHtml = innerHtml.replace(/<img(.*?)src="(http.*?)"/g, '<img crossorigin="anonymous"$1src="$2"');
+                                    }
+                                    node.innerHTML = innerHtml;
+                                }
+                            });
+                        }
                     }
                 });
             }
-            if (config.bgImage) {
-                const captureArea = document.getElementById('capture-area');
-                captureArea.style.backgroundImage = config.bgImage;
-                captureArea.style.backgroundSize = '100% 100%';
-                captureArea.style.backgroundPosition = 'center';
-            }
-            if (config.hideDefaults !== undefined) {
-                const hideToggle = document.getElementById('hide-defaults-toggle');
-                if (hideToggle) {
-                    hideToggle.checked = config.hideDefaults;
-                    const displayStyle = config.hideDefaults ? 'none' : 'flex';
-                    const stripes = document.querySelector('.card-stripes');
-                    const header = document.querySelector('.header-container');
-                    const office = document.querySelector('.office-bar');
-                    if (stripes) stripes.style.display = displayStyle;
-                    if (header) header.style.display = displayStyle;
-                    if (office) office.style.display = displayStyle;
+
+            const captureArea = document.getElementById(targetAreaId);
+            if (captureArea) {
+                if (config.bgImage) {
+                    captureArea.style.backgroundImage = config.bgImage;
+                    captureArea.style.backgroundSize = '100% 100%';
+                    captureArea.style.backgroundPosition = 'center';
+                }
+
+                if (config.hideDefaults !== undefined) {
+                    const hideToggle = document.getElementById('hide-defaults-toggle');
+                    if (hideToggle && targetAreaId === 'capture-area') hideToggle.checked = !!config.hideDefaults;
+
+                    if (config.hideDefaults) {
+                        captureArea.classList.add('hide-defaults');
+                    } else {
+                        captureArea.classList.remove('hide-defaults');
+                    }
                 }
             }
+
+            if (config.periodColors) {
+                try {
+                    Object.keys(config.periodColors).forEach(key => {
+                        if (periodColors[key] && config.periodColors[key]) {
+                            periodColors[key].bg = config.periodColors[key].bg || periodColors[key].bg;
+                            periodColors[key].text = config.periodColors[key].text || periodColors[key].text;
+                        }
+                    });
+
+                    const updateUI = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+                    updateUI('pc-lifetime-bg', periodColors['Lifetime'].bg);
+                    updateUI('pc-lifetime-text', periodColors['Lifetime'].text);
+                    updateUI('pc-5years-bg', periodColors['5 Years'].bg);
+                    updateUI('pc-5years-text', periodColors['5 Years'].text);
+                    updateUI('pc-1year-bg', periodColors['1 Year'].bg);
+                    updateUI('pc-1year-text', periodColors['1 Year'].text);
+
+                    if (typeof applyPeriodColor === 'function') applyPeriodColor();
+                } catch (colErr) {
+                    console.warn("Color apply failed", colErr);
+                }
+            }
+            return config;
         };
 
         const getMasterConfig = async (msInput) => {
@@ -1464,17 +2405,34 @@
             };
 
             const res = await fetch(`https://docs.google.com/spreadsheets/d/${ms}/export?format=csv`);
-            if (!res.ok) throw new Error("Master Sheet must be public");
+            if (!res.ok) throw new Error("Master Sheet must be public ('Anyone with the link can view')");
             const csvText = await res.text();
 
-            const rows = csvText.split('\n');
-            const dataRow = rows.find(r => r.length > 20 && !r.toLowerCase().includes('google drive folder'));
-            if (!dataRow) throw new Error("Could not find the row with your URLs.");
+            if (csvText.includes('<html')) throw new Error("Google returned a webpage instead of data. Check sharing permissions.");
 
-            const cols = dataRow.replace(/"/g, '').split(',');
+            // Parse all cells to find the URLs
+            const allCells = csvText.replace(/"/g, '').split(/,|\n/).map(c => c.trim());
+            let driveStr = allCells.find(c => c.includes('drive.google.com'));
+            let sheetStr = allCells.find(c => c.includes('docs.google.com/spreadsheet'));
+            let scriptStr = allCells.find(c => c.includes('script.google.com/macros'));
+
+            // Fallback: If they pasted IDs directly without the full URLs
+            if (!driveStr || !scriptStr) {
+                const rows = csvText.split('\n');
+                if (rows.length > 0) {
+                    const cols = rows[0].replace(/"/g, '').split(',');
+                    driveStr = driveStr || cols[0];
+                    sheetStr = sheetStr || cols[1];
+                    scriptStr = scriptStr || cols[2];
+                }
+            }
+
+            if (!driveStr || !scriptStr) throw new Error("Could not find Folder or App Script URL in your Config sheet.");
+
             return {
-                driveId: extractId(cols[0]),
-                scriptUrl: (cols[2] || "").trim()
+                driveId: extractId(driveStr),
+                sheetId: extractId(sheetStr),
+                scriptUrl: scriptStr.trim()
             };
         };
 
@@ -1482,7 +2440,7 @@
             const config = getLayoutConfig();
 
             let ms = window.masterSyncId;
-            if (!ms || ms.length < 20) { alert('Please setup Master Config Link in the Admin Panel first (go to /admin.html)!'); return; }
+            if (!ms || ms.length < 20) { alert('Please setup Master Sync Config URL in the sidebar first!'); return; }
 
             const btn = btnSaveLayout;
             const orig = btn.innerHTML;
@@ -1512,10 +2470,82 @@
             }
         };
 
+        // 6b. Set as Default Template Engine
+        const btnSetDefault = document.getElementById('btn-set-default');
+        const defaultStatus = document.getElementById('default-status');
+        let isDefaultSet = false;
+
+        const updateDefaultButtonUI = (hasDefault) => {
+            isDefaultSet = hasDefault;
+            if (hasDefault) {
+                btnSetDefault.innerHTML = '<i data-lucide="star-off" size="16"></i> Clear Default Template';
+                btnSetDefault.style.background = '#ED1C24';
+                defaultStatus.textContent = 'âœ… Default template is active';
+            } else {
+                btnSetDefault.innerHTML = '<i data-lucide="star" size="16"></i> Set as Default Template';
+                btnSetDefault.style.background = '#F7931E';
+                defaultStatus.textContent = 'No default set â€” using system layout';
+            }
+            if (window.lucide) lucide.createIcons();
+        };
+
+        // Check if a default template already exists on load
+        const checkDefaultTemplate = async () => {
+            try {
+                const snap = await db.collection('settings').doc('defaultTemplate').get();
+                if (snap.exists && snap.data().layout) {
+                    updateDefaultButtonUI(true);
+                    return snap.data();
+                }
+            } catch (e) {
+                console.warn('Could not check default template:', e);
+            }
+            return null;
+        };
+
+        btnSetDefault.onclick = async () => {
+            const btn = btnSetDefault;
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+
+            if (isDefaultSet) {
+                // Clear the default
+                btn.innerHTML = '<i class="spin" data-lucide="loader"></i> Clearing...';
+                if (window.lucide) lucide.createIcons();
+                try {
+                    await db.collection('settings').doc('defaultTemplate').delete();
+                    updateDefaultButtonUI(false);
+                    alert('Default template cleared! System layout will be used on next load.');
+                } catch (e) {
+                    alert('Error clearing default: ' + e.message);
+                    btn.innerHTML = orig;
+                }
+            } else {
+                // Save current layout as default
+                btn.innerHTML = '<i class="spin" data-lucide="loader"></i> Saving...';
+                if (window.lucide) lucide.createIcons();
+                try {
+                    const config = getLayoutConfig();
+                    await db.collection('settings').doc('defaultTemplate').set({
+                        layout: config.layout,
+                        bgImage: config.bgImage || '',
+                        hideDefaults: config.hideDefaults || false,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    updateDefaultButtonUI(true);
+                    alert('Current layout saved as default! It will auto-apply on every page load.');
+                } catch (e) {
+                    alert('Error saving default: ' + e.message);
+                    btn.innerHTML = orig;
+                }
+            }
+            btn.disabled = false;
+        };
+
         // Auto-Load Master Template when a User pastes the Sync ID!
         const autoLoadTemplate = async (msParam) => {
             let ms = msParam || localStorage.getItem('masterSyncId');
-            if (!ms || ms.length < 20) return;
+            if (!ms || ms.length < 20) return false;
 
             try {
                 // Flash a mini toaster or text block to indicate loading
@@ -1538,17 +2568,48 @@
                         if (window.lucide) lucide.createIcons();
                         setTimeout(() => loader.remove(), 2500);
                     }, 500);
+                    return true;
                 } else {
-                    loader.remove(); // Fails silently if no template was saved by admin yet
+                    loader.remove();
+                    return false;
                 }
             } catch (e) {
                 const l = document.getElementById('auto-loader-toast');
                 if (l) l.remove();
+                return false;
             }
+        };
+
+        // Helper: Try loading default template from Firebase
+        const tryLoadDefaultTemplate = async (statusEl) => {
+            try {
+                const defaultSnap = await db.collection('settings').doc('defaultTemplate').get();
+                if (defaultSnap.exists && defaultSnap.data().layout) {
+                    if (statusEl) {
+                        statusEl.innerHTML = '<i class="spin" data-lucide="star"></i> Loading Default Template...';
+                        if (window.lucide) lucide.createIcons();
+                    }
+                    applyLayoutConfig(defaultSnap.data());
+                    updateDefaultButtonUI(true);
+                    if (statusEl) {
+                        setTimeout(() => {
+                            statusEl.innerHTML = '<i data-lucide="check-circle"></i> Default Template Loaded!';
+                            if (window.lucide) lucide.createIcons();
+                            setTimeout(() => statusEl.remove(), 2000);
+                        }, 500);
+                    }
+                    return true;
+                }
+            } catch (defErr) {
+                console.warn('Could not load default template:', defErr);
+            }
+            return false;
         };
 
         // Auto-restore and load on page refresh
         window.addEventListener('DOMContentLoaded', async () => {
+            listenToApprovals();
+
             const l = document.createElement('div');
             l.id = 'fb-loader';
             l.innerHTML = '<i class="spin" data-lucide="loader"></i> Checking Admin Database...';
@@ -1566,29 +2627,1284 @@
                         l.innerHTML = '<i class="spin" data-lucide="cloud-download"></i> Received Admin Settings, downloading design...';
                         if (window.lucide) lucide.createIcons();
 
-                        // Load Template using the Firebase Provided URL
-                        setTimeout(() => {
-                            autoLoadTemplate(data.sheetId).then(() => l.remove());
-                        }, 400);
-                        return; // Successfully Loaded from Database!
+                        // Try loading cloud template first
+                        const cloudLoaded = await autoLoadTemplate(data.sheetId);
+                        if (cloudLoaded) {
+                            l.remove();
+                            return;
+                        }
+                        // Cloud template failed â€” fall through to default template
                     }
                 }
             } catch (err) {
                 console.warn("Could not load setting from Cloud Database:", err);
             }
 
+            // 2. Check for Default Template in Firebase
+            const defaultLoaded = await tryLoadDefaultTemplate(l);
+            if (defaultLoaded) return;
+
             l.remove();
 
-            // 2. Fallback to Local Storage if Admin hasn't set up Firebase yet
+            // 3. Fallback to Local Storage if Admin hasn't set up Firebase yet
             const savedId = localStorage.getItem('masterSyncId');
             if (savedId && savedId.length > 20) {
                 window.masterSyncId = savedId;
-                // Trigger auto load
+                const masterSheetUrlInput = document.getElementById('master-sheet-url');
+                if (masterSheetUrlInput) masterSheetUrlInput.value = savedId;
+
                 setTimeout(() => {
                     autoLoadTemplate(savedId);
                 }, 500);
             }
         });
+
+        // 4. Save Master config locally when user pastes it in
+        const masterInputUrl = document.getElementById('master-sheet-url');
+        if (masterInputUrl) {
+            masterInputUrl.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                if (val.includes('docs.google.com/spreadsheets')) {
+                    const idMatch = val.match(/[-\w]{25,}/);
+                    if (idMatch) {
+                        window.masterSyncId = idMatch[0];
+                        localStorage.setItem('masterSyncId', val);
+                        setTimeout(() => autoLoadTemplate(val), 1000);
+                    }
+                } else if (val.length > 20) {
+                    window.masterSyncId = val;
+                    localStorage.setItem('masterSyncId', val);
+                    setTimeout(() => autoLoadTemplate(val), 1000);
+                }
+            });
+        }
+
+        // --- CHECKER & MAKER DASHBOARD LOGIC ---
+        // --- CHECKER & MAKER DASHBOARD LOGIC ---
+        let unsubscribeApprovals = null;
+        let approvalsList = [];
+        let periodLastUsed = { "Lifetime": "N/A", "5 Years": "N/A", "1 Year": "N/A" };
+
+        // Core functions attached to window for visibility and reliability
+        window.loadAdminSettings = async function () {
+            console.log("Loading admin settings...");
+            try {
+                const doc = await db.collection('appSettings').doc('membershipNumbering').get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    const categories = ["lifetime", "5years", "1year"];
+                    categories.forEach(c => {
+                        const prefixInput = document.getElementById(`admin-num-${c}-prefix`);
+                        const startInput = document.getElementById(`admin-num-${c}-start`);
+                        const lastInput = document.getElementById(`admin-num-${c}-last`);
+                        if (prefixInput) prefixInput.value = data[c]?.prefix || "";
+                        if (startInput) startInput.value = String(data[c]?.startNumber || 0).padStart(4, '0');
+                        if (lastInput) lastInput.value = String(data[c]?.lastUsedNumber || 0).padStart(4, '0');
+                    });
+                    console.log("Admin settings loaded successfully.");
+                }
+            } catch (err) {
+                console.error("Error loading admin settings:", err);
+            }
+        };
+
+        async function fetchPeriodLastNumbers() {
+            try {
+                const doc = await db.collection('appSettings').doc('membershipNumbering').get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    const tempStr = { "Lifetime": "N/A", "5 Years": "N/A", "1 Year": "N/A" };
+
+                    const mapping = {
+                        "Lifetime": { key: "lifetime", defaultPrefix: "LM-" },
+                        "5 Years": { key: "5years", defaultPrefix: "V-" },
+                        "1 Year": { key: "1year", defaultPrefix: "1-" }
+                    };
+
+                    Object.keys(mapping).forEach(p => {
+                        const m = mapping[p];
+                        if (data[m.key]) {
+                            const prefix = data[m.key].prefix || m.defaultPrefix;
+                            tempStr[p] = `${prefix}${String(data[m.key].lastUsedNumber).padStart(4, '0')}`;
+                        }
+                    });
+                    periodLastUsed = tempStr;
+                }
+            } catch (err) {
+                console.error("Error fetching last numbers:", err);
+            }
+        }
+
+        function updateApprovalsBadges() {
+            const pendingCount = approvalsList.filter(doc => doc.data.status === 'pending').length;
+            const rejectedCount = approvalsList.filter(doc => doc.data.status === 'rejected').length;
+
+            const bPending = document.getElementById('badge-pending');
+            const bPendingDrawer = document.getElementById('badge-pending-drawer');
+            if (pendingCount > 0) {
+                if (bPending) { bPending.innerText = pendingCount; bPending.style.display = 'inline-block'; }
+                if (bPendingDrawer) { bPendingDrawer.innerText = pendingCount; bPendingDrawer.style.display = 'inline-block'; }
+            } else {
+                if (bPending) bPending.style.display = 'none';
+                if (bPendingDrawer) bPendingDrawer.style.display = 'none';
+            }
+
+            const bRejected = document.getElementById('badge-rejected');
+            if (bRejected) { bRejected.style.display = rejectedCount > 0 ? 'inline-block' : 'none'; bRejected.innerText = rejectedCount; }
+        }
+
+        async function renderApprovalsDashboard(mode) {
+            const tableBody = document.getElementById('approvals-table-body');
+            const items = approvalsList.filter(doc => doc.data.status === mode);
+
+            if (mode === 'pending') await fetchPeriodLastNumbers();
+
+            // Reset Preview
+            document.getElementById('preview-placeholder').classList.remove('hidden');
+            document.getElementById('active-preview-content').classList.add('hidden');
+            window.activeSelectedId = null;
+
+            if (items.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 40px; color: #999;">No ${mode} cards found.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+
+            if (mode === 'pending') {
+                const allottedItems = items.filter(item => item.data.memberData && item.data.memberData['Membership No']);
+                const hasAllotted = allottedItems.length > 0;
+
+                html += `
+                <tr style="background: ${hasAllotted ? '#e8f4fd' : '#f8f9fa'}; border-bottom: 2px solid ${hasAllotted ? '#b8daff' : '#eee'};">
+                    <td colspan="3" style="padding: 15px; text-align: center;">
+                        <button id="btn-trigger-bulk" data-count="${allottedItems.length}"
+                            ${!hasAllotted ? 'disabled' : ''}
+                            style="width: 100%; max-width: 400px; background: ${hasAllotted ? '#007bff' : '#ccc'}; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: ${hasAllotted ? 'pointer' : 'not-allowed'}; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: ${hasAllotted ? '0 4px 6px rgba(0,123,255,0.2)' : 'none'};">
+                            <i data-lucide="layers" size="20"></i> ${hasAllotted ? `Generate ${allottedItems.length} Selected Card${allottedItems.length > 1 ? 's' : ''}` : 'No Cards Ready (Allot Numbers First)'}
+                        </button>
+                    </td>
+                </tr>`;
+            }
+
+            const periods = ["Lifetime", "5 Years", "1 Year"];
+            periods.forEach(p => {
+                const group = items.filter(item => (item.data.memberData ? item.data.memberData.Period : '') === p);
+                if (group.length > 0) {
+                    // Section Header
+                    html += `
+                    <tr style="background: #eef2f7; border-top: 1px solid #dee2e6; border-bottom: 2px solid #ced4da;">
+                        <td colspan="3" style="padding: 10px 15px; font-weight: 800; font-size: 0.75rem; color: #495057; text-transform: uppercase; letter-spacing: 0.8px;">
+                            ${p} Membership <span style="background: var(--primary-blue); color:white; padding: 2px 8px; border-radius: 10px; margin-left:8px; font-size: 0.65rem;">${group.length}</span>
+                            <span style="float: right; color: #666; font-size: 0.7rem; background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid #ddd;">
+                                Last Used: <b style="color: #28a745;">${periodLastUsed[p]}</b>
+                            </span>
+                        </td>
+                    </tr>`;
+
+                    group.forEach(item => {
+                        const d = item.data;
+                        const m = d.memberData || {};
+                        const name = m['Full Printed Name'] || 'Unknown';
+                        const date = d.timestamp ? new Date(d.timestamp.toMillis()).toLocaleString() : 'Just now';
+
+                        html += `
+                <tr class="approval-row" id="row-${item.id}" onclick="window.showCardPreview('${item.id}')" style="cursor: pointer; transition: background 0.2s;">
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #eee; font-weight: 500; font-size: 0.95rem;">
+                        ${name}
+                        ${m['Membership No'] ? `<br><span style="font-size: 0.7rem; color: #28a745; background: #e8f5e9; padding: 1px 6px; border-radius: 4px; border: 1px solid #c8e6c9;">${m['Membership No']}</span>` : ''}
+                    </td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #666; font-size: 0.8rem;">${date}</td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #eee; text-align: center; white-space: nowrap;">
+                        ${m['Membership No'] ? `
+                                    <button onclick="window.resetAllottedNumber(event, '${item.id}')" style="background: #fff0f0; border: 1px solid #f8d7da; color: #dc3545; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Reset Number">
+                                        <i data-lucide="refresh-cw" size="14"></i>
+                                    </button>
+                                ` : `
+                                    <button onclick="window.allotNumberLocally(event, '${item.id}')" style="background: #f8f9fa; border: 1px solid #ddd; color: #666; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Allot Number">
+                                        <i data-lucide="hash" size="14"></i>
+                                    </button>
+                                `}
+                        <button style="background: transparent; border: none; color: var(--primary-blue); cursor: pointer;" title="Preview">
+                            <i data-lucide="eye" size="18"></i>
+                        </button>
+                    </td>
+                </tr>`;
+                    });
+                }
+            });
+
+            // Handle items without a period or "Other" periods
+            const otherItems = items.filter(item => !periods.includes(item.data.memberData ? item.data.memberData.Period : ''));
+            if (otherItems.length > 0) {
+                html += `
+                <tr style="background: #f1f3f5; border-top: 1px solid #ddd; border-bottom: 2px solid #ddd;">
+                    <td colspan="3" style="padding: 10px 15px; font-weight: 800; font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.8px;">
+                        Other (${otherItems.length})
+                    </td>
+                </tr>`;
+                otherItems.forEach(item => {
+                    const d = item.data;
+                    const m = d.memberData || {};
+                    const name = m['Full Printed Name'] || 'Unknown';
+                    const date = d.timestamp ? new Date(d.timestamp.toMillis()).toLocaleString() : 'Just now';
+
+                    html += `
+                <tr class="approval-row" id="row-${item.id}" onclick="window.showCardPreview('${item.id}')" style="cursor: pointer; transition: background 0.2s;">
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #eee; font-weight: 500; font-size: 0.95rem;">
+                        ${name}
+                        ${m['Membership No'] ? `<br><span style="font-size: 0.7rem; color: #28a745; background: #e8f5e9; padding: 1px 6px; border-radius: 4px; border: 1px solid #c8e6c9;">${m['Membership No']}</span>` : ''}
+                    </td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #666; font-size: 0.8rem;">${date}</td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #eee; text-align: center; white-space: nowrap;">
+                        ${m['Membership No'] ? `
+                                <button onclick="window.resetAllottedNumber(event, '${item.id}')" style="background: #fff0f0; border: 1px solid #f8d7da; color: #dc3545; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Reset Number">
+                                    <i data-lucide="refresh-cw" size="14"></i>
+                                </button>
+                            ` : `
+                                <button onclick="window.allotNumberLocally(event, '${item.id}')" style="background: #f8f9fa; border: 1px solid #ddd; color: #666; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Allot Number">
+                                    <i data-lucide="hash" size="14"></i>
+                                </button>
+                            `}
+                        <button style="background: transparent; border: none; color: var(--primary-blue); cursor: pointer;" title="Preview">
+                            <i data-lucide="eye" size="18"></i>
+                        </button>
+                    </td>
+                </tr>`;
+                });
+            }
+
+            tableBody.innerHTML = html;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        window.showCardPreview = function (id) {
+            try {
+                const item = approvalsList.find(i => i.id === id);
+                if (!item) return;
+
+                window.activeSelectedId = id;
+
+                // Update Table Selection UI
+                document.querySelectorAll('.approval-row').forEach(r => r.style.background = 'transparent');
+                const targetRow = document.getElementById(`row-${id}`);
+                if (targetRow) targetRow.style.background = '#eef5ff';
+
+                // Show Preview Pane
+                const plh = document.getElementById('preview-placeholder');
+                const content = document.getElementById('active-preview-content');
+                if (plh) plh.classList.add('hidden');
+                if (content) content.classList.remove('hidden');
+
+                const d = item.data;
+                const mData = d.memberData || {};
+                const mode = d.status || 'pending';
+
+                // Clone the Main Card area for the mini-preview
+                const miniScaler = document.getElementById('mini-card-scaler');
+                const masterArea = document.getElementById('capture-area');
+
+                if (miniScaler && masterArea) {
+                    // 1. Save current UI design and temporarily Apply the card's specific design
+                    const currentLayout = typeof getLayoutConfig === 'function' ? getLayoutConfig() : null;
+
+                    // Reset preview scaler
+                    miniScaler.classList.remove('hide-defaults');
+                    miniScaler.style.backgroundImage = 'none';
+
+                    if (d.templateConfig) {
+                        try {
+                            const conf = applyLayoutConfig(d.templateConfig);
+                            if (conf && conf.hideDefaults) miniScaler.classList.add('hide-defaults');
+                            if (conf && conf.bgImage) {
+                                miniScaler.style.backgroundImage = conf.bgImage;
+                                miniScaler.style.backgroundSize = '100% 100%';
+                                miniScaler.style.backgroundPosition = 'center';
+                            }
+                        } catch (layErr) { console.warn("Preview layout apply failed", layErr); }
+                    }
+
+                    // 2. Clone the innerHTML
+                    miniScaler.innerHTML = masterArea.innerHTML;
+
+                    // 3. Restore the Checker's original UI design
+                    if (currentLayout) applyLayoutConfig(currentLayout);
+
+                    // Formatter Helper
+                    const formatDateStr = (ymdStr, suffix = "") => {
+                        if (!ymdStr) return "";
+                        if (!ymdStr.includes('-')) return ymdStr + suffix;
+                        const parts = ymdStr.split('-');
+                        if (parts.length === 3 && parts[0].length === 4) {
+                            return `${parts[2]}.${parts[1]}.${parts[0]}${suffix}`;
+                        }
+                        return ymdStr + suffix;
+                    };
+
+                    // Safe Injection Helper
+                    const setSafeText = (selector, text) => {
+                        const el = miniScaler.querySelector(selector);
+                        if (el) el.innerText = text;
+                    };
+                    setSafeText('#view-m-membership', mData['Membership No'] || '[AUTO]');
+                    setSafeText('#view-m-name', mData['Full Printed Name'] || (mData['First Name'] + " " + (mData['Middle Name'] || "") + " " + mSname.value));
+                    setSafeText('#view-m-dob', formatDateStr(mData['Date of Birth'], mData['Gender'] ? `-${mData['Gender']}` : ''));
+                    setSafeText('#view-m-address', mData['Address'] || '');
+                    setSafeText('#view-m-mobile', mData['Mobile Number'] || '');
+                    setSafeText('#view-m-valid', mData['Valid Upto'] || '');
+                    setSafeText('#view-m-issue', formatDateStr(mData['Date of Issue']));
+
+                    const dbVibhagNoStr = mData['Vibhag No'] ? `Vibhag No: ${mData['Vibhag No']}` : '';
+                    const dbVibhagNameStr = mData['Vibhag Name'] ? ` (${mData['Vibhag Name']})` : '';
+                    setSafeText('#view-db-vibhag-no', dbVibhagNoStr + dbVibhagNameStr);
+
+                    const photoWrap = miniScaler.querySelector('#drag-photo');
+                    if (d.photoUrl && photoWrap) {
+                        photoWrap.innerHTML = `<img src="${d.photoUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                    }
+
+                    const stripes = miniScaler.querySelector('.card-stripes');
+                    if (stripes) stripes.style.display = 'flex';
+                }
+
+                let metaHtml = `
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                    <div><span style="color:#888; font-size: 0.7rem; text-transform:uppercase;">Vibhag:</span><br><b>${mData['Vibhag No'] || 'N/A'} - ${mData['Vibhag Name'] || ''}</b></div>
+                    <div><span style="color:#888; font-size: 0.7rem; text-transform:uppercase;">Gender:</span><br><b>${mData['Gender'] || 'N/A'}</b></div>
+                    <div style="grid-column: 1 / -1;"><span style="color:#888; font-size: 0.7rem; text-transform:uppercase;">Address:</span><br><b>${mData['Address'] || 'N/A'}</b></div>
+                </div>
+                `;
+
+                if (mode === 'rejected') {
+                    metaHtml += `<div style="background: #fff0f0; border-left: 3px solid red; padding: 10px; border-radius: 4px; color: #b71c1c; margin-bottom: 10px;">
+                    <b style="display:block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2px;">Rejection Reason:</b>
+                    ${d.rejectReason || 'No reason provided'}
+                </div>`;
+                }
+
+                const dtl = document.getElementById('preview-details');
+                if (dtl) dtl.innerHTML = metaHtml;
+
+                // Diagnostic Status Area
+                let statusArea = document.getElementById('preview-status-msg');
+                const acts = document.getElementById('preview-actions');
+                if (!statusArea && acts) {
+                    statusArea = document.createElement('div');
+                    statusArea.id = 'preview-status-msg';
+                    statusArea.style = 'width: 100%; max-width: 500px; margin-top: 10px; font-size: 0.75rem; text-align: center; border-radius: 4px; display: none;';
+                    acts.insertAdjacentElement('afterend', statusArea);
+                }
+                if (statusArea) statusArea.style.display = 'none';
+
+                const showStatus = (msg, type = 'info') => {
+                    if (!statusArea) return;
+                    statusArea.innerText = msg;
+                    statusArea.style.display = 'block';
+                    statusArea.style.padding = '8px';
+                    statusArea.style.background = type === 'error' ? '#fff0f0' : '#e8f4fd';
+                    statusArea.style.color = type === 'error' ? '#dc3545' : '#0056b3';
+                };
+
+                const btnApprove = document.getElementById('btn-approve-active');
+                const btnReject = document.getElementById('btn-reject-active');
+
+                if (btnApprove && btnReject) {
+                    if (mode === 'pending') {
+                        if (mData['Membership No']) {
+                            btnApprove.innerHTML = '<i data-lucide="check-circle" size="20"></i> Approve This Card';
+                            btnApprove.style.background = '#28a745';
+                            btnApprove.onclick = async (e) => {
+                                e.stopPropagation();
+                                showStatus("Initializing Approval...");
+                                const success = await window.approveCard(id);
+                                if (!success) showStatus("Approval Failed. Check Console.", "error");
+                            };
+
+                            btnReject.innerHTML = '<i data-lucide="minus-circle" size="20"></i> De-Select';
+                            btnReject.style.background = '#6c757d';
+                            btnReject.onclick = (e) => { e.stopPropagation(); window.resetAllottedNumber(e, id); };
+                        } else {
+                            btnApprove.innerHTML = '<i data-lucide="hash" size="20"></i> Allot Number';
+                            btnApprove.style.background = '#28a745';
+                            btnApprove.onclick = (e) => {
+                                e.stopPropagation();
+                                btnApprove.innerHTML = '<i class="spin" data-lucide="loader"></i> Allotting...';
+                                if (window.lucide) lucide.createIcons();
+                                window.allotNumberLocally(e, id);
+                            };
+
+                            btnReject.innerHTML = '<i data-lucide="x-circle" size="20"></i> Reject';
+                            btnReject.style.background = '#dc3545';
+                            btnReject.onclick = (e) => { e.stopPropagation(); window.rejectCardPrompt(id); };
+                        }
+                        btnReject.classList.remove('hidden');
+                    } else {
+                        btnApprove.innerHTML = '<i data-lucide="edit" size="20"></i> Fix & Resubmit';
+                        btnApprove.style.background = '#007bff';
+                        btnApprove.onclick = (e) => { e.stopPropagation(); window.loadRejectedCard(id); };
+
+                        btnReject.innerHTML = '<i data-lucide="trash-2" size="20"></i> Delete';
+                        btnReject.style.background = '#6c757d';
+                        btnReject.onclick = (e) => { e.stopPropagation(); window.deleteRejectedCard(id); };
+                    }
+                }
+
+                if (window.lucide) lucide.createIcons();
+            } catch (globalErr) {
+                console.error("CRITICAL_PREVIEW_ERROR:", globalErr);
+                alert("Preview Error: " + globalErr.message);
+            }
+        };
+
+        function listenToApprovals() {
+            if (unsubscribeApprovals) unsubscribeApprovals();
+            unsubscribeApprovals = db.collection('pendingApprovals').orderBy('timestamp', 'desc').onSnapshot(snap => {
+                approvalsList = snap.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+                updateApprovalsBadges();
+
+                if (!document.getElementById('approvals-modal').classList.contains('hidden')) {
+                    const mode = document.getElementById('approvals-modal-text').innerText.includes('Checker') ? 'pending' : 'rejected';
+                    renderApprovalsDashboard(mode);
+                }
+            });
+        }
+
+        // --- Robust Sidebar Button Initialization ---
+        // Navigation Drawer Toggle
+        function toggleDrawer() {
+            const drawer = document.getElementById('nav-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            if (drawer && overlay) {
+                drawer.classList.toggle('open');
+                overlay.classList.toggle('active');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function initSidebarDashboardButtons() {
+            console.log("Initializing Dashboard Buttons...");
+
+            const bRejected = document.getElementById('btn-show-rejected');
+            const bRejectedDrawer = document.getElementById('btn-show-rejected-drawer');
+            const handleRejected = (e) => {
+                e.preventDefault();
+                if (!unsubscribeApprovals) listenToApprovals();
+                document.getElementById('approvals-modal-text').innerText = 'My Rejected Cards';
+                document.getElementById('approvals-modal').classList.remove('hidden');
+                renderApprovalsDashboard('rejected');
+            };
+            if (bRejected) bRejected.addEventListener('click', handleRejected);
+            if (bRejectedDrawer) bRejectedDrawer.addEventListener('click', handleRejected);
+
+            const bApprovals = document.getElementById('btn-show-approvals');
+            const bApprovalsDrawer = document.getElementById('btn-show-approvals-drawer');
+            const handleApprovals = (e) => {
+                e.preventDefault();
+                if (!unsubscribeApprovals) listenToApprovals();
+                document.getElementById('approvals-modal-text').innerText = 'Checker Dashboard (Pending)';
+                document.getElementById('approvals-modal').classList.remove('hidden');
+                renderApprovalsDashboard('pending');
+            };
+            if (bApprovals) bApprovals.addEventListener('click', handleApprovals);
+            if (bApprovalsDrawer) bApprovalsDrawer.addEventListener('click', handleApprovals);
+
+            const bAdmin = document.getElementById('btn-show-admin-settings');
+            const bAdminDrawer = document.getElementById('btn-show-admin-drawer');
+            const handleAdmin = (e) => {
+                e.preventDefault();
+                console.log("Admin Settings button clicked!");
+                document.getElementById('admin-settings-modal').classList.remove('hidden');
+                window.loadAdminSettings();
+            };
+            if (bAdmin) bAdmin.addEventListener('click', handleAdmin);
+            if (bAdminDrawer) bAdminDrawer.addEventListener('click', handleAdmin);
+        }
+
+        // Immediately try to attach (in case script is at end of body)
+        initSidebarDashboardButtons();
+
+        // Also attach on DOMContentLoaded for extra safety
+        document.addEventListener('DOMContentLoaded', initSidebarDashboardButtons);
+
+        const btnSaveAdmin = document.getElementById('btn-save-admin-settings');
+        if (btnSaveAdmin) {
+            btnSaveAdmin.onclick = async () => {
+                btnSaveAdmin.disabled = true;
+                btnSaveAdmin.innerHTML = '<i class="spin" data-lucide="loader"></i> Saving...';
+                if (window.lucide) lucide.createIcons();
+
+                const categories = ["lifetime", "5years", "1year"];
+                const config = {};
+
+                categories.forEach(c => {
+                    config[c] = {
+                        prefix: document.getElementById(`admin-num-${c}-prefix`).value.trim(),
+                        startNumber: parseInt(document.getElementById(`admin-num-${c}-start`).value) || 0,
+                        lastUsedNumber: parseInt(document.getElementById(`admin-num-${c}-last`).value) || 0
+                    };
+                });
+
+                try {
+                    await db.collection('appSettings').doc('membershipNumbering').set(config, { merge: true });
+                    alert("Admin numbering settings saved successfully!");
+                    document.getElementById('admin-settings-modal').classList.add('hidden');
+                } catch (err) {
+                    alert("Error saving settings: " + err.message);
+                } finally {
+                    btnSaveAdmin.disabled = false;
+                    btnSaveAdmin.innerHTML = '<i data-lucide="save" size="18"></i> Save Configuration';
+                    if (window.lucide) lucide.createIcons();
+                }
+            };
+        }
+
+        // Allot Number logic for preview without full approval
+        window.allotNumberLocally = async function (event, id) {
+            if (event) event.stopPropagation();
+            const item = approvalsList.find(i => i.id === id);
+            if (!item) return;
+
+            const mData = item.data.memberData || {};
+
+            // IF ALREADY ALLOTTED, DON'T INCREMENT AGAIN
+            if (mData['Membership No']) {
+                window.showCardPreview(id);
+                return;
+            }
+
+            const currentPeriod = mData['Period'] || "Lifetime";
+            const catKey = currentPeriod.toLowerCase().replace(/\s/g, '');
+
+            try {
+                const settingsDoc = await db.collection('appSettings').doc('membershipNumbering').get();
+                if (settingsDoc.exists) {
+                    const sData = settingsDoc.data()[catKey] || {};
+                    const lastNumInSettings = parseInt(sData.lastUsedNumber) || 0;
+                    const startNum = parseInt(sData.startNumber) || 1;
+
+                    // 1. Build Vibhag Prefix (e.g. "KUR-33/")
+                    let vibhagPrefix = "";
+                    const vName = mData['Vibhag Name'];
+                    const vNo = mData['Vibhag No'];
+                    if (vName && vNo) {
+                        const abv = vName.substring(0, 3).toUpperCase();
+                        vibhagPrefix = `${abv}-${vNo}/`;
+                    }
+
+                    // Check existing allotted numbers in the local list to ensure incrementing logic
+                    let maxAllottedInUI = 0;
+                    const currentPrefix = sData.prefix || (currentPeriod === "Lifetime" ? "LM-" : (currentPeriod === "5 Years" ? "V-" : "1-"));
+
+                    approvalsList.forEach(other => {
+                        const otherM = other.data.memberData || {};
+                        if (otherM.Period === currentPeriod && otherM['Membership No']) {
+                            // Strip BOTH dynamic vibhag prefix and period prefix to get the raw number
+                            // e.g. "KUR-33/LM-1002" -> "1002" OR "LM-1002" -> "1002"
+                            let valStr = otherM['Membership No'];
+                            if (valStr.includes(currentPrefix)) {
+                                valStr = valStr.split(currentPrefix)[1]; // Get everything after LM-
+                            } else {
+                                valStr = valStr.replace(/[^0-9]/g, ''); // Fallback strip non numeric
+                            }
+
+                            const num = parseInt(valStr);
+                            if (!isNaN(num)) maxAllottedInUI = Math.max(maxAllottedInUI, num);
+                        }
+                    });
+
+                    const nextNum = Math.max(lastNumInSettings + 1, startNum, maxAllottedInUI + 1);
+                    const paddedNum = nextNum.toString().padStart(4, '0');
+                    const newNo = vibhagPrefix + currentPrefix + paddedNum;
+
+                    // Update Firestore to persist the allotted number
+                    await db.collection('pendingApprovals').doc(id).update({
+                        'memberData.Membership No': newNo
+                    });
+
+                    window.showCardPreview(id);
+                }
+            } catch (err) {
+                console.error("Error allotting number locally:", err);
+            }
+        };
+
+        window.resetAllottedNumber = async function (event, id) {
+            if (event) event.stopPropagation();
+            try {
+                // Clear the membership number so it can be re-allotted
+                await db.collection('pendingApprovals').doc(id).update({
+                    'memberData.Membership No': firebase.firestore.FieldValue.delete()
+                });
+
+                // If we are currently previewing THIS card, refresh the preview
+                if (window.activeSelectedId === id) {
+                    window.showCardPreview(id);
+                }
+            } catch (err) {
+                console.error("Error resetting number:", err);
+            }
+        };
+
+        // ==========================================
+        // BULK PROCESSING ENGINE
+        // ==========================================
+        window.processBulkApprovals = async function (event) {
+            console.log("BULK_PROCESS_START");
+            if (event) event.stopPropagation();
+
+            const pendingCards = approvalsList.filter(doc => doc.data.status === 'pending');
+            const allottedCards = pendingCards.filter(item => item.data.memberData && item.data.memberData['Membership No']);
+
+            if (allottedCards.length === 0) {
+                alert("No cards are currently selected/allotted for bulk generation.");
+                return;
+            }
+
+            if (window.bulkProcessingActive) {
+                alert("A bulk process is already running in the background.");
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to generate ${allottedCards.length} high-res ID cards in the background?\nYou can continue working while this process runs.`)) {
+                return;
+            }
+            
+            // Close the approvals modal to free up the screen
+            document.getElementById('approvals-modal').classList.add('hidden');
+
+            window.bulkProcessingActive = true;
+
+            // 1. Create Floating Progress Toast
+            let progressToast = document.getElementById('bulk-progress-toast');
+            if (!progressToast) {
+                progressToast = document.createElement('div');
+                progressToast.id = 'bulk-progress-toast';
+                progressToast.style = `
+                    position: fixed; bottom: 80px; right: 20px; width: 320px;
+                    background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                    z-index: 100000; padding: 20px; border: 1px solid #ddd;
+                    transition: all 0.3s ease; display: flex; flex-direction: column; gap: 10px;
+                `;
+                document.body.appendChild(progressToast);
+            }
+            progressToast.style.display = 'flex';
+
+            let successCount = 0;
+            let errorCount = 0;
+            let currentErrors = [];
+
+            const updateProgressUI = (index, total, name) => {
+                const percent = Math.round(((index) / total) * 100);
+                progressToast.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                        <b style="color:var(--primary-blue);">Bulk Generating Cards</b>
+                        <span style="font-size:0.8rem; background:#eef2f7; padding:2px 8px; border-radius:10px;">${index}/${total}</span>
+                    </div>
+                    <div style="height:8px; background:#eee; border-radius:4px; overflow:hidden;">
+                        <div style="width:${percent}%; height:100%; background:var(--primary-blue); transition: width 0.5s;"></div>
+                    </div>
+                    <p style="margin:0; font-size:0.8rem; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Processing: <b>${name}</b></p>
+                    <div style="display:flex; gap:10px; font-size:0.75rem;">
+                        <span style="color:#28a745;">âœ… ${successCount}</span>
+                        <span style="color:#dc3545;">â Œ ${errorCount}</span>
+                    </div>
+                    <button id="btn-stop-bulk" style="margin-top:5px; background:#fff; border:1px solid #dc3545; color:#dc3545; padding:6px; border-radius:6px; font-size:0.7rem; cursor:pointer; font-weight:bold;">Stop Background Process</button>
+                `;
+                document.getElementById('btn-stop-bulk').onclick = () => {
+                    if (confirm("Stop background generation?")) window.bulkProcessingActive = false;
+                };
+            };
+
+            // Start Queue
+            (async () => {
+                for (let i = 0; i < allottedCards.length; i++) {
+                    if (!window.bulkProcessingActive) break;
+
+                    const card = allottedCards[i];
+                    const mName = card.data.memberData ? card.data.memberData['Full Printed Name'] : 'Unknown';
+                    updateProgressUI(i, allottedCards.length, mName);
+
+                    try {
+                        // Use the WORKER area for capture
+                        const success = await window.approveCard(card.id, true, 'capture-area-worker');
+                        if (success) successCount++;
+                        else {
+                            errorCount++;
+                            currentErrors.push(`${mName}: Approval failed.`);
+                        }
+                    } catch (e) {
+                        console.error("Bulk process failed on card", card.id, e);
+                        errorCount++;
+                        currentErrors.push(`${mName}: ${e.message}`);
+                    }
+                    
+                    // Small delay to allow browser to breathe
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+
+                // Completion UI
+                window.bulkProcessingActive = false;
+                progressToast.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px; color:#28a745; margin-bottom:10px;">
+                        <i data-lucide="check-circle" size="24"></i>
+                        <b>Generation Complete!</b>
+                    </div>
+                    <div style="font-size:0.8rem; color:#666;">
+                        Generated: ${successCount} | Failed: ${errorCount}
+                    </div>
+                    <button onclick="this.parentElement.style.display='none'" style="margin-top:10px; background:var(--primary-blue); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer; font-weight:bold;">Dismiss</button>
+                `;
+                if (window.lucide) lucide.createIcons();
+                
+                // Final Alert only if there were errors
+                if (errorCount > 0) {
+                    alert(`Bulk Generation finished with ${errorCount} errors. Check console for details.`);
+                } else {
+                    // Small non-blocking success notification
+                    console.log("BULK_SUCCESS_ALL");
+                }
+            })();
+        };
+
+
+        // Action Functions
+        window.approveCard = async function (id, isSilent = false, targetAreaId = 'capture-area') {
+            console.log("APPROVE_CARD_CALLED", { id, isSilent });
+            const item = approvalsList.find(i => i.id === id);
+            if (!item) {
+                console.error("CARD_NOT_FOUND", id);
+                if (!isSilent) alert("Could not find the selected card in the current list.");
+                return false;
+            }
+            const d = item.data;
+            const mData = d.memberData || {};
+
+            // Verify number was allotted
+            if (!mData['Membership No']) {
+                console.warn("NO_MEMBERSHIP_NUMBER", id);
+                if (!isSilent) alert("This card does not have a Membership Number. Click 'Allot Number' first.");
+                return false;
+            }
+
+            if (!isSilent) {
+                const l = document.createElement('div');
+                l.className = 'approval-toast';
+                l.id = 'approval-toast-' + id;
+                l.innerHTML = '<i class="spin" data-lucide="loader"></i> Assigning Membership Number and Generating Final ID Card...';
+                l.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:white; padding:15px 30px; border-radius:6px; z-index:99999; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.3);';
+                document.body.appendChild(l);
+                if (window.lucide) lucide.createIcons();
+            }
+
+            try {
+                // 1. **Auto-Generate Next Membership Number**
+                const currentPeriod = mData['Period'] || "Lifetime";
+                const catKey = currentPeriod.toLowerCase().replace(/\s/g, ''); // "lifetime", "5years", "1year"
+
+                const settingsDoc = await db.collection('appSettings').doc('membershipNumbering').get();
+                let lastNum = 0;
+                let startNum = 1;
+
+                if (settingsDoc.exists) {
+                    const sData = settingsDoc.data()[catKey];
+                    if (sData) {
+                        lastNum = parseInt(sData.lastUsedNumber) || 0;
+                        startNum = parseInt(sData.startNumber) || 1;
+                    }
+                }
+
+                // Get Prefix from settings or use historical default fallback
+                let prefix = "";
+                if (settingsDoc.exists && settingsDoc.data()[catKey]?.prefix) {
+                    prefix = settingsDoc.data()[catKey].prefix;
+                } else {
+                    if (currentPeriod === "Lifetime") prefix = "LM-";
+                    else if (currentPeriod === "5 Years") prefix = "V-";
+                    else if (currentPeriod === "1 Year") prefix = "1-";
+                    else prefix = "CWC/2026/";
+                }
+
+                // If we ALREADY have a pre-allotted number, use it!
+                let nextNum = 0;
+                if (mData['Membership No']) {
+                    // Design: [[VCode]-[VNo]]/[Period Code][Number]
+                    // Example: [KUR-33]/LM-1001
+                    let numPart = String(mData['Membership No']);
+                    if (numPart.includes('/')) {
+                        numPart = numPart.split('/')[1]; // Get "LM-1001"
+                    }
+                    
+                    // Possible Period Codes: LM-, V-, I-
+                    const cleanNum = numPart.replace("LM-", "").replace("V-", "").replace("I-", "");
+                    nextNum = parseInt(cleanNum) || 0;
+                }
+
+                if (!nextNum) {
+                    // Fallback to regular increment logic if no pre-allotted number
+                    nextNum = Math.max(lastNum + 1, startNum);
+                }
+
+                const paddedNum = String(nextNum).padStart(4, '0');
+
+                // Re-calculate the FULL membership number: [[VCode]-[VNo]]/[Period Code][Number]
+                let dynamicVibhagPrefix = "";
+                const vCode = mData['Vibhag Code'];
+                const vNo = mData['Vibhag No'];
+                
+                if (vCode && vNo) {
+                    dynamicVibhagPrefix = `[${vCode}-${vNo}]/`;
+                } else if (mData['Vibhag Name']) {
+                    // Fallback for older records using Name
+                    const abv = String(mData['Vibhag Name']).substring(0, 3).toUpperCase();
+                    dynamicVibhagPrefix = `[${abv}-${vNo || '??'}]/`;
+                }
+
+                mData['Membership No'] = dynamicVibhagPrefix + prefix + paddedNum;
+
+                // Update Admin Settings with NEW lastUsedNumber (if it progressed)
+                const updatePath = `${catKey}.lastUsedNumber`;
+                const finalLastNum = Math.max(lastNum || 0, nextNum || 0);
+
+                if (!isNaN(finalLastNum)) {
+                    await db.collection('appSettings').doc('membershipNumbering').update({
+                        [updatePath]: finalLastNum
+                    });
+                }
+
+                const safeName = (mData['Full Printed Name'] || "MEMBER").replace(/[^\w\s]/gi, '').replace(/\s/g, '_').toUpperCase();
+                d.fileName = `ID_${safeName}_${paddedNum}`;
+
+                const updateToast = (msg, icon) => {
+                    if (isSilent) return;
+                    const toast = document.getElementById('approval-toast-' + id);
+                    if (toast) {
+                        toast.innerHTML = `<i class="spin" data-lucide="${icon}"></i> ${msg}`;
+                        if (window.lucide) lucide.createIcons();
+                    }
+                };
+
+                // Save current UI state (layout and data)
+                const captureArea = document.getElementById(targetAreaId);
+                const tempCaptureAreaHtml = captureArea.innerHTML;
+                
+                // If using worker, prime it with the current UI's static elements if needed, 
+                // but actually we expect it to be ready.
+                if (targetAreaId === 'capture-area-worker' && !captureArea.innerHTML.trim()) {
+                    const master = document.getElementById('capture-area');
+                    if (master) captureArea.innerHTML = master.innerHTML;
+                }
+
+                const currentLayout = getLayoutConfig(); // Base config for restoration
+
+                // 2. **Apply Maker's Specific Template Design**
+                if (d.templateConfig) {
+                    // Important: applyLayoutConfig needs to know which area to target
+                    applyLayoutConfig(d.templateConfig, targetAreaId);
+                }
+
+                // 3. **Restore Injection & Render Graphics**
+                updateToast('Generating High-Res Graphics...', 'image');
+
+                // Restrict DOM targeting to ONLY `#capture-area` children to avoid ID conflicts
+                const setPreviewText = (sel, val) => {
+                    const el = captureArea.querySelector(sel);
+                    if (el) el.innerText = val || "";
+                };
+
+                // Formatter Helper
+                const formatDateStr = (ymdStr, suffix = "") => {
+                    if (!ymdStr) return "";
+                    if (!ymdStr.includes('-')) return ymdStr + suffix;
+                    const parts = ymdStr.split('-');
+                    if (parts.length === 3 && parts[0].length === 4) {
+                        return `${parts[2]}.${parts[1]}.${parts[0]}${suffix}`;
+                    }
+                    return ymdStr + suffix;
+                };
+
+                setPreviewText('#view-m-membership', mData['Membership No']);
+                setPreviewText('#view-m-name', mData['Full Printed Name'] || (mData['First Name'] + " " + mData['Middle Name'] + " " + mData['Surname']));
+                setPreviewText('#view-m-dob', formatDateStr(mData['Date of Birth'], mData['Gender'] ? `-${mData['Gender']}` : ''));
+                setPreviewText('#view-m-address', mData['Address']);
+                setPreviewText('#view-m-mobile', mData['Mobile Number']);
+                setPreviewText('#view-m-valid', mData['Valid Upto']);
+                setPreviewText('#view-m-issue', formatDateStr(mData['Date of Issue']));
+
+                const dbVibhagNoStr = mData['Vibhag No'] ? `Vibhag No: ${mData['Vibhag No']}` : '';
+                const dbVibhagNameStr = mData['Vibhag Name'] ? ` (${mData['Vibhag Name']})` : '';
+                setPreviewText('#view-db-vibhag-no', dbVibhagNoStr + dbVibhagNameStr);
+
+                // Photo Handling
+                const photoWrap = captureArea.querySelector('#drag-photo');
+                if (photoWrap && d.photoUrl) {
+                    if (d.photoUrl.startsWith('data:')) {
+                        photoWrap.innerHTML = `<img src="${d.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
+                    } else {
+                        // Crucial for Firebase Storage images preventing tainted canvas
+                        // If crossOrigin fails, the Deep Resolve Engine below proxies it
+                        photoWrap.innerHTML = `<img src="${d.photoUrl}" crossorigin="anonymous" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
+                    }
+                }
+
+                // --- DEEP RESOLVE IMAGE ENGINE ---
+                const toBase64 = async (url) => {
+                    const placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+                    if (!url || url === "none") return placeholder;
+                    if (url.startsWith('data:')) return url;
+
+                    const cleanUrl = url.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+
+                    // Helper for fetching with retry and timeout
+                    const fetchAsset = async (uri, useProxy = false) => {
+                        const target = useProxy ? `https://corsproxy.io/?${encodeURIComponent(uri)}` : uri;
+                        const controller = new AbortController();
+                        const timeout = setTimeout(() => controller.abort(), 8000);
+                        try {
+                            const res = await fetch(target, { signal: controller.signal });
+                            if (!res.ok) throw new Error();
+                            const blob = await res.blob();
+                            return new Promise(r => {
+                                const reader = new FileReader();
+                                reader.onloadend = () => r(reader.result);
+                                reader.readAsDataURL(blob);
+                            });
+                        } catch (e) { return null; } finally { clearTimeout(timeout); }
+                    };
+
+                    // Try direct, then proxy
+                    let result = await fetchAsset(cleanUrl, false);
+                    if (!result && !cleanUrl.includes('localhost')) {
+                        console.warn("Retrying with proxy:", cleanUrl);
+                        result = await fetchAsset(cleanUrl, true);
+                        if (!result) {
+                            // Secondary fallback proxy
+                            console.warn("Retrying with secondary proxy...");
+                            const target2 = `https://api.allorigins.win/raw?url=${encodeURIComponent(cleanUrl)}`;
+                            try {
+                                const res2 = await fetch(target2);
+                                if (res2.ok) {
+                                    const blob2 = await res2.blob();
+                                    result = await new Promise(r => {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => r(reader.result);
+                                        reader.readAsDataURL(blob2);
+                                    });
+                                }
+                            } catch (e) { }
+                        }
+                    }
+                    if (!result) console.warn("Deep Resolve failed for URL:", cleanUrl, "falling back to original URL.");
+                    return result || url;
+                };
+
+                // Helper to resolve an <img> via Canvas (guarantees base64 if image is already loaded & CORS allowed)
+                const resolveViaCanvas = (imgEl) => {
+                    try {
+                        const canvas = document.createElement("canvas");
+                        canvas.width = imgEl.naturalWidth;
+                        canvas.height = imgEl.naturalHeight;
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(imgEl, 0, 0);
+                        return canvas.toDataURL("image/png");
+                    } catch (e) {
+                        console.warn("Canvas resolution failed (likely CORS):", e);
+                        return null;
+                    }
+                };
+
+                // 1. Resolve all images (including background + the member photo injected above)
+                const imagesToFormat = Array.from(captureArea.querySelectorAll('img'));
+                await Promise.all([
+                    ...imagesToFormat.map(async (img) => {
+                        // Priority 1: If it's the member photo, try canvas first (most reliable if already visible)
+                        let b64 = null;
+                        if (img.complete && img.naturalWidth > 0) {
+                            b64 = resolveViaCanvas(img);
+                        }
+
+                        // Priority 2: Use regular ToBase64 fetch logic
+                        if (!b64 || !b64.startsWith('data:')) {
+                            b64 = await toBase64(img.src);
+                        }
+
+                        if (b64) img.src = b64;
+
+                        // Force wait for decode
+                        await new Promise(r => {
+                            if (img.complete && img.naturalWidth > 0) r();
+                            else { img.onload = r; img.onerror = r; setTimeout(r, 3000); }
+                        });
+                        if (img.decode) await img.decode().catch(() => { });
+                    }),
+                    (async () => {
+                        if (captureArea.style.backgroundImage && captureArea.style.backgroundImage !== "none") {
+                            const b64Bg = await toBase64(captureArea.style.backgroundImage);
+                            captureArea.style.backgroundImage = `url("${b64Bg}")`;
+                        }
+                    })()
+                ]);
+
+                // 2. FORCE dimensions for Export Stability (Critical to prevent wrap/truncation)
+                captureArea.querySelectorAll('.draggable').forEach(el => {
+                    if (el.id === 'drag-photo') {
+                        el.style.width = '220px';
+                        el.style.height = '280px';
+                        el.style.overflow = 'hidden';
+                        // Ensure inner img fills the box
+                        const pImg = el.querySelector('img');
+                        if (pImg) { pImg.style.width = '100%'; pImg.style.height = '100%'; pImg.style.objectFit = 'cover'; pImg.style.display = 'block'; }
+                    } else if (el.id === 'drag-m-address') {
+                        el.style.whiteSpace = 'normal';
+                        el.style.width = '600px';
+                    } else if (el.id === 'drag-m-membership') {
+                        // Membership number: ensure full number is visible
+                        el.style.whiteSpace = 'nowrap';
+                        el.style.width = 'max-content';
+                        el.style.overflow = 'visible';
+                        const memSpan = el.querySelector('#view-m-membership');
+                        if (memSpan) { memSpan.style.whiteSpace = 'nowrap'; memSpan.style.overflow = 'visible'; }
+                    } else if (el.id !== 'drag-sign') {
+                        el.style.whiteSpace = 'nowrap';
+                        el.style.width = 'max-content';
+                    }
+                });
+
+                // 3. Wait for fonts and final browser paint
+                if (document.fonts) await document.fonts.ready;
+                await new Promise(r => setTimeout(r, 800));
+
+                let base64Png = "";
+                try {
+                    // Try html-to-image first (Better quality)
+                    base64Png = await htmlToImage.toPng(captureArea, {
+                        backgroundColor: '#ffffff',
+                        pixelRatio: 3,
+                        width: 1000,
+                        height: 630,
+                        skipFonts: true,
+                        imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+                    });
+                } catch (h2iErr) {
+                    console.warn("html-to-image failed, falling back to html2canvas:", h2iErr);
+                    // Fallback to html2canvas (More robust, lower quality)
+                    const canvas = await html2canvas(captureArea, {
+                        useCORS: true,
+                        allowTaint: true,
+                        scale: 3,
+                        backgroundColor: '#ffffff'
+                    });
+                    base64Png = canvas.toDataURL('image/png', 1.0);
+                }
+
+                if (!base64Png) throw new Error("Could not generate image data from the card.");
+
+                // Restore UI
+                captureArea.innerHTML = tempCaptureAreaHtml;
+                applyLayoutConfig(currentLayout, targetAreaId);
+                if (targetAreaId === 'capture-area') {
+                    if (typeof syncMember === 'function') syncMember();
+                }
+
+                // 4. **Sync to Google Sheets (Optional â€” only if Master Sync URL is configured)**
+                const currentMsId = window.masterSyncId;
+                if (currentMsId) {
+                    try {
+                        updateToast('Connecting to Sync Master...', 'cloud');
+                        const conf = await getMasterConfig(currentMsId);
+                        updateToast('Saving Final Files to Google...', 'cloud');
+
+                        await fetch(conf.scriptUrl, {
+                            method: 'POST', mode: 'no-cors', body: JSON.stringify({
+                                driveId: conf.driveId,
+                                sheetId: conf.sheetId,
+                                fileName: d.fileName,
+                                memberData: mData,
+                                svgData: "",
+                                pngData: base64Png
+                            })
+                        });
+                    } catch (syncErr) {
+                        console.warn("Google Sheets sync skipped or failed (non-critical):", syncErr.message);
+                    }
+                } else {
+                    console.log("No Master Sync URL configured â€” skipping Google Sheets sync, saving to Firebase only.");
+                }
+
+                updateToast('Finalizing Database & Card Storage...', 'database');
+
+                // --- NEW: Store the Generated Card PNG in Firebase Storage for the Cloud Viewer ---
+                let finalCardUrl = d.photoUrl || "";
+                try {
+                    const storageRef = storage.ref(`generated_cards/${d.fileName}_${Date.now()}.png`);
+                    await storageRef.putString(base64Png, 'data_url');
+                    finalCardUrl = await storageRef.getDownloadURL();
+                } catch (stErr) {
+                    console.warn("Could not save card to Firebase Storage, falling back to member photo:", stErr);
+                }
+
+                // Log with the link to the ACTUAL CARD
+                await db.collection('idCardLogs').add({
+                    ...mData,
+                    photoUrl: finalCardUrl,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await db.collection('pendingApprovals').doc(id).delete();
+
+                if (!isSilent) {
+                    const toast = document.getElementById('approval-toast-' + id);
+                    if (toast) {
+                        toast.innerHTML = '<i data-lucide="check-circle"></i> Approved Successfully!';
+                        if (window.lucide) lucide.createIcons();
+                        setTimeout(() => toast.remove(), 2000);
+                    }
+                }
+                return true;
+
+            } catch (err) {
+                console.error("Critical Approval Error:", err);
+                let errMsg = "Unknown error";
+                if (err) {
+                    if (err.message) errMsg = err.message;
+                    else if (err.type) errMsg = "Event: " + err.type + (err.target ? " on " + err.target.tagName : "");
+                    else errMsg = JSON.stringify(err);
+                }
+                if (!isSilent) alert("Error during generation: " + errMsg);
+                if (l) l.remove();
+                return false;
+            }
+        };
+
+        window.rejectCardPrompt = async (id) => {
+            console.log("REJECT_CARD_PROMPT_CALLED", id);
+            const reason = prompt("Enter the reason for rejection (optional):");
+            if (reason === null) {
+                console.log("REJECT_CANCELLED_BY_USER");
+                return;
+            }
+
+            try {
+                await db.collection('pendingApprovals').doc(id).update({
+                    status: 'rejected',
+                    rejectReason: reason || 'No reason provided'
+                });
+                console.log("REJECT_SUCCESS", id);
+            } catch (err) {
+                console.error("REJECT_FAILURE", err);
+                alert("Error rejecting card: " + err.message);
+            }
+        };
+
+        window.deleteRejectedCard = async (id) => {
+            if (!confirm("Permanently delete this rejected card? You will lose the data.")) return;
+            try {
+                await db.collection('pendingApprovals').doc(id).delete();
+            } catch (err) {
+                alert("Error deleting card: " + err.message);
+            }
+        };
+
+        window.loadRejectedCard = (id) => {
+            const item = approvalsList.find(i => i.id === id);
+            if (!item) return;
+            const m = item.data.memberData;
+
+            document.getElementById('m-fname').value = m['First Name'] || '';
+            document.getElementById('m-mname').value = m['Middle Name'] || '';
+            document.getElementById('m-sname').value = m['Surname'] || '';
+            document.getElementById('m-dob').value = m['Date of Birth'] || '';
+            document.getElementById('m-gender').value = m['Gender'] || 'M';
+            document.getElementById('m-period').value = m['Period'] || 'Lifetime';
+            document.getElementById('m-address').value = m['Address'] || '';
+            document.getElementById('m-mobile').value = m['Mobile Number'] || '';
+            
+            // Extract suffix from formatted Membership No: [VCODE-VNO]/CODE-NUMBER
+            let memVal = m['Membership No'] || '';
+            if (memVal.includes('/')) {
+                let suffix = memVal.split('/')[1]; // e.g. LM-1001
+                memVal = suffix.replace("LM-", "").replace("V-", "").replace("I-", "");
+            }
+            document.getElementById('m-membership').value = memVal;
+            document.getElementById('m-valid').value = m['Valid Upto'] || '';
+            document.getElementById('m-issue').value = m['Date of Issue'] || '';
+
+            // Restore vibhag dropdown fields
+            const loadedVNo = m['Vibhag No'] || '';
+            const loadedVCode = m['Vibhag Code'] || '';
+            const loadedVName = m['Vibhag Name'] || '';
+
+            if (document.getElementById('db-vibhag-no')) document.getElementById('db-vibhag-no').value = loadedVNo;
+            if (document.getElementById('db-vibhag-code')) document.getElementById('db-vibhag-code').value = loadedVCode;
+            if (document.getElementById('db-vibhag-name')) document.getElementById('db-vibhag-name').value = loadedVName;
+
+            // Sync the dropdown and call syncMember
+            const vSel = document.getElementById('vibhag-select');
+            if (vSel) {
+                vSel.value = loadedVNo;
+                // Ensure display fields are updated
+                const detailRow = document.getElementById('vibhag-details-row');
+                if (loadedVNo && detailRow) {
+                    detailRow.style.display = 'grid';
+                    document.getElementById('vibhag-code-display').value = loadedVCode;
+                    document.getElementById('vibhag-name-display').value = loadedVName;
+                } else if (detailRow) {
+                    detailRow.style.display = 'none';
+                }
+            }
+
+            // --- PHOTO PREVIEW UPDATE ---
+            const photoWrap = document.getElementById('drag-photo');
+            if (photoWrap && item.data.photoUrl) {
+                photoWrap.innerHTML = `<img src="${item.data.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
+            }
+
+            // Sync everything
+            setTimeout(() => { if (window.syncMember) window.syncMember(); }, 100);
+            
+            // Close the panel
+            document.getElementById('rejected-dashboard').classList.remove('active');
+
+            if (loadedVNo && document.getElementById('vibhag-select')) {
+                document.getElementById('vibhag-select').value = loadedVNo;
+                document.getElementById('vibhag-code-display').value = loadedVCode;
+                document.getElementById('vibhag-name-display').value = loadedVName;
+                const detailRow = document.getElementById('vibhag-details-row');
+                if (detailRow) detailRow.style.display = 'grid';
+            }
+            if (document.getElementById('db-remarks')) document.getElementById('db-remarks').value = m['Remarks'] || '';
+
+            if (item.data.templateConfig) {
+                applyLayoutConfig(item.data.templateConfig);
+                // Also need to sync the inputs for the header text if they were modified
+                const t = item.data.templateConfig;
+                if (t.layout) {
+                    const headerMap = {
+                        'view-h1': 'h-line1',
+                        'view-h2': 'h-line2',
+                        'view-h3': 'h-line3',
+                        'card-slogan': 'h-slogan',
+                        'view-h-office': 'h-office'
+                    };
+                    t.layout.forEach(layer => {
+                        if (layer.contents) {
+                            layer.contents.forEach(node => {
+                                if (headerMap[node.id]) {
+                                    const input = document.getElementById(headerMap[node.id]);
+                                    if (input) input.value = node.inner;
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            if (typeof syncMember === 'function') syncMember();
+
+            window.currentEditingDocId = id;
+
+            document.getElementById('approvals-modal').classList.add('hidden');
+            alert(`Loaded data for ${m['Full Printed Name']}!\nMake your corrections, upload any required new photos, and click 'Submit for Approval'. Your corrections will replace the rejected card.`);
+        };
 
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
@@ -1601,7 +3917,31 @@
                     });
             });
         }
+
+        // --- GLOBAL DELEGATED ACTION LISTENER ---
+        document.addEventListener('click', function (e) {
+            const bulkBtn = e.target.closest('#btn-trigger-bulk');
+            if (bulkBtn) {
+                console.log("DELEGATED_BULK_CLICK_DETECTED");
+                if (window.processBulkApprovals) {
+                    window.processBulkApprovals(e);
+                } else {
+                    alert("System Logic not fully loaded. Please wait 3 seconds and try again.");
+                }
+            }
+        });
+
+        // Diagnostic heartbeat
+        setInterval(() => {
+            console.log("HEARTBEAT_STABLE_" + new Date().toLocaleTimeString());
+        }, 10000);
     </script>
+    <!-- Emergency Diagnostic Overlay -->
+    <div id="diag-log"
+        style="position:fixed; bottom:10px; right:10px; width:300px; max-height:200px; overflow-y:auto; background:rgba(0,0,0,0.8); color:#00ff00; font-family:monospace; font-size:10px; padding:10px; border-radius:5px; z-index:999999; display:none; pointer-events:none;">
+        <div style="border-bottom:1px solid #444; padding-bottom:5px; margin-bottom:5px; font-weight:bold;">SYSLOG
+            [STABILITY V2]</div>
+    </div>
 </body>
 
 </html>
