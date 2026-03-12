@@ -648,21 +648,6 @@
                 display: none !important;
             }
 
-            /* Show Hamburger ONLY on mobile, make it highly visible */
-            .menu-trigger {
-                display: flex !important;
-                position: fixed !important;
-                top: 15px !important;
-                left: 15px !important;
-                z-index: 99999 !important; /* Above EVERYTHING including toast containers */
-                background: var(--primary-blue) !important;
-                color: white !important;
-                border: 2px solid white !important;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
-                font-size: 24px !important;
-                font-weight: 900 !important;
-            }
-
             .form-grid-3,
             .form-grid-2,
             .form-grid-2-1,
@@ -715,33 +700,7 @@
             }
         }
 
-        /* Navigation Drawer Styles */
-        .menu-trigger {
-            display: none; /* Hidden on desktop by default */
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 2001; /* Above modal overlays */
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            color: #333;
-        }
-
-        .menu-trigger:hover {
-            transform: scale(1.1);
-            background: #fff;
-            color: var(--primary-blue);
-        }
-
+        /* Navigation Drawer Overlay Styles */
         .nav-drawer {
             position: fixed;
             top: 0;
@@ -865,11 +824,6 @@
 </head>
 
 <body class="design-mode-off">
-
-    <!-- Navigation Trigger (Mobile Only, Reliable Symbol) -->
-    <div class="menu-trigger" onclick="toggleDrawer()" title="Menu">
-        &#9776;
-    </div>
 
     <!-- Background Overlay -->
     <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
@@ -4056,6 +4010,45 @@
         <div style="border-bottom:1px solid #444; padding-bottom:5px; margin-bottom:5px; font-weight:bold;">SYSLOG
             [STABILITY V2]</div>
     </div>
+
+    <!-- BULLETPROOF MOBILE HAMBURGER MENU -->
+    <style>
+        #ultimate-menu-trigger {
+            display: none !important;
+        }
+        @media (max-width: 768px) {
+            #ultimate-menu-trigger {
+                display: flex !important;
+                position: fixed !important;
+                top: 20px !important;
+                left: 20px !important;
+                width: 50px !important;
+                height: 50px !important;
+                background: #001C6B !important;
+                color: #ffffff !important;
+                border: 3px solid #ffffff !important;
+                border-radius: 50% !important;
+                z-index: 2147483647 !important; /* Maximum possible z-index */
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 28px !important;
+                font-weight: 900 !important;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
+                cursor: pointer !important;
+                -webkit-tap-highlight-color: transparent !important;
+                touch-action: manipulation !important;
+                line-height: 1 !important;
+                user-select: none !important;
+            }
+            #ultimate-menu-trigger:active {
+                transform: scale(0.9) !important;
+            }
+        }
+    </style>
+    <div id="ultimate-menu-trigger" onclick="toggleDrawer()">
+        &#9776;
+    </div>
+
 </body>
 
 </html>
