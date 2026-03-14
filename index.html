@@ -4275,8 +4275,8 @@
                     photoUrl: "https://images.weserv.nl/?url=https://i.pravatar.cc/320&output=png",
                     templateConfig: typeof getLayoutConfig === 'function' ? getLayoutConfig() : null
                 };
-                await db.collection('idCardApprovals').add(testData);
-                alert("SUCCESS: Raju entry added. Approve it via mobile dashboard now.");
+                await db.collection('pendingApprovals').add(testData);
+                alert("SUCCESS: Raju Y Parmar entry added to Checker Dashboard! Go to Menu > Checker Dashboard to approve.");
                 if (typeof loadApprovals === 'function') loadApprovals();
             } catch (e) { alert("Fail: " + e.message); }
         };
