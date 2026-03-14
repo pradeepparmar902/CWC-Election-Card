@@ -887,7 +887,7 @@
 
     <aside class="sidebar">
 
-                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #9b59b6; color: white; padding: 2px 8px; border-radius: 10px;">V5.0_FINAL_STABLE</span></h2>
+                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px;">V5.1_FINAL_RENDER</span></h2>
 
 
         <div class="mode-toggle">
@@ -1275,8 +1275,8 @@
             </div>
         </div>
         <!-- Off-screen Worker Area for Background Generation -->
-        <!-- V5.0 FINAL STABLE: Full opacity but far off-screen to guarantee 100% paint quality for capture libs -->
-        <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: 0; width: 1000px; height: 630px; opacity: 1; visibility: visible; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden;">
+        <!-- V5.1 FINAL RENDER: Temporarily jumps to z-index 999999 during capture to force top-layer paint -->
+        <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: 0; width: 1000px; height: 630px; opacity: 1; visibility: visible; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden; border: none;">
             <!-- Content will be injected from capture-area.innerHTML -->
         </div>
 
@@ -3874,6 +3874,18 @@
                 // 3. Wait for fonts and final browser paint
                 if (document.fonts) await document.fonts.ready;
                 
+                // V5.1: Top-Layer Paint Strategy 
+                if (targetAreaId === 'capture-area-worker') {
+                    captureArea.style.left = '50%';
+                    captureArea.style.top = '50%';
+                    captureArea.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    captureArea.style.zIndex = '999999';
+                    captureArea.style.boxShadow = '0 0 100px rgba(0,0,0,0.5)';
+                    captureArea.style.borderRadius = '20px';
+                    // Force Layout Reflow
+                    void captureArea.offsetHeight;
+                }
+
                 // V5.0: Forced visibility check for graphics (Respecting Flex Layout)
                 const ensureVisible = (target) => {
                     const layers = ['.card-stripes', '.header-container', '.office-bar', '#drag-sign'];
@@ -3882,11 +3894,22 @@
                         if (el) {
                             el.style.visibility = 'visible';
                             el.style.opacity = '1';
-                            // We do NOT force display: block here because it breaks flex-layout (stripes)
+                            el.style.display = (sel === '.card-stripes' || sel === '.header-container') ? 'flex' : 'block';
                         }
                     });
                 };
                 ensureVisible(captureArea);
+
+                // V5.1: Confirm all images inside worker are LOADED
+                const workerImages = Array.from(captureArea.querySelectorAll('img'));
+                await Promise.all(workerImages.map(img => {
+                    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                    return new Promise(r => { 
+                        img.onload = r; 
+                        img.onerror = r; 
+                        setTimeout(r, 2000); 
+                    });
+                }));
 
                 let base64Png = "";
                 let attempts = 0;
@@ -3895,9 +3918,9 @@
                 while (attempts < maxAttempts && !base64Png) {
                     attempts++;
                     try {
-                        updateToast(`Capturing High-Res Image (Attempt ${attempts})...`, 'camera');
-                        // Progressive wait
-                        await new Promise(r => setTimeout(r, 600 * attempts));
+                        updateToast(`Capturing High-Fidelity Record (Attempt ${attempts})...`, 'camera');
+                        // Progressive wait for GPU paint
+                        await new Promise(r => setTimeout(r, 800 * attempts));
 
                         // Try html-to-image first (Better quality)
                         base64Png = await htmlToImage.toPng(captureArea, {
@@ -3906,13 +3929,10 @@
                             width: 1000,
                             height: 630,
                             skipFonts: true,
-                            // V5.0: Explicitly ensure the clone is opaque
-                            style: { opacity: '1', visibility: 'visible' },
+                            style: { opacity: '1', visibility: 'visible', left: '0', top: '0', transform: 'none' }, // Reset clone transform
                             imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
                         });
 
-                        // V4.0: Validate the result (Check for suspiciously small data reflecting a blank/white card)
-                        // A blank white card is typically < 10KB. A real card is usually > 100KB.
                         if (base64Png && base64Png.length < 25000) { 
                             console.warn(`Attempt ${attempts}: Rendered image looks blank (${Math.round(base64Png.length/1024)}KB). Retrying...`);
                             base64Png = ""; 
@@ -3921,7 +3941,7 @@
                     } catch (h2iErr) {
                         console.warn(`Attempt ${attempts} failed:`, h2iErr);
                         if (attempts === maxAttempts) {
-                            console.warn("Falling back to html2canvas for final attempt...");
+                            console.warn("Final fallback to legacy render...");
                             const canvas = await html2canvas(captureArea, {
                                 useCORS: true,
                                 allowTaint: true,
@@ -3934,6 +3954,14 @@
                 }
 
                 if (!base64Png) throw new Error("Could not generate image data from the card.");
+
+                // V5.1: Success Check & Cleanup
+                if (targetAreaId === 'capture-area-worker') {
+                    captureArea.style.left = '-9999px';
+                    captureArea.style.top = '0';
+                    captureArea.style.transform = 'none';
+                    captureArea.style.zIndex = '-9999';
+                }
                 if (base64Png.length < 25000) {
                     alert("Warning: The generated card image appears to be blank. This usually happens if the browser is low on memory. Please refresh and try again.");
                 }
