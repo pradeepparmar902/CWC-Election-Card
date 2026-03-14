@@ -887,7 +887,7 @@
 
     <aside class="sidebar">
 
-                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #28a745; color: white; padding: 2px 8px; border-radius: 10px;">V5.3_UNIVERSAL_SYNC</span></h2>
+                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #e67e22; color: white; padding: 2px 8px; border-radius: 10px;">V5.4_SYNC_FIX</span></h2>
 
 
         <div class="mode-toggle">
@@ -3613,12 +3613,24 @@
                 // SYNC WORKER
                 if (targetAreaId === 'capture-area-worker') {
                     captureArea.innerHTML = master.innerHTML;
-                    // V5.3: Universal Sync Engine (Mirror all classes and styles)
+                    // V5.4: Structural Guard Sync
+                    // Sync aesthetics (appearances)
                     captureArea.className = master.className;
-                    captureArea.style.cssText = master.style.cssText;
-                    // Reset worker-specific positioning after sync
+                    captureArea.style.backgroundImage = master.style.backgroundImage;
+                    captureArea.style.backgroundSize = master.style.backgroundSize || '100% 100%';
+                    captureArea.style.backgroundPosition = master.style.backgroundPosition || 'center';
+                    
+                    // PROTECT structural safety (Overwrite any master scale/positioning that was copied)
                     captureArea.style.position = 'absolute';
                     captureArea.style.left = '-9999px';
+                    captureArea.style.top = '0';
+                    captureArea.style.width = '1000px';
+                    captureArea.style.height = '630px';
+                    captureArea.style.transform = 'none'; // CRITICAL: Prevent mobile scale breaking render
+                    captureArea.style.margin = '0';
+                    captureArea.style.display = 'block';
+                    captureArea.style.visibility = 'visible';
+                    captureArea.style.opacity = '1';
                 } 
                 // 1. **Auto-Generate Next Membership Number**
                 const currentPeriod = mData['Period'] || "Lifetime";
@@ -3897,9 +3909,10 @@
                     layers.forEach(sel => {
                         const el = target.querySelector(sel);
                         if (el) {
-                            // V5.2: Do NOT force visibility if the element or parent class hides it
-                            const isHiddenByClass = target.classList.contains('hide-defaults');
-                            const isHiddenByStyle = el.style.visibility === 'hidden' || el.style.display === 'none';
+                            // V5.4: Use getComputedStyle for more robust detection of 'none'
+                            const currentStyle = window.getComputedStyle(el);
+                            const isHiddenByClass = target.classList.contains('hide-defaults') || el.classList.contains('hidden');
+                            const isHiddenByStyle = currentStyle.display === 'none' || currentStyle.visibility === 'hidden';
                             
                             if (!isHiddenByClass && !isHiddenByStyle) {
                                 el.style.visibility = 'visible';
