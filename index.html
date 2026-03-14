@@ -691,6 +691,17 @@
             .approval-row td {
                 padding: 10px 8px !important;
                 font-size: 0.8rem !important;
+                word-break: break-word !important;
+            }
+
+            .approval-row td:last-child {
+                white-space: normal !important;
+                min-width: 80px !important;
+            }
+
+            #approvals-table-container th {
+                padding: 10px 8px !important;
+                font-size: 0.75rem !important;
             }
 
             #preview-actions {
@@ -2988,7 +2999,7 @@
                 `;
 
                 if (mode === 'rejected') {
-                    metaHtml += `<div style="background: #fff0f0; border-left: 3px solid red; padding: 10px; border-radius: 4px; color: #b71c1c; margin-bottom: 10px;">
+                    metaHtml += `<div style="background: #fff0f0; border-left: 3px solid red; padding: 10px; border-radius: 4px; color: #b71c1c; margin-bottom: 10px; word-break: break-word;">
                     <b style="display:block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2px;">Rejection Reason:</b>
                     ${d.rejectReason || 'No reason provided'}
                 </div>`;
@@ -3056,7 +3067,7 @@
                         btnApprove.onclick = (e) => { e.stopPropagation(); window.loadRejectedCard(id); };
 
                         btnReject.innerHTML = '<i data-lucide="trash-2" size="20"></i> Delete';
-                        btnReject.style.background = '#6c757d';
+                        btnReject.style.background = '#dc3545';
                         btnReject.onclick = (e) => { e.stopPropagation(); window.deleteRejectedCard(id); };
                     }
                 }
@@ -3176,7 +3187,6 @@
             btnSaveAdmin.onclick = async () => {
                 btnSaveAdmin.disabled = true;
                 btnSaveAdmin.innerHTML = '<i class="spin" data-lucide="loader"></i> Saving...';
-                if (window.lucide) lucide.createIcons();
                 if (window.lucide) lucide.createIcons();
 
                 const categories = ["lifetime", "5years", "1year"];
@@ -3908,7 +3918,8 @@
             setTimeout(() => { if (window.syncMember) window.syncMember(); }, 100);
             
             // Close the panel
-            document.getElementById('rejected-dashboard').classList.remove('active');
+            const modal = document.getElementById('approvals-modal');
+            if (modal) modal.classList.add('hidden');
 
             if (loadedVNo && document.getElementById('vibhag-select')) {
                 document.getElementById('vibhag-select').value = loadedVNo;
