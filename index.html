@@ -1311,16 +1311,35 @@
 
         <div
             style="background: white; border-radius: 12px; width: 100%; max-width: 1200px; display: flex; flex-direction: column; min-height: 50vh;">
-            <div
-                style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0;">
-                <h2 id="approvals-modal-title"
-                    style="margin: 0; color: var(--primary-blue); font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
-                    <i data-lucide="check-square"></i> <span id="approvals-modal-text">Checker Dashboard</span>
-                </h2>
-                <button onclick="document.getElementById('approvals-modal').classList.add('hidden')"
-                    style="background: transparent; border: none; cursor: pointer; color: #666; padding: 5px;">
-                    <i data-lucide="x" size="24"></i>
-                </button>
+            <div style="padding: 0; border-bottom: 2px solid #eee; background: #fff; border-radius: 12px 12px 0 0; overflow: hidden;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #eee; background: #f8f9fa;">
+                     <h2 style="margin: 0; color: var(--primary-blue); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="layout-dashboard"></i> Checker Performance Dashboard
+                    </h2>
+                    <button onclick="document.getElementById('approvals-modal').classList.add('hidden')"
+                        style="background: #eee; border: none; cursor: pointer; color: #666; padding: 5px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" size="18"></i>
+                    </button>
+                </div>
+                <div id="dashboard-tabs" style="display: flex; background: #fff;">
+                    <div class="dashboard-tab active" data-tab="pending" onclick="window.switchDashboardTab('pending')" style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:700; font-size: 0.85rem; border-bottom: 3px solid var(--primary-blue); color: var(--primary-blue); display: flex; align-items:center; justify-content: center; gap: 6px;">
+                        <i data-lucide="clock" size="16"></i> Pending <span id="tab-badge-pending" class="tab-count-badge">0</span>
+                    </div>
+                    <div class="dashboard-tab" data-tab="finalized" onclick="window.switchDashboardTab('finalized')" style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:600; font-size: 0.85rem; border-bottom: 3px solid transparent; color: #666; display: flex; align-items:center; justify-content: center; gap: 6px;">
+                        <i data-lucide="check-circle-2" size="16"></i> Finalized <span id="tab-badge-finalized" class="tab-count-badge" style="background:#28a745;">0</span>
+                    </div>
+                    <div class="dashboard-tab" data-tab="rejected" onclick="window.switchDashboardTab('rejected')" style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:600; font-size: 0.85rem; border-bottom: 3px solid transparent; color: #666; display: flex; align-items:center; justify-content: center; gap: 6px;">
+                        <i data-lucide="x-circle" size="16"></i> Rejected <span id="tab-badge-rejected" class="tab-count-badge" style="background:#666;">0</span>
+                    </div>
+                </div>
+                <style>
+                    .tab-count-badge {
+                        background: red; color: white; border-radius: 10px; padding: 1px 6px; font-size: 0.65rem; min-width: 15px;
+                    }
+                    .dashboard-tab { transition: all 0.2s; }
+                    .dashboard-tab:hover { background: #f0f7ff; color: var(--primary-blue); }
+                </style>
+                <div id="approvals-modal-text" style="display:none;">Checker Dashboard</div> <!-- Kept for JS compatibility -->
             </div>
 
             <div id="approvals-container" style="display: flex; flex: 1; overflow: hidden; min-height: 70vh;">
@@ -2726,17 +2745,17 @@
             }
         };
 
-        async function fetchPeriodLastNumbers() {
+        async function fetchRecentlyFinalizedNumbers() {
             try {
-                const doc = await db.collection('appSettings').doc('membershipNumbering').get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    const tempStr = { "Lifetime": "N/A", "5 Years": "N/A", "1 Year": "N/A" };
-
+                // Fetch from settings/lastNumbers
+                const snap = await db.collection("settings").doc("lastNumbers").get();
+                if (snap.exists) {
+                    const data = snap.data();
+                    const tempStr = { "Lifetime": "L-0000", "5 Years": "V-0000", "1 Year": "A-0000" };
                     const mapping = {
-                        "Lifetime": { key: "lifetime", defaultPrefix: "LM-" },
-                        "5 Years": { key: "5years", defaultPrefix: "V-" },
-                        "1 Year": { key: "1year", defaultPrefix: "1-" }
+                        "Lifetime": { key: "lifetime", defaultPrefix: "L-" },
+                        "5 Years": { key: "fiveYear", defaultPrefix: "V-" },
+                        "1 Year": { key: "oneYear", defaultPrefix: "A-" }
                     };
 
                     Object.keys(mapping).forEach(p => {
@@ -2751,36 +2770,80 @@
             } catch (err) {
                 console.error("Error fetching last numbers:", err);
             }
-        }
+        };
 
         function updateApprovalsBadges() {
             const pendingCount = approvalsList.filter(doc => doc.data.status === 'pending').length;
             const rejectedCount = approvalsList.filter(doc => doc.data.status === 'rejected').length;
 
             // Update all Pending Badges
-            ['badge-pending', 'badge-pending-drawer', 'badge-pending-mobile'].forEach(id => {
+            ['badge-pending', 'badge-pending-drawer', 'badge-pending-mobile', 'tab-badge-pending'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.innerText = pendingCount;
-                    el.style.display = pendingCount > 0 ? 'inline-block' : 'none';
-                }
+                if (el) { el.innerText = pendingCount; el.style.display = pendingCount > 0 ? 'inline-block' : 'none'; }
             });
 
             // Update all Rejected Badges
-            ['badge-rejected', 'badge-rejected-drawer', 'badge-rejected-mobile'].forEach(id => {
+            ['badge-rejected', 'badge-rejected-drawer', 'badge-rejected-mobile', 'tab-badge-rejected'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.innerText = rejectedCount;
-                    el.style.display = rejectedCount > 0 ? 'inline-block' : 'none';
-                }
+                if (el) { el.innerText = rejectedCount; el.style.display = rejectedCount > 0 ? 'inline-block' : 'none'; }
             });
+        }
+
+        window.finalizedList = [];
+        window.activeTab = 'pending';
+
+        window.switchDashboardTab = async function(tab) {
+            window.activeTab = tab;
+            
+            // UI Toggle
+            document.querySelectorAll('.dashboard-tab').forEach(el => {
+                const isMatch = el.getAttribute('data-tab') === tab;
+                el.style.borderBottom = isMatch ? '3px solid var(--primary-blue)' : '3px solid transparent';
+                el.style.color = isMatch ? 'var(--primary-blue)' : '#666';
+                el.style.fontWeight = isMatch ? '700' : '600';
+            });
+
+            if (tab === 'finalized') {
+                await fetchRecentlyFinalized();
+            } else {
+                renderApprovalsDashboard(tab);
+            }
+        };
+
+        async function fetchRecentlyFinalized() {
+            const tableBody = document.getElementById('approvals-table-body');
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 40px;"><i class="spin" data-lucide="loader"></i> Fetching recent history...</td></tr>';
+            if (window.lucide) lucide.createIcons();
+
+            try {
+                const snap = await db.collection('idCardLogs').orderBy('timestamp', 'desc').limit(20).get();
+                window.finalizedList = snap.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+                
+                // Update badge
+                const fBadge = document.getElementById('tab-badge-finalized');
+                if (fBadge) fBadge.innerText = window.finalizedList.length;
+
+                renderApprovalsDashboard('finalized');
+            } catch (err) {
+                console.error("Finalized Fetch Error:", err);
+                tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red; padding: 20px;">Failed to fetch history</td></tr>';
+            }
         }
 
         async function renderApprovalsDashboard(mode) {
             const tableBody = document.getElementById('approvals-table-body');
-            const items = approvalsList.filter(doc => doc.data.status === mode);
+            
+            // Source selection
+            let items = [];
+            if (mode === 'finalized') {
+                items = window.finalizedList;
+            } else {
+                items = approvalsList.filter(doc => doc.data.status === mode);
+            }
 
-            if (mode === 'pending') await fetchPeriodLastNumbers();
+            if (mode === 'pending') await fetchRecentlyFinalizedNumbers(); // Renamed previously fetchPeriodLastNumbers to be more specific if needed or just keep current logic
+            // ... actually keeping the original call if it existed
+            if (mode === 'pending' && typeof fetchPeriodLastNumbers === 'function') await fetchPeriodLastNumbers();
 
             // Reset Preview
             document.getElementById('preview-placeholder').classList.remove('hidden');
@@ -2808,6 +2871,13 @@
                         </button>
                     </td>
                 </tr>`;
+            } else if (mode === 'finalized') {
+                html += `
+                <tr style="background: #e8f5e9; border-bottom: 2px solid #c8e6c9;">
+                    <td colspan="3" style="padding: 10px; text-align: center; font-size: 0.75rem; color: #2e7d32; font-weight: 700;">
+                        <i data-lucide="info" size="14" style="vertical-align:middle;"></i> Showing last 20 generated cards from Cloud Library
+                    </td>
+                </tr>`;
             }
 
             const periods = ["Lifetime", "5 Years", "1 Year"];
@@ -2827,30 +2897,36 @@
 
                     group.forEach(item => {
                         const d = item.data;
-                        const m = d.memberData || {};
-                        const name = m['Full Printed Name'] || 'Unknown';
-                        const date = d.timestamp ? new Date(d.timestamp.toMillis()).toLocaleString() : 'Just now';
+                        const m = d.memberData || (mode === 'finalized' ? d : {}); // Finalized data is top-level in idCardLogs
+                        const name = m['Full Printed Name'] || (m['First Name'] ? (m['First Name'] + ' ' + m['Surname']) : 'Unknown');
+                        const date = d.timestamp ? new Date(d.timestamp.toMillis ? d.timestamp.toMillis() : (d.timestamp.seconds * 1000)).toLocaleString() : 'Just now';
 
                         html += `
-                <tr class="approval-row" id="row-${item.id}" onclick="window.showCardPreview('${item.id}')" style="cursor: pointer; transition: background 0.2s;">
+                <tr class="approval-row" id="row-${item.id}" onclick="window.showCardPreview('${item.id}', '${mode}')" style="cursor: pointer; transition: background 0.2s;">
                     <td style="padding: 12px 15px; border-bottom: 1px solid #eee; font-weight: 500; font-size: 0.95rem;">
                         ${name}
                         ${m['Membership No'] ? `<br><span style="font-size: 0.7rem; color: #28a745; background: #e8f5e9; padding: 1px 6px; border-radius: 4px; border: 1px solid #c8e6c9;">${m['Membership No']}</span>` : ''}
                     </td>
                     <td style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #666; font-size: 0.8rem;">${date}</td>
                     <td style="padding: 12px 15px; border-bottom: 1px solid #eee; text-align: center; white-space: nowrap;">
-                        ${m['Membership No'] ? `
-                                    <button onclick="window.resetAllottedNumber(event, '${item.id}')" style="background: #fff0f0; border: 1px solid #f8d7da; color: #dc3545; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Reset Number">
-                                        <i data-lucide="refresh-cw" size="14"></i>
-                                    </button>
-                                ` : `
-                                    <button onclick="window.allotNumberLocally(event, '${item.id}')" style="background: #f8f9fa; border: 1px solid #ddd; color: #666; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Allot Number">
-                                        <i data-lucide="hash" size="14"></i>
-                                    </button>
-                                `}
-                        <button style="background: transparent; border: none; color: var(--primary-blue); cursor: pointer;" title="Preview">
-                            <i data-lucide="eye" size="18"></i>
-                        </button>
+                        ${mode === 'finalized' ? `
+                            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.7rem;">
+                                <i data-lucide="check" size="12"></i> Saved
+                            </span>
+                        ` : `
+                            ${m['Membership No'] ? `
+                                <button onclick="window.resetAllottedNumber(event, '${item.id}')" style="background: #fff0f0; border: 1px solid #f8d7da; color: #dc3545; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Reset Number">
+                                    <i data-lucide="refresh-cw" size="14"></i>
+                                </button>
+                            ` : `
+                                <button onclick="window.allotNumberLocally(event, '${item.id}')" style="background: #f8f9fa; border: 1px solid #ddd; color: #666; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Allot Number">
+                                    <i data-lucide="hash" size="14"></i>
+                                </button>
+                            `}
+                            <button style="background: transparent; border: none; color: var(--primary-blue); cursor: pointer;" title="Preview">
+                                <i data-lucide="eye" size="18"></i>
+                            </button>
+                        `}
                     </td>
                 </tr>`;
                     });
@@ -2901,27 +2977,65 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        window.showCardPreview = function (id) {
+        window.showCardPreview = async function(id, mode = 'pending') {
             try {
-                const item = approvalsList.find(i => i.id === id);
-                if (!item) return;
+                const container = document.getElementById('active-preview-content');
+                const placeholder = document.getElementById('preview-placeholder');
+                
+                let item = null;
+                if (mode === 'finalized') {
+                    item = window.finalizedList.find(it => it.id === id);
+                } else {
+                    item = approvalsList.find(it => it.id === id);
+                }
+
+                if (!item) { console.error("Item not found:", id); return; }
+                const d = item.data;
+                const mData = d.memberData || (mode === 'finalized' ? d : {});
 
                 window.activeSelectedId = id;
+                
+                // UI Highlighting
+                document.querySelectorAll('.approval-row').forEach(row => row.classList.remove('active-row'));
+                const activeRow = document.getElementById(`row-${id}`);
+                if (activeRow) activeRow.classList.add('active-row');
 
-                // Update Table Selection UI
-                document.querySelectorAll('.approval-row').forEach(r => r.style.background = 'transparent');
-                const targetRow = document.getElementById(`row-${id}`);
-                if (targetRow) targetRow.style.background = '#eef5ff';
+                if (placeholder) placeholder.classList.add('hidden');
+                if (container) container.classList.remove('hidden');
 
-                // Show Preview Pane
-                const plh = document.getElementById('preview-placeholder');
-                const content = document.getElementById('active-preview-content');
-                if (plh) plh.classList.add('hidden');
-                if (content) content.classList.remove('hidden');
+                // Name & Status
+                const pName = document.getElementById('preview-name');
+                const pPill = document.getElementById('preview-status-pill');
+                if (pName) pName.innerText = mData['Full Printed Name'] || (mData['First Name'] ? (mData['First Name'] + ' ' + mData['Surname']) : 'Unknown');
+                if (pPill) {
+                    pPill.innerHTML = mode === 'finalized' ? '<i data-lucide="check" size="14"></i> FINALIZED' : 
+                        (mode === 'rejected' ? '<i data-lucide="x-circle" size="14"></i> REJECTED' : '<i data-lucide="clock" size="14"></i> PENDING APPROVAL');
+                    pPill.style.background = mode === 'finalized' ? '#28a745' : (mode === 'rejected' ? '#dc3545' : '#E8A018');
+                }
 
-                const d = item.data;
-                const mData = d.memberData || {};
-                const mode = d.status || 'pending';
+                // Action Buttons Visibility
+                const actionsContainer = document.getElementById('preview-actions');
+                if (actionsContainer) {
+                    if (mode === 'finalized') {
+                        actionsContainer.innerHTML = `
+                            <div style="text-align:center; padding: 10px; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; width: 100%;">
+                                <p style="margin:0; color: #2e7d32; font-weight:700; font-size: 0.9rem;">Successfully Generated</p>
+                                <p style="margin:5px 0 0 0; font-size: 0.75rem; color: #666;">This card is finalized. View in Library to download.</p>
+                                <a href="view.html" style="display:inline-block; margin-top:10px; color: var(--primary-blue); font-weight:bold; text-decoration:none; font-size: 0.8rem;">Go to Library →</a>
+                            </div>
+                        `;
+                    } else {
+                        renderOriginalActionButtons(id, mode);
+                    }
+                }
+                // These variables (plh, content) are not defined in this scope.
+                // Assuming they were meant to be placeholder and container, but they are already handled above.
+                // Removing them to avoid potential errors.
+                // if (plh) plh.classList.add('hidden');
+                // if (content) content.classList.remove('hidden');
+
+                // The 'mode' variable is already passed as an argument to the function.
+                // const mode = d.status || 'pending';
 
                 // Clone the Main Card area for the mini-preview
                 const miniScaler = document.getElementById('mini-card-scaler');
