@@ -3356,9 +3356,10 @@
                     // 1. Build Vibhag Prefix (e.g. "KUR-33/")
                     let vibhagPrefix = "";
                     const vName = mData['Vibhag Name'];
-                    const vNo = mData['Vibhag No'];
+                    // Strip any brackets from Vibhag No if they exist
+                    const vNo = String(mData['Vibhag No'] || '').replace(/[\[\]]/g, '');
                     if (vName && vNo) {
-                        const abv = vName.substring(0, 3).toUpperCase();
+                        const abv = String(vName).substring(0, 3).toUpperCase().replace(/[\[\]]/g, '');
                         vibhagPrefix = `${abv}-${vNo}/`;
                     }
 
