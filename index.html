@@ -3580,8 +3580,9 @@
                 return false;
             }
 
+            let l = null;
             if (!isSilent) {
-                const l = document.createElement('div');
+                l = document.createElement('div');
                 l.className = 'approval-toast';
                 l.id = 'approval-toast-' + id;
                 l.innerHTML = '<i class="spin" data-lucide="loader"></i> Assigning Membership Number and Generating Final ID Card...';
@@ -3682,6 +3683,9 @@
 
                 // --- STEP 1: SYNC WORKER AREA (Fix for Blank/Mismatched Previews) ---
                 // We ALWAYS re-sync the worker with the master layout to ensure all elements (stripes, containers) are identical.
+                const captureArea = document.getElementById(targetAreaId);
+                const tempCaptureAreaHtml = captureArea.innerHTML;
+                
                 const master = document.getElementById('capture-area');
                 if (master && targetAreaId === 'capture-area-worker') {
                     captureArea.innerHTML = master.innerHTML;
