@@ -571,7 +571,7 @@
                 padding: 1.5rem;
                 box-sizing: border-box;
             }
--
+
             body:not(.is-capturing) .main-preview {
                 margin-left: 0 !important;
                 padding: 1rem;
@@ -1283,10 +1283,6 @@
         <div class="actions" style="margin-top: 2rem; display: flex; justify-content: center; width: 100%;">
             <button class="btn btn-p" id="btn-download" style="background: #F7931E; font-size: 1.1rem; padding: 12px 30px; box-shadow: 0 4px 15px rgba(247, 147, 30, 0.3); border-radius: 12px; transition: all 0.2s ease;">
                 <i data-lucide="upload-cloud"></i> Submit for Approval
-            </button>
-            <!-- PHASE 7 TEST BUTTON -->
-            <button class="btn btn-p" onclick="addRajuTestEntry()" style="background: #999; margin-left: 10px; font-size: 0.8rem; padding: 5px 15px;">
-                Add Raju Test Data
             </button>
         </div>
     </main>
@@ -4254,32 +4250,6 @@
             console.log("HEARTBEAT_STABLE_" + new Date().toLocaleTimeString());
         }, 10000);
 
-        // V7.0: TEST HELPER for Raju Y Parmar
-        window.addRajuTestEntry = async function() {
-            try {
-                const testData = {
-                    memberData: {
-                        "Full Printed Name": "Raju Y Parmar",
-                        "Mobile Number": "09800000000",
-                        "Membership No": "",
-                        "Vibhag Code": "TEST",
-                        "Vibhag No": "V7",
-                        "Period": "Lifetime",
-                        "Gender": "Male",
-                        "Address": "TEST ADDRESS FOR RAJU",
-                        "Date of Birth": "1995-01-01",
-                        "Date of Issue": new Date().toISOString().split('T')[0]
-                    },
-                    status: 'pending',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    photoUrl: "https://images.weserv.nl/?url=https://i.pravatar.cc/320&output=png",
-                    templateConfig: typeof getLayoutConfig === 'function' ? getLayoutConfig() : null
-                };
-                await db.collection('pendingApprovals').add(testData);
-                alert("SUCCESS: Raju Y Parmar entry added to Checker Dashboard! Go to Menu > Checker Dashboard to approve.");
-                if (typeof loadApprovals === 'function') loadApprovals();
-            } catch (e) { alert("Fail: " + e.message); }
-        };
     </script>
     <!-- Emergency Diagnostic Overlay -->
     <div id="diag-log"
