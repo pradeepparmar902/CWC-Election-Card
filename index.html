@@ -668,13 +668,34 @@
             #approvals-table-container {
                 border-right: none !important;
                 border-bottom: 2px solid #eee !important;
-                max-height: 300px !important;
+                max-height: 350px !important;
                 flex: none !important;
             }
 
             #approvals-preview-pane {
                 width: 100% !important;
-                padding: 10px !important;
+                padding: 15px 10px !important;
+            }
+
+            #mini-card-viewport {
+                width: 100% !important;
+                max-width: 340px !important;
+                height: 214px !important; /* Aspect ratio of 1000x630 */
+                margin: 0 auto !important;
+            }
+
+            #mini-card-scaler {
+                transform: scale(0.34) !important; /* Scale 1000 to fit 340 */
+            }
+
+            .approval-row td {
+                padding: 10px 8px !important;
+                font-size: 0.8rem !important;
+            }
+
+            #preview-actions {
+                flex-direction: column !important;
+                gap: 8px !important;
             }
 
             .admin-grid-columns {
