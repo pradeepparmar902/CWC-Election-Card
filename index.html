@@ -887,7 +887,7 @@
 
     <aside class="sidebar">
 
-                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px;">V5.1_FINAL_RENDER</span></h2>
+                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #001C6B; color: white; padding: 2px 8px; border-radius: 10px;">V5.2_SMART_LAYER</span></h2>
 
 
         <div class="mode-toggle">
@@ -3609,12 +3609,14 @@
                 // SYNC WORKER
                 if (targetAreaId === 'capture-area-worker') {
                     captureArea.innerHTML = master.innerHTML;
-                    // FIX: Ensure worker is NOT hidden by defaults if master has it on
-                    captureArea.classList.remove('hide-defaults');
-                } else {
-                    // Temporarily show components on main capture area if they were hidden
-                    captureArea.classList.remove('hide-defaults');
-                }
+                    // V5.2: Preserve the visibility status (hide-defaults) from the master area
+                    if (master.classList.contains('hide-defaults')) {
+                        captureArea.classList.add('hide-defaults');
+                    } else {
+                        captureArea.classList.remove('hide-defaults');
+                    }
+                } 
+                // Note: If targetAreaId is 'capture-area', it already has the correct classes.
                 // 1. **Auto-Generate Next Membership Number**
                 const currentPeriod = mData['Period'] || "Lifetime";
                 const catKey = currentPeriod.toLowerCase().replace(/\s/g, ''); // "lifetime", "5years", "1year"
@@ -3886,15 +3888,24 @@
                     void captureArea.offsetHeight;
                 }
 
-                // V5.0: Forced visibility check for graphics (Respecting Flex Layout)
+                // V5.2: Force-Paint visibility (only for layers that SHOULD be visible)
                 const ensureVisible = (target) => {
                     const layers = ['.card-stripes', '.header-container', '.office-bar', '#drag-sign'];
                     layers.forEach(sel => {
                         const el = target.querySelector(sel);
                         if (el) {
-                            el.style.visibility = 'visible';
-                            el.style.opacity = '1';
-                            el.style.display = (sel === '.card-stripes' || sel === '.header-container') ? 'flex' : 'block';
+                            // V5.2: Do NOT force visibility if the element or parent class hides it
+                            const isHiddenByClass = target.classList.contains('hide-defaults');
+                            const isHiddenByStyle = el.style.visibility === 'hidden' || el.style.display === 'none';
+                            
+                            if (!isHiddenByClass && !isHiddenByStyle) {
+                                el.style.visibility = 'visible';
+                                el.style.opacity = '1';
+                                // Only force display if it's currently effectively auto/undefined
+                                if (!el.style.display || el.style.display === 'undefined') {
+                                    el.style.display = (sel === '.card-stripes' || sel === '.header-container') ? 'flex' : 'block';
+                                }
+                            }
                         }
                     });
                 };
