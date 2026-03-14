@@ -17,7 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         .hide-defaults .card-stripes,
-        .hide-defaults .header-container,
+        .hide-defaults #header-custom-view,
         .hide-defaults .office-bar,
         .hide-defaults #drag-sign {
             display: none !important;
@@ -685,7 +685,7 @@
             }
 
             #mini-card-scaler {
-                transform: scale(0.34) !important; /* Scale 1000 to fit 340 */
+                transform: scale(0.34); /* Scale 1000 to fit 340 (Removed !important for capture safety) */
             }
 
             .approval-row td {
@@ -715,10 +715,10 @@
         }
 
         @media (max-width: 480px) {
-            .id-card {
-                transform: scale(0.28) !important;
-                margin-right: -720px !important;
-                margin-bottom: -455px !important;
+            .id-card:not(#capture-area-worker) {
+                transform: scale(0.28);
+                margin-right: -720px;
+                margin-bottom: -455px;
             }
         }
 
@@ -853,7 +853,7 @@
     <!-- Sliding Navigation Drawer -->
     <div class="nav-drawer" id="nav-drawer">
         <div class="drawer-header">
-            <h3>🛠️ Navigation</h3>
+                        <h3>🛠️ Navigation <span style="font-size: 0.6rem; background: #28a745; color: white; padding: 2px 8px; border-radius: 10px;">V3.2_STABLE</span></h3>
             <div class="close-drawer" onclick="toggleDrawer()">
                 <i data-lucide="x" size="20"></i>
             </div>
@@ -887,7 +887,7 @@
 
     <aside class="sidebar">
 
-        <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro</h2>
+                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #e67e22; color: white; padding: 2px 8px; border-radius: 10px;">V5.4_SYNC_FIX</span></h2>
 
 
         <div class="mode-toggle">
@@ -1274,9 +1274,10 @@
                 <div class="resizer"></div>
             </div>
         </div>
-        <!-- Off-screen Worker Area for Background Generation (Mirrors capture-area structure) -->
-        <div id="capture-area-worker" class="id-card" style="position: fixed; left: -5000px; top: -5000px; display: block; pointer-events: none;">
-            <!-- Content will be injected from capture-area.innerHTML during background processing -->
+        <!-- Off-screen Worker Area for Background Generation -->
+        <!-- V5.1 FINAL RENDER: Temporarily jumps to z-index 999999 during capture to force top-layer paint -->
+        <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: 0; width: 1000px; height: 630px; opacity: 1; visibility: visible; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden; border: none;">
+            <!-- Content will be injected from capture-area.innerHTML -->
         </div>
 
         <div class="actions" style="margin-top: 2rem; display: flex; justify-content: center; width: 100%;">
@@ -1311,16 +1312,35 @@
 
         <div
             style="background: white; border-radius: 12px; width: 100%; max-width: 1200px; display: flex; flex-direction: column; min-height: 50vh;">
-            <div
-                style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0;">
-                <h2 id="approvals-modal-title"
-                    style="margin: 0; color: var(--primary-blue); font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
-                    <i data-lucide="check-square"></i> <span id="approvals-modal-text">Checker Dashboard</span>
-                </h2>
-                <button onclick="document.getElementById('approvals-modal').classList.add('hidden')"
-                    style="background: transparent; border: none; cursor: pointer; color: #666; padding: 5px;">
-                    <i data-lucide="x" size="24"></i>
-                </button>
+            <div style="padding: 0; border-bottom: 2px solid #eee; background: #fff; border-radius: 12px 12px 0 0; overflow: hidden;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #eee; background: #f8f9fa;">
+                     <h2 style="margin: 0; color: var(--primary-blue); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="layout-dashboard"></i> Checker Performance Dashboard
+                    </h2>
+                    <button onclick="document.getElementById('approvals-modal').classList.add('hidden')"
+                        style="background: #eee; border: none; cursor: pointer; color: #666; padding: 5px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" size="18"></i>
+                    </button>
+                </div>
+                <div id="dashboard-tabs" style="display: flex; background: #fff;">
+                    <div class="dashboard-tab active" data-tab="pending" onclick="window.switchDashboardTab('pending')" style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:700; font-size: 0.85rem; border-bottom: 3px solid var(--primary-blue); color: var(--primary-blue); display: flex; align-items:center; justify-content: center; gap: 6px;">
+                        <i data-lucide="clock" size="16"></i> Pending <span id="tab-badge-pending" class="tab-count-badge">0</span>
+                    </div>
+                    <div class="dashboard-tab" data-tab="finalized" onclick="window.switchDashboardTab('finalized')" style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:600; font-size: 0.85rem; border-bottom: 3px solid transparent; color: #666; display: flex; align-items:center; justify-content: center; gap: 6px;">
+                        <i data-lucide="check-circle-2" size="16"></i> Finalized <span id="tab-badge-finalized" class="tab-count-badge" style="background:#28a745;">0</span>
+                    </div>
+                    <div class="dashboard-tab" data-tab="rejected" onclick="window.switchDashboardTab('rejected')" style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:600; font-size: 0.85rem; border-bottom: 3px solid transparent; color: #666; display: flex; align-items:center; justify-content: center; gap: 6px;">
+                        <i data-lucide="x-circle" size="16"></i> Rejected <span id="tab-badge-rejected" class="tab-count-badge" style="background:#666;">0</span>
+                    </div>
+                </div>
+                <style>
+                    .tab-count-badge {
+                        background: red; color: white; border-radius: 10px; padding: 1px 6px; font-size: 0.65rem; min-width: 15px;
+                    }
+                    .dashboard-tab { transition: all 0.2s; }
+                    .dashboard-tab:hover { background: #f0f7ff; color: var(--primary-blue); }
+                </style>
+                <div id="approvals-modal-text" style="display:none;">Checker Dashboard</div> <!-- Kept for JS compatibility -->
             </div>
 
             <div id="approvals-container" style="display: flex; flex: 1; overflow: hidden; min-height: 70vh;">
@@ -1798,10 +1818,12 @@
                     else if (pVal.includes("5")) periodPrefix = "V-";
                     else if (pVal.includes("1")) periodPrefix = "I-";
                     
-                    // Vibhag Prefix: [CODE-NO]/
+                    // Vibhag Prefix: CODE-NO/ (Brackets removed for clean design)
                     let vPrefix = "";
                     if (vNoInput && vNoInput.value && vCodeInput && vCodeInput.value) {
-                        vPrefix = `[${vCodeInput.value}-${vNoInput.value}]/`;
+                        const cleanVCode = String(vCodeInput.value).replace(/[\[\]]/g, '');
+                        const cleanVNo = String(vNoInput.value).replace(/[\[\]]/g, '');
+                        vPrefix = `${cleanVCode}-${cleanVNo}/`;
                     }
                     
                     // Only apply auto-prefix if the user hasn't already typed a full formatted number
@@ -1897,6 +1919,10 @@
                         const targetHeight = 1000 * ratio; // The card is 1000px wide in CSS
 
                         container.style.height = targetHeight + 'px';
+
+                        // V5.3: Explicitly toggle between system text and imported graphics
+                        document.getElementById('header-custom-view').classList.add('hidden');
+                        document.getElementById('header-imported-view').classList.remove('hidden');
 
                         // Auto-hide top stripes and office bar
                         if (!hideStripesToggle.checked) {
@@ -2111,8 +2137,11 @@
                 let finalMemNo = memVal;
                 
                 // If the preview has the full formatted number, use it for the database
+                // FORCE: Strip any brackets that might have leaked from the UI or templates
                 if (memView && memView.innerText && memView.innerText !== "[Mem No]") {
-                    finalMemNo = memView.innerText;
+                    finalMemNo = memView.innerText.replace(/[\[\]]/g, '');
+                } else {
+                    finalMemNo = String(memVal).replace(/[\[\]]/g, '');
                 }
 
                 const cloudPayload = {
@@ -2726,17 +2755,17 @@
             }
         };
 
-        async function fetchPeriodLastNumbers() {
+        async function fetchRecentlyFinalizedNumbers() {
             try {
-                const doc = await db.collection('appSettings').doc('membershipNumbering').get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    const tempStr = { "Lifetime": "N/A", "5 Years": "N/A", "1 Year": "N/A" };
-
+                // Fetch from settings/lastNumbers
+                const snap = await db.collection("settings").doc("lastNumbers").get();
+                if (snap.exists) {
+                    const data = snap.data();
+                    const tempStr = { "Lifetime": "L-0000", "5 Years": "V-0000", "1 Year": "A-0000" };
                     const mapping = {
-                        "Lifetime": { key: "lifetime", defaultPrefix: "LM-" },
-                        "5 Years": { key: "5years", defaultPrefix: "V-" },
-                        "1 Year": { key: "1year", defaultPrefix: "1-" }
+                        "Lifetime": { key: "lifetime", defaultPrefix: "L-" },
+                        "5 Years": { key: "fiveYear", defaultPrefix: "V-" },
+                        "1 Year": { key: "oneYear", defaultPrefix: "A-" }
                     };
 
                     Object.keys(mapping).forEach(p => {
@@ -2751,36 +2780,80 @@
             } catch (err) {
                 console.error("Error fetching last numbers:", err);
             }
-        }
+        };
 
         function updateApprovalsBadges() {
             const pendingCount = approvalsList.filter(doc => doc.data.status === 'pending').length;
             const rejectedCount = approvalsList.filter(doc => doc.data.status === 'rejected').length;
 
             // Update all Pending Badges
-            ['badge-pending', 'badge-pending-drawer', 'badge-pending-mobile'].forEach(id => {
+            ['badge-pending', 'badge-pending-drawer', 'badge-pending-mobile', 'tab-badge-pending'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.innerText = pendingCount;
-                    el.style.display = pendingCount > 0 ? 'inline-block' : 'none';
-                }
+                if (el) { el.innerText = pendingCount; el.style.display = pendingCount > 0 ? 'inline-block' : 'none'; }
             });
 
             // Update all Rejected Badges
-            ['badge-rejected', 'badge-rejected-drawer', 'badge-rejected-mobile'].forEach(id => {
+            ['badge-rejected', 'badge-rejected-drawer', 'badge-rejected-mobile', 'tab-badge-rejected'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.innerText = rejectedCount;
-                    el.style.display = rejectedCount > 0 ? 'inline-block' : 'none';
-                }
+                if (el) { el.innerText = rejectedCount; el.style.display = rejectedCount > 0 ? 'inline-block' : 'none'; }
             });
+        }
+
+        window.finalizedList = [];
+        window.activeTab = 'pending';
+
+        window.switchDashboardTab = async function(tab) {
+            window.activeTab = tab;
+            
+            // UI Toggle
+            document.querySelectorAll('.dashboard-tab').forEach(el => {
+                const isMatch = el.getAttribute('data-tab') === tab;
+                el.style.borderBottom = isMatch ? '3px solid var(--primary-blue)' : '3px solid transparent';
+                el.style.color = isMatch ? 'var(--primary-blue)' : '#666';
+                el.style.fontWeight = isMatch ? '700' : '600';
+            });
+
+            if (tab === 'finalized') {
+                await fetchRecentlyFinalized();
+            } else {
+                renderApprovalsDashboard(tab);
+            }
+        };
+
+        async function fetchRecentlyFinalized() {
+            const tableBody = document.getElementById('approvals-table-body');
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 40px;"><i class="spin" data-lucide="loader"></i> Fetching recent history...</td></tr>';
+            if (window.lucide) lucide.createIcons();
+
+            try {
+                const snap = await db.collection('idCardLogs').orderBy('timestamp', 'desc').limit(20).get();
+                window.finalizedList = snap.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+                
+                // Update badge
+                const fBadge = document.getElementById('tab-badge-finalized');
+                if (fBadge) fBadge.innerText = window.finalizedList.length;
+
+                renderApprovalsDashboard('finalized');
+            } catch (err) {
+                console.error("Finalized Fetch Error:", err);
+                tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red; padding: 20px;">Failed to fetch history</td></tr>';
+            }
         }
 
         async function renderApprovalsDashboard(mode) {
             const tableBody = document.getElementById('approvals-table-body');
-            const items = approvalsList.filter(doc => doc.data.status === mode);
+            
+            // Source selection
+            let items = [];
+            if (mode === 'finalized') {
+                items = window.finalizedList;
+            } else {
+                items = approvalsList.filter(doc => doc.data.status === mode);
+            }
 
-            if (mode === 'pending') await fetchPeriodLastNumbers();
+            if (mode === 'pending') await fetchRecentlyFinalizedNumbers(); // Renamed previously fetchPeriodLastNumbers to be more specific if needed or just keep current logic
+            // ... actually keeping the original call if it existed
+            if (mode === 'pending' && typeof fetchPeriodLastNumbers === 'function') await fetchPeriodLastNumbers();
 
             // Reset Preview
             document.getElementById('preview-placeholder').classList.remove('hidden');
@@ -2808,6 +2881,13 @@
                         </button>
                     </td>
                 </tr>`;
+            } else if (mode === 'finalized') {
+                html += `
+                <tr style="background: #e8f5e9; border-bottom: 2px solid #c8e6c9;">
+                    <td colspan="3" style="padding: 10px; text-align: center; font-size: 0.75rem; color: #2e7d32; font-weight: 700;">
+                        <i data-lucide="info" size="14" style="vertical-align:middle;"></i> Showing last 20 generated cards from Cloud Library
+                    </td>
+                </tr>`;
             }
 
             const periods = ["Lifetime", "5 Years", "1 Year"];
@@ -2827,30 +2907,36 @@
 
                     group.forEach(item => {
                         const d = item.data;
-                        const m = d.memberData || {};
-                        const name = m['Full Printed Name'] || 'Unknown';
-                        const date = d.timestamp ? new Date(d.timestamp.toMillis()).toLocaleString() : 'Just now';
+                        const m = d.memberData || (mode === 'finalized' ? d : {}); // Finalized data is top-level in idCardLogs
+                        const name = m['Full Printed Name'] || (m['First Name'] ? (m['First Name'] + ' ' + m['Surname']) : 'Unknown');
+                        const date = d.timestamp ? new Date(d.timestamp.toMillis ? d.timestamp.toMillis() : (d.timestamp.seconds * 1000)).toLocaleString() : 'Just now';
 
                         html += `
-                <tr class="approval-row" id="row-${item.id}" onclick="window.showCardPreview('${item.id}')" style="cursor: pointer; transition: background 0.2s;">
+                <tr class="approval-row" id="row-${item.id}" onclick="window.showCardPreview('${item.id}', '${mode}')" style="cursor: pointer; transition: background 0.2s;">
                     <td style="padding: 12px 15px; border-bottom: 1px solid #eee; font-weight: 500; font-size: 0.95rem;">
                         ${name}
                         ${m['Membership No'] ? `<br><span style="font-size: 0.7rem; color: #28a745; background: #e8f5e9; padding: 1px 6px; border-radius: 4px; border: 1px solid #c8e6c9;">${m['Membership No']}</span>` : ''}
                     </td>
                     <td style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #666; font-size: 0.8rem;">${date}</td>
                     <td style="padding: 12px 15px; border-bottom: 1px solid #eee; text-align: center; white-space: nowrap;">
-                        ${m['Membership No'] ? `
-                                    <button onclick="window.resetAllottedNumber(event, '${item.id}')" style="background: #fff0f0; border: 1px solid #f8d7da; color: #dc3545; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Reset Number">
-                                        <i data-lucide="refresh-cw" size="14"></i>
-                                    </button>
-                                ` : `
-                                    <button onclick="window.allotNumberLocally(event, '${item.id}')" style="background: #f8f9fa; border: 1px solid #ddd; color: #666; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Allot Number">
-                                        <i data-lucide="hash" size="14"></i>
-                                    </button>
-                                `}
-                        <button style="background: transparent; border: none; color: var(--primary-blue); cursor: pointer;" title="Preview">
-                            <i data-lucide="eye" size="18"></i>
-                        </button>
+                        ${mode === 'finalized' ? `
+                            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.7rem;">
+                                <i data-lucide="check" size="12"></i> Saved
+                            </span>
+                        ` : `
+                            ${m['Membership No'] ? `
+                                <button onclick="window.resetAllottedNumber(event, '${item.id}')" style="background: #fff0f0; border: 1px solid #f8d7da; color: #dc3545; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Reset Number">
+                                    <i data-lucide="refresh-cw" size="14"></i>
+                                </button>
+                            ` : `
+                                <button onclick="window.allotNumberLocally(event, '${item.id}')" style="background: #f8f9fa; border: 1px solid #ddd; color: #666; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 5px;" title="Allot Number">
+                                    <i data-lucide="hash" size="14"></i>
+                                </button>
+                            `}
+                            <button style="background: transparent; border: none; color: var(--primary-blue); cursor: pointer;" title="Preview">
+                                <i data-lucide="eye" size="18"></i>
+                            </button>
+                        `}
                     </td>
                 </tr>`;
                     });
@@ -2901,27 +2987,82 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        window.showCardPreview = function (id) {
+        window.renderOriginalActionButtons = function(id, mode) {
+            const container = document.getElementById('preview-actions');
+            if (!container) return;
+            container.innerHTML = `
+                <button id="btn-approve-active" onclick="event.stopPropagation()"
+                    style="flex: 1; background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; position: relative; z-index: 101;">
+                    <i data-lucide="check-circle" size="20"></i> Approve Card
+                </button>
+                <button id="btn-reject-active" onclick="event.stopPropagation()"
+                    style="flex: 1; background: #dc3545; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; position: relative; z-index: 101;">
+                    <i data-lucide="x-circle" size="20"></i> Reject
+                </button>
+            `;
+            if (window.lucide) lucide.createIcons();
+        };
+
+        window.showCardPreview = async function(id, mode = 'pending') {
             try {
-                const item = approvalsList.find(i => i.id === id);
-                if (!item) return;
+                const container = document.getElementById('active-preview-content');
+                const placeholder = document.getElementById('preview-placeholder');
+                
+                let item = null;
+                if (mode === 'finalized') {
+                    item = window.finalizedList.find(it => it.id === id);
+                } else {
+                    item = approvalsList.find(it => it.id === id);
+                }
+
+                if (!item) { console.error("Item not found:", id); return; }
+                const d = item.data;
+                const mData = d.memberData || (mode === 'finalized' ? d : {});
 
                 window.activeSelectedId = id;
+                
+                // UI Highlighting
+                document.querySelectorAll('.approval-row').forEach(row => row.classList.remove('active-row'));
+                const activeRow = document.getElementById(`row-${id}`);
+                if (activeRow) activeRow.classList.add('active-row');
 
-                // Update Table Selection UI
-                document.querySelectorAll('.approval-row').forEach(r => r.style.background = 'transparent');
-                const targetRow = document.getElementById(`row-${id}`);
-                if (targetRow) targetRow.style.background = '#eef5ff';
+                                console.log("ANTIGRAVITY_STABILITY_V3_FINAL");
+                if (placeholder) placeholder.classList.add('hidden');
+                if (container) container.classList.remove('hidden');
 
-                // Show Preview Pane
-                const plh = document.getElementById('preview-placeholder');
-                const content = document.getElementById('active-preview-content');
-                if (plh) plh.classList.add('hidden');
-                if (content) content.classList.remove('hidden');
+                // Name & Status
+                const pName = document.getElementById('preview-name');
+                const pPill = document.getElementById('preview-status-pill');
+                if (pName) pName.innerText = mData['Full Printed Name'] || (mData['First Name'] ? (mData['First Name'] + ' ' + mData['Surname']) : 'Unknown');
+                if (pPill) {
+                    pPill.innerHTML = mode === 'finalized' ? '<i data-lucide="check" size="14"></i> FINALIZED' : 
+                        (mode === 'rejected' ? '<i data-lucide="x-circle" size="14"></i> REJECTED' : '<i data-lucide="clock" size="14"></i> PENDING APPROVAL');
+                    pPill.style.background = mode === 'finalized' ? '#28a745' : (mode === 'rejected' ? '#dc3545' : '#E8A018');
+                }
 
-                const d = item.data;
-                const mData = d.memberData || {};
-                const mode = d.status || 'pending';
+                // Action Buttons Visibility
+                const actionsContainer = document.getElementById('preview-actions');
+                if (actionsContainer) {
+                    if (mode === 'finalized') {
+                        actionsContainer.innerHTML = `
+                            <div style="text-align:center; padding: 10px; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; width: 100%;">
+                                <p style="margin:0; color: #2e7d32; font-weight:700; font-size: 0.9rem;">Successfully Generated</p>
+                                <p style="margin:5px 0 0 0; font-size: 0.75rem; color: #666;">This card is finalized. View in Library to download.</p>
+                                <a href="view.html" style="display:inline-block; margin-top:10px; color: var(--primary-blue); font-weight:bold; text-decoration:none; font-size: 0.8rem;">Go to Library →</a>
+                            </div>
+                        `;
+                    } else {
+                        renderOriginalActionButtons(id, mode);
+                    }
+                }
+                // These variables (plh, content) are not defined in this scope.
+                // Assuming they were meant to be placeholder and container, but they are already handled above.
+                // Removing them to avoid potential errors.
+                // if (plh) plh.classList.add('hidden');
+                // if (content) content.classList.remove('hidden');
+
+                // The 'mode' variable is already passed as an argument to the function.
+                // const mode = d.status || 'pending';
 
                 // Clone the Main Card area for the mini-preview
                 const miniScaler = document.getElementById('mini-card-scaler');
@@ -3241,9 +3382,10 @@
                     // 1. Build Vibhag Prefix (e.g. "KUR-33/")
                     let vibhagPrefix = "";
                     const vName = mData['Vibhag Name'];
-                    const vNo = mData['Vibhag No'];
+                    // Strip any brackets from Vibhag No if they exist
+                    const vNo = String(mData['Vibhag No'] || '').replace(/[\[\]]/g, '');
                     if (vName && vNo) {
-                        const abv = vName.substring(0, 3).toUpperCase();
+                        const abv = String(vName).substring(0, 3).toUpperCase().replace(/[\[\]]/g, '');
                         vibhagPrefix = `${abv}-${vNo}/`;
                     }
 
@@ -3442,17 +3584,55 @@
                 return false;
             }
 
-            if (!isSilent) {
-                const l = document.createElement('div');
-                l.className = 'approval-toast';
-                l.id = 'approval-toast-' + id;
-                l.innerHTML = '<i class="spin" data-lucide="loader"></i> Assigning Membership Number and Generating Final ID Card...';
-                l.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:white; padding:15px 30px; border-radius:6px; z-index:99999; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.3);';
-                document.body.appendChild(l);
-                if (window.lucide) lucide.createIcons();
-            }
+            let l = null;
+            let captureArea = null;
+            let tempCaptureAreaHtml = "";
+            let currentLayout = null;
 
             try {
+                if (!isSilent) {
+                    l = document.createElement('div');
+                    l.className = 'approval-toast';
+                    l.id = 'approval-toast-' + id;
+                    l.innerHTML = '<i class="spin" data-lucide="loader"></i> Assigning Membership Number and Generating Final ID Card...';
+                    l.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:white; padding:15px 30px; border-radius:6px; z-index:99999; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.3);';
+                    document.body.appendChild(l);
+                    if (window.lucide) lucide.createIcons();
+                }
+
+                // --- 0. PREPARE AREAS ---
+                captureArea = document.getElementById(targetAreaId);
+                const master = document.getElementById('capture-area');
+                
+                if (!captureArea || !master) throw new Error("Critical DOM elements missing for capture.");
+
+                // Save state for restoration
+                tempCaptureAreaHtml = captureArea.innerHTML;
+                currentLayout = typeof getLayoutConfig === 'function' ? getLayoutConfig() : null;
+
+                // SYNC WORKER
+                if (targetAreaId === 'capture-area-worker') {
+                    captureArea.innerHTML = master.innerHTML;
+                    // V5.4: Structural Guard Sync
+                    // Sync aesthetics (appearances)
+                    // PROTECT: Force worker area to stay clean (Do Not Inherit 'hide-defaults')
+                    captureArea.className = master.className.replace('hide-defaults', '').trim();
+                    captureArea.style.backgroundImage = master.style.backgroundImage;
+                    captureArea.style.backgroundSize = master.style.backgroundSize || '100% 100%';
+                    captureArea.style.backgroundPosition = master.style.backgroundPosition || 'center';
+                    
+                    // PROTECT structural safety (Overwrite any master scale/positioning that was copied)
+                    captureArea.style.position = 'absolute';
+                    captureArea.style.left = '-9999px';
+                    captureArea.style.top = '0';
+                    captureArea.style.width = '1000px';
+                    captureArea.style.height = '630px';
+                    captureArea.style.transform = 'none'; // CRITICAL: Prevent mobile scale breaking render
+                    captureArea.style.margin = '0';
+                    captureArea.style.display = 'block';
+                    captureArea.style.visibility = 'visible';
+                    captureArea.style.opacity = '1';
+                } 
                 // 1. **Auto-Generate Next Membership Number**
                 const currentPeriod = mData['Period'] || "Lifetime";
                 const catKey = currentPeriod.toLowerCase().replace(/\s/g, ''); // "lifetime", "5years", "1year"
@@ -3507,12 +3687,15 @@
                 const vCode = mData['Vibhag Code'];
                 const vNo = mData['Vibhag No'];
                 
-                if (vCode && vNo) {
-                    dynamicVibhagPrefix = `[${vCode}-${vNo}]/`;
+                // Strip any existing brackets from parts
+                const cleanVCode = String(vCode || '').replace(/[\[\]]/g, '');
+                const cleanVNo = String(vNo || '').replace(/[\[\]]/g, '');
+                
+                if (cleanVCode && cleanVNo) {
+                    dynamicVibhagPrefix = `${cleanVCode}-${cleanVNo}/`;
                 } else if (mData['Vibhag Name']) {
-                    // Fallback for older records using Name
-                    const abv = String(mData['Vibhag Name']).substring(0, 3).toUpperCase();
-                    dynamicVibhagPrefix = `[${abv}-${vNo || '??'}]/`;
+                    const abv = String(mData['Vibhag Name']).substring(0, 3).toUpperCase().replace(/[\[\]]/g, '');
+                    dynamicVibhagPrefix = `${abv}-${cleanVNo || '??'}/`;
                 }
 
                 mData['Membership No'] = dynamicVibhagPrefix + prefix + paddedNum;
@@ -3538,25 +3721,6 @@
                         if (window.lucide) lucide.createIcons();
                     }
                 };
-
-                // Save current UI state (layout and data)
-                const captureArea = document.getElementById(targetAreaId);
-                const tempCaptureAreaHtml = captureArea.innerHTML;
-                
-                // If using worker, prime it with the current UI's static elements if needed, 
-                // but actually we expect it to be ready.
-                if (targetAreaId === 'capture-area-worker' && !captureArea.innerHTML.trim()) {
-                    const master = document.getElementById('capture-area');
-                    if (master) captureArea.innerHTML = master.innerHTML;
-                }
-
-                const currentLayout = getLayoutConfig(); // Base config for restoration
-
-                // 2. **Apply Maker's Specific Template Design**
-                if (d.templateConfig) {
-                    // Important: applyLayoutConfig needs to know which area to target
-                    applyLayoutConfig(d.templateConfig, targetAreaId);
-                }
 
                 // 3. **Restore Injection & Render Graphics**
                 updateToast('Generating High-Res Graphics...', 'image');
@@ -3596,9 +3760,9 @@
                     if (d.photoUrl.startsWith('data:')) {
                         photoWrap.innerHTML = `<img src="${d.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
                     } else {
-                        // Crucial for Firebase Storage images preventing tainted canvas
-                        // If crossOrigin fails, the Deep Resolve Engine below proxies it
-                        photoWrap.innerHTML = `<img src="${d.photoUrl}" crossorigin="anonymous" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
+                        // Injection for Capture: Remove crossorigin to prevent initial load failures on localhost.
+                        // The Deep Resolve Engine below will handle the Base64 conversion via proxy if needed.
+                        photoWrap.innerHTML = `<img src="${d.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
                     }
                 }
 
@@ -3627,26 +3791,20 @@
                         } catch (e) { return null; } finally { clearTimeout(timeout); }
                     };
 
-                    // Try direct, then proxy
+                    // Try direct, then proxy (Proxies only work for public URLs)
                     let result = await fetchAsset(cleanUrl, false);
-                    if (!result && !cleanUrl.includes('localhost')) {
-                        console.warn("Retrying with proxy:", cleanUrl);
-                        result = await fetchAsset(cleanUrl, true);
-                        if (!result) {
-                            // Secondary fallback proxy
-                            console.warn("Retrying with secondary proxy...");
-                            const target2 = `https://api.allorigins.win/raw?url=${encodeURIComponent(cleanUrl)}`;
-                            try {
-                                const res2 = await fetch(target2);
-                                if (res2.ok) {
-                                    const blob2 = await res2.blob();
-                                    result = await new Promise(r => {
-                                        const reader = new FileReader();
-                                        reader.onloadend = () => r(reader.result);
-                                        reader.readAsDataURL(blob2);
-                                    });
-                                }
-                            } catch (e) { }
+                    if (!result) {
+                        const isPublicUrl = cleanUrl.startsWith('http') && !cleanUrl.includes('localhost') && !cleanUrl.includes('127.0.0.1');
+                        if (isPublicUrl) {
+                            console.warn("Retrying with primary proxy (Weserv):", cleanUrl);
+                            // V5.4: Use Weserv for high-speed CORS resolution with explicit PNG output
+                            const weservProxy = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&output=png`;
+                            result = await fetchAsset(weservProxy, false);
+                        }
+                        
+                        if (!result && isPublicUrl) {
+                            console.warn("Retrying with secondary proxy (CORSProxy):", cleanUrl);
+                            result = await fetchAsset(cleanUrl, true);
                         }
                     }
                     if (!result) console.warn("Deep Resolve failed for URL:", cleanUrl, "falling back to original URL.");
@@ -3727,41 +3885,121 @@
 
                 // 3. Wait for fonts and final browser paint
                 if (document.fonts) await document.fonts.ready;
-                await new Promise(r => setTimeout(r, 800));
+                
+                // V5.1: Top-Layer Paint Strategy 
+                if (targetAreaId === 'capture-area-worker') {
+                    captureArea.style.left = '50%';
+                    captureArea.style.top = '50%';
+                    captureArea.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    captureArea.style.zIndex = '999999';
+                    captureArea.style.boxShadow = '0 0 100px rgba(0,0,0,0.5)';
+                    captureArea.style.borderRadius = '20px';
+                    // Force Layout Reflow
+                    void captureArea.offsetHeight;
+                }
+
+                // V5.2: Force-Paint visibility (only for layers that SHOULD be visible)
+                const ensureVisible = (target) => {
+                    const layers = ['.card-stripes', '.header-container', '.office-bar', '#drag-sign'];
+                    layers.forEach(sel => {
+                        const el = target.querySelector(sel);
+                        if (el) {
+                            // V5.4: Use getComputedStyle for more robust detection of 'none'
+                            const currentStyle = window.getComputedStyle(el);
+                            const isHiddenByClass = target.classList.contains('hide-defaults') || el.classList.contains('hidden');
+                            const isHiddenByStyle = currentStyle.display === 'none' || currentStyle.visibility === 'hidden';
+                            
+                            if (!isHiddenByClass && !isHiddenByStyle) {
+                                el.style.visibility = 'visible';
+                                el.style.opacity = '1';
+                                // Only force display if it's currently effectively auto/undefined
+                                if (!el.style.display || el.style.display === 'undefined') {
+                                    el.style.display = (sel === '.card-stripes' || sel === '.header-container') ? 'flex' : 'block';
+                                }
+                            }
+                        }
+                    });
+                };
+                ensureVisible(captureArea);
+
+                // V5.1: Confirm all images inside worker are LOADED
+                const workerImages = Array.from(captureArea.querySelectorAll('img'));
+                await Promise.all(workerImages.map(img => {
+                    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                    return new Promise(r => { 
+                        img.onload = r; 
+                        img.onerror = r; 
+                        setTimeout(r, 2000); 
+                    });
+                }));
 
                 let base64Png = "";
-                try {
-                    // Try html-to-image first (Better quality)
-                    base64Png = await htmlToImage.toPng(captureArea, {
-                        backgroundColor: '#ffffff',
-                        pixelRatio: 3,
-                        width: 1000,
-                        height: 630,
-                        skipFonts: true,
-                        imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
-                    });
-                } catch (h2iErr) {
-                    console.warn("html-to-image failed, falling back to html2canvas:", h2iErr);
-                    // Fallback to html2canvas (More robust, lower quality)
-                    const canvas = await html2canvas(captureArea, {
-                        useCORS: true,
-                        allowTaint: true,
-                        scale: 3,
-                        backgroundColor: '#ffffff'
-                    });
-                    base64Png = canvas.toDataURL('image/png', 1.0);
+                let attempts = 0;
+                const maxAttempts = 3;
+
+                while (attempts < maxAttempts && !base64Png) {
+                    attempts++;
+                    try {
+                        updateToast(`Capturing High-Fidelity Record (Attempt ${attempts})...`, 'camera');
+                        // Progressive wait for GPU paint
+                        await new Promise(r => setTimeout(r, 800 * attempts));
+
+                        // Try html-to-image first (Better quality)
+                        base64Png = await htmlToImage.toPng(captureArea, {
+                            backgroundColor: '#ffffff',
+                            pixelRatio: 3,
+                            width: 1000,
+                            height: 630,
+                            skipFonts: true,
+                            style: { opacity: '1', visibility: 'visible', left: '0', top: '0', transform: 'none' }, // Reset clone transform
+                            imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+                        });
+
+                        if (base64Png && base64Png.length < 5000) { 
+                            console.warn(`Attempt ${attempts}: Rendered image looks critically blank (${Math.round(base64Png.length/1024)}KB). Retrying...`);
+                            base64Png = ""; 
+                            if (attempts === maxAttempts) throw new Error("RENDER_BLANK_REPEATED");
+                        }
+                    } catch (h2iErr) {
+                        console.warn(`Attempt ${attempts} failed:`, h2iErr);
+                        if (attempts === maxAttempts) {
+                            console.warn("Final fallback to legacy render...");
+                            const canvas = await html2canvas(captureArea, {
+                                useCORS: true,
+                                allowTaint: true,
+                                scale: 3,
+                                backgroundColor: '#ffffff'
+                            });
+                            base64Png = canvas.toDataURL('image/png', 1.0);
+                        }
+                    }
                 }
 
                 if (!base64Png) throw new Error("Could not generate image data from the card.");
 
-                // Restore UI
-                captureArea.innerHTML = tempCaptureAreaHtml;
-                applyLayoutConfig(currentLayout, targetAreaId);
+                // V5.1: Success Check & Cleanup
+                if (targetAreaId === 'capture-area-worker') {
+                    captureArea.style.left = '-9999px';
+                    captureArea.style.top = '0';
+                    captureArea.style.transform = 'none';
+                    captureArea.style.zIndex = '-9999';
+                }
+                if (base64Png.length < 25000) {
+                    alert("Warning: The generated card image appears to be blank. This usually happens if the browser is low on memory. Please refresh and try again.");
+                }
+
+                // 4. RESTORE UI
+                if (captureArea && tempCaptureAreaHtml) {
+                    captureArea.innerHTML = tempCaptureAreaHtml;
+                }
+                if (typeof applyLayoutConfig === 'function' && currentLayout && targetAreaId) {
+                    applyLayoutConfig(currentLayout, targetAreaId);
+                }
                 if (targetAreaId === 'capture-area') {
                     if (typeof syncMember === 'function') syncMember();
                 }
 
-                // 4. **Sync to Google Sheets (Optional â€” only if Master Sync URL is configured)**
+                // 5. **Sync to Google Sheets**
                 const currentMsId = window.masterSyncId;
                 if (currentMsId) {
                     try {
@@ -3825,8 +4063,19 @@
                     else if (err.type) errMsg = "Event: " + err.type + (err.target ? " on " + err.target.tagName : "");
                     else errMsg = JSON.stringify(err);
                 }
-                if (!isSilent) alert("Error during generation: " + errMsg);
+                
+                // Cleanup Toast
                 if (l) l.remove();
+                
+                // Restoration in error case
+                if (captureArea && tempCaptureAreaHtml) {
+                    captureArea.innerHTML = tempCaptureAreaHtml;
+                }
+                if (typeof applyLayoutConfig === 'function' && currentLayout && targetAreaId) {
+                    applyLayoutConfig(currentLayout, targetAreaId);
+                }
+
+                if (!isSilent) alert("Error during generation: " + errMsg);
                 return false;
             }
         };
@@ -3997,7 +4246,7 @@
     <div id="diag-log"
         style="position:fixed; bottom:10px; right:10px; width:300px; max-height:200px; overflow-y:auto; background:rgba(0,0,0,0.8); color:#00ff00; font-family:monospace; font-size:10px; padding:10px; border-radius:5px; z-index:999999; display:none; pointer-events:none;">
         <div style="border-bottom:1px solid #444; padding-bottom:5px; margin-bottom:5px; font-weight:bold;">SYSLOG
-            [STABILITY V2]</div>
+                        [STABILITY V3_FINAL]</div>
     </div>
 
     <!-- HAMBURGER MENU BUTTON - Always visible, all screen sizes -->
@@ -4027,11 +4276,11 @@
             transition: transform 0.15s ease, box-shadow 0.15s ease !important;
         }
         #ultimate-menu-trigger:hover {
-            transform: scale(1.08) !important;
+            transform: scale(1.08); /* Removed !important */
             box-shadow: 0 6px 22px rgba(0,28,107,0.45) !important;
         }
         #ultimate-menu-trigger:active {
-            transform: scale(0.93) !important;
+            transform: scale(0.93); /* Removed !important */
         }
     </style>
     <div id="ultimate-menu-trigger" onclick="toggleDrawer()" title="Open Navigation Menu">
