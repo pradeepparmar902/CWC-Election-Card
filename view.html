@@ -15,6 +15,7 @@
     <!-- Firebase Cloud Sync SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --primary-blue: #001C6B;
@@ -457,8 +458,17 @@
             <a href="view.html" class="drawer-nav-item active">
                 <i data-lucide="database"></i> Generated Library
             </a>
+            <a href="index.html?open=checker" class="drawer-nav-item">
+                <i data-lucide="check-square" style="color: #F7931E;"></i> Checker Dashboard
+            </a>
+            <a href="index.html?open=rejected" class="drawer-nav-item">
+                <i data-lucide="x-circle" style="color: #666;"></i> My Rejected Cards
+            </a>
             <a href="admin.html" class="drawer-nav-item">
                 <i data-lucide="shield"></i> Admin Panel
+            </a>
+            <a href="index.html?open=admin" class="drawer-nav-item" style="border: 1px dashed #ddd; margin-top: 10px; font-size: 0.85rem;">
+                <i data-lucide="settings"></i> Admin Settings
             </a>
         </nav>
 
@@ -523,6 +533,10 @@
                 <button id="btn-download"
                     style="margin-top: 15px; width: 100%; background: var(--primary-blue); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <i data-lucide="download" size="18"></i> Download High-Res Photo
+                </button>
+                <button id="btn-share"
+                    style="margin-top: 10px; width: 100%; background: #25D366; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="share-2" size="18"></i> Share to Apps
                 </button>
             </div>
         </div>
@@ -590,24 +604,45 @@
             viewMembership.textContent = `ID: ${rec["Membership No"] || "N/A"}`;
             viewImage.src = rec.photoUrl || ""; // Firebase Storage PNG link
 
-            // Setup Download Button
-            btnDownload.onclick = async () => {
+                // Setup Share Button (if supported)
+                const btnShare = document.getElementById('btn-share');
+                if (navigator.share) {
+                    btnShare.style.display = 'flex';
+                    btnShare.onclick = () => openShareModal(rec);
+                }
+
+                btnDownload.onclick = async () => {
                 const btnOrig = btnDownload.innerHTML;
                 btnDownload.innerHTML = `<i data-lucide="loader" class="spin"></i> Downloading...`;
                 if (window.lucide) lucide.createIcons();
 
                 try {
-                    // Fetch blob directly via proxy to bypass strict cross-origin block on anchor downloads
-                    const response = await fetch(rec.photoUrl);
+                    // Method 4: High-Performance Image Proxy (Weserv)
+                    // Weserv is extremely fast and specifically handles image CORS for downloading.
+                    const weservUrl = `https://images.weserv.nl/?url=${encodeURIComponent(rec.photoUrl)}&output=png&default=${encodeURIComponent(rec.photoUrl)}`;
+                    
+                    const response = await fetch(weservUrl);
+                    if (!response.ok) throw new Error('Image fetch failed');
+                    
                     const blob = await response.blob();
-                    const a = document.createElement("a");
-                    a.href = window.URL.createObjectURL(blob);
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = downloadUrl;
                     a.download = `ID_${rec["Full Printed Name"] ? rec["Full Printed Name"].replace(/\s/g, '_').toUpperCase() : "CARD"}.png`;
                     document.body.appendChild(a);
                     a.click();
-                    a.remove();
+                    
+                    // Cleanup
+                    setTimeout(() => {
+                        if (a.parentNode) document.body.removeChild(a);
+                        window.URL.revokeObjectURL(downloadUrl);
+                    }, 200);
                 } catch (e) {
-                    alert("Download failed. You can right-click the image and select 'Save Image As' instead.");
+                    console.error("All download methods failed:", e);
+                    // Absolute fallback: Open in new tab
+                    window.open(rec.photoUrl, '_blank');
                 } finally {
                     btnDownload.innerHTML = btnOrig;
                     if (window.lucide) lucide.createIcons();
@@ -709,6 +744,112 @@
                         console.log('ServiceWorker registration failed: ', err);
                     });
             });
+        }
+    </script>
+    <!-- Share Option Modal -->
+    <div id="share-modal"
+        style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px);">
+        <div style="background: white; width: 100%; max-width: 320px; border-radius: 16px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: center;">
+            <h3 style="margin-top: 0; color: #001C6B; font-weight: 800;">Share ID Card</h3>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 25px;">Select your preferred format:</p>
+            
+            <button id="share-as-image" style="width: 100%; padding: 15px; margin-bottom: 12px; border: 2px solid #001C6B; background: white; color: #001C6B; border-radius: 10px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i data-lucide="image"></i> Share as Image (PNG)
+            </button>
+            
+            <button id="share-as-pdf" style="width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #ED1C24; background: white; color: #ED1C24; border-radius: 10px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i data-lucide="file-text"></i> Share as PDF File
+            </button>
+            
+            <button onclick="closeShareModal()" style="background: none; border: none; color: #999; font-weight: 600; cursor: pointer; font-size: 0.9rem;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function openShareModal(rec) {
+            const modal = document.getElementById('share-modal');
+            modal.style.display = 'flex';
+            
+            document.getElementById('share-as-image').onclick = () => handleShare(rec, 'image');
+            document.getElementById('share-as-pdf').onclick = () => handleShare(rec, 'pdf');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').style.display = 'none';
+        }
+
+        async function handleShare(rec, format) {
+            closeShareModal();
+            const btnShare = document.getElementById('btn-share');
+            const origHTML = btnShare.innerHTML;
+            btnShare.innerHTML = `<i data-lucide="loader" class="spin"></i> Preparing...`;
+            if (window.lucide) lucide.createIcons();
+
+            try {
+                // Fetch image via Weserv Proxy (binary data)
+                const weservUrl = `https://images.weserv.nl/?url=${encodeURIComponent(rec.photoUrl)}&output=png`;
+                const response = await fetch(weservUrl);
+                if (!response.ok) throw new Error('Fetch failed');
+                const blob = await response.blob();
+                
+                let shareFile;
+                let fileName = `ID_${rec["Full Printed Name"] ? rec["Full Printed Name"].replace(/\s/g, '_').toUpperCase() : "CARD"}`;
+
+                if (format === 'pdf') {
+                    // Convert PNG to PDF using jsPDF
+                    const img = new Image();
+                    const dataUrl = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
+                    });
+                    
+                    await new Promise((resolve) => {
+                        img.onload = resolve;
+                        img.src = dataUrl;
+                    });
+
+                    // We use img dimensions for the PDF page
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({
+                        orientation: img.width > img.height ? 'landscape' : 'portrait',
+                        unit: 'px',
+                        format: [img.width, img.height]
+                    });
+
+                    doc.addImage(dataUrl, 'PNG', 0, 0, img.width, img.height);
+                    const pdfBlob = doc.output('blob');
+                    shareFile = new File([pdfBlob], `${fileName}.pdf`, { type: 'application/pdf' });
+                } else {
+                    // Share as Image
+                    shareFile = new File([blob], `${fileName}.png`, { type: 'image/png' });
+                }
+
+                // Use Web Share API
+                if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
+                    await navigator.share({
+                        files: [shareFile],
+                        title: 'Member ID Card',
+                        text: `ID Card for ${rec["Full Printed Name"]}`
+                    });
+                } else {
+                    // If file sharing is not supported, fallback to regular share (text/url)
+                    await navigator.share({
+                        title: 'Member ID Card',
+                        text: `ID Card for ${rec["Full Printed Name"]}`,
+                        url: rec.photoUrl
+                    });
+                }
+            } catch (err) {
+                console.error("Sharing failed:", err);
+                if (err.name !== 'AbortError') {
+                    alert("Sharing failed. You can still use the 'Download' button to save the file.");
+                }
+            } finally {
+                btnShare.innerHTML = origHTML;
+                if (window.lucide) lucide.createIcons();
+            }
         }
     </script>
 </body>

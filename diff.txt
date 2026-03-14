@@ -1,0 +1,1904 @@
+﻿commit fa4dee16a880412424453451020f71ff84b6236f
+Author: Pradeep Parmar <pradeepparmar902@gmail.com>
+Date:   Sun Mar 8 10:01:33 2026 +0530
+
+    Hide all default CSS styles and borders when Hide Default Graphics is active
+
+diff --git a/index.html b/index.html
+index 8aca335..d06677c 100644
+--- a/index.html
++++ b/index.html
+@@ -19,9 +19,34 @@
+         .hide-defaults .card-stripes,
+         .hide-defaults .header-container,
+         .hide-defaults .office-bar,
+-        .hide-defaults .default-label {
++        .hide-defaults .default-label,
++        .hide-defaults #drag-sign {
+             display: none !important;
+         }
++
++        /* Strip styling to leave raw text placeholders */
++        .hide-defaults .valid-box {
++            background: transparent !important;
++            color: black !important;
++            padding: 0 !important;
++            border-radius: 0 !important;
++            font-weight: 600 !important;
++        }
++
++        .hide-defaults .name-text {
++            color: black !important;
++            font-weight: 600 !important;
++        }
++
++        .hide-defaults #drag-m-membership span {
++            border: none !important;
++            padding: 0 !important;
++        }
++
++        .hide-defaults #drag-photo {
++            border: 1px dashed #ccc !important;
++            background: transparent !important;
++        }
+     </style>
+     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
+commit 7c41661c29aaeff3ac3af7b014817a42e8fa0f93
+Author: Pradeep Parmar <pradeepparmar902@gmail.com>
+Date:   Sun Mar 8 09:53:25 2026 +0530
+
+    Hide all default text labels when Hide Default Graphics is checked
+
+diff --git a/index.html b/index.html
+index e3fbd37..8aca335 100644
+--- a/index.html
++++ b/index.html
+@@ -15,7 +15,14 @@
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+-    <!-- Firebase Cloud Sync SDKs -->
++    <style>
++        .hide-defaults .card-stripes,
++        .hide-defaults .header-container,
++        .hide-defaults .office-bar,
++        .hide-defaults .default-label {
++            display: none !important;
++        }
++    </style>
+     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
+@@ -737,36 +744,36 @@
+             </div>
+ 
+             <div class="draggable detail-text" id="drag-m-dob" style="top: 310px; left: 300px;">
+-                <b>DOB : </b> <span id="view-m-dob">[DD.MM.YYYY]-M</span>
++                <span class="default-label"><b>DOB : </b> </span><span id="view-m-dob">[DD.MM.YYYY]-M</span>
+                 <div class="resizer"></div>
+             </div>
+ 
+             <div class="draggable detail-text" id="drag-m-address"
+                 style="top: 350px; left: 300px; max-width: 650px; line-height: 1.15;">
+-                <b>Address : </b> <span id="view-m-addr">[Full Address Here]</span>
++                <span class="default-label"><b>Address : </b> </span><span id="view-m-addr">[Full Address Here]</span>
+                 <div class="resizer"></div>
+             </div>
+ 
+             <div class="draggable detail-text" id="drag-m-mobile" style="top: 440px; left: 300px;">
+-                <b>Mob.</b> <span id="view-m-mobile">[Mobile No]</span>
++                <span class="default-label"><b>Mob.</b> </span><span id="view-m-mobile">[Mobile No]</span>
+                 <div class="resizer"></div>
+             </div>
+ 
+             <div class="draggable detail-text" id="drag-m-membership"
+                 style="top: 480px; left: 300px; color: var(--primary-blue); font-weight: 800;">
+-                Membership No.: <span id="view-m-membership"
++                <span class="default-label">Membership No.: </span><span id="view-m-membership"
+                     style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">[Mem
+                     No]</span>
+                 <div class="resizer"></div>
+             </div>
+ 
+             <div class="draggable valid-box detail-text" id="drag-m-valid" style="top: 535px; left: 300px;">
+-                Valid Up To : [Valid Date]
++                <span class="default-label">Valid Up To : </span>[Valid Date]
+                 <div class="resizer"></div>
+             </div>
+ 
+             <div class="draggable detail-text" id="drag-m-issue" style="top: 590px; left: 40px; font-weight: 800;">
+-                Date of Issue : <span id="view-m-issue">[Issue Date]</span>
++                <span class="default-label">Date of Issue : </span><span id="view-m-issue">[Issue Date]</span>
+                 <div class="resizer"></div>
+             </div>
+ 
+@@ -897,21 +904,21 @@
+             // Format DOB for display (YYYY-MM-DD to DD.MM.YYYY)
+             if (mDob.value) {
+                 const parts = mDob.value.split('-');
+-                document.getElementById('drag-m-dob').innerHTML = `<b>DOB : </b> ${parts[2]}.${parts[1]}.${parts[0]}-${mGender.value}<div class="resizer"></div>`;
++                document.getElementById('drag-m-dob').innerHTML = `<span class="default-label"><b>DOB : </b> </span>${parts[2]}.${parts[1]}.${parts[0]}-${mGender.value}<div class="resizer"></div>`;
+             } else {
+-                document.getElementById('drag-m-dob').innerHTML = `<b>DOB : </b><div class="resizer"></div>`;
++                document.getElementById('drag-m-dob').innerHTML = `<span class="default-label"><b>DOB : </b></span><div class="resizer"></div>`;
+             }
+ 
+-            document.getElementById('drag-m-mobile').innerHTML = `<b>Mob.</b> ${mMobile.value}<div class="resizer"></div>`;
+-            document.getElementById('drag-m-membership').innerHTML = `Membership No.: <span style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">${mMembership.value}</span><div class="resizer"></div>`;
+-            document.getElementById('drag-m-valid').innerHTML = `Valid Up To : ${mValid.value}<div class="resizer"></div>`;
++            document.getElementById('drag-m-mobile').innerHTML = `<span class="default-label"><b>Mob.</b> </span>${mMobile.value}<div class="resizer"></div>`;
++            document.getElementById('drag-m-membership').innerHTML = `<span class="default-label">Membership No.: </span><span style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">${mMembership.value}</span><div class="resizer"></div>`;
++            document.getElementById('drag-m-valid').innerHTML = `<span class="default-label">Valid Up To : </span>${mValid.value}<div class="resizer"></div>`;
+ 
+             // Format Issue Date
+             if (mIssue.value) {
+                 const parts = mIssue.value.split('-');
+-                document.getElementById('drag-m-issue').innerHTML = `Date of Issue : ${parts[2]}.${parts[1]}.${parts[0]}<div class="resizer"></div>`;
++                document.getElementById('drag-m-issue').innerHTML = `<span class="default-label">Date of Issue : </span>${parts[2]}.${parts[1]}.${parts[0]}<div class="resizer"></div>`;
+             } else {
+-                document.getElementById('drag-m-issue').innerHTML = `Date of Issue : <div class="resizer"></div>`;
++                document.getElementById('drag-m-issue').innerHTML = `<span class="default-label">Date of Issue : </span><div class="resizer"></div>`;
+             }
+         };
+ 
+@@ -1010,10 +1017,13 @@
+         };
+ 
+         hideDefaultsToggle.onchange = (e) => {
+-            const displayStyle = e.target.checked ? 'none' : 'flex';
+-            document.querySelector('.card-stripes').style.display = displayStyle;
+-            document.querySelector('.header-container').style.display = displayStyle;
+-            document.querySelector('.office-bar').style.display = displayStyle;
++            if (e.target.checked) {
++                captureArea.classList.add('hide-defaults');
++                document.getElementById('drag-sign').style.display = 'none';
++            } else {
++                captureArea.classList.remove('hide-defaults');
++                document.getElementById('drag-sign').style.display = 'block';
++            }
+         };
+ 
+         const bgStudio = document.getElementById('bg-studio-container');
+
+commit be934d867c791fbf05b7f5c63752433d98ac0235
+Author: Pradeep Parmar <pradeepparmar902@gmail.com>
+Date:   Sun Mar 8 09:29:34 2026 +0530
+
+    Implement PDF Export Feature
+
+diff --git a/index.html b/index.html
+index 908606b..e3fbd37 100644
+--- a/index.html
++++ b/index.html
+@@ -14,6 +14,7 @@
+     <script src="https://unpkg.com/lucide@latest"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
++    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+     <!-- Firebase Cloud Sync SDKs -->
+     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+@@ -792,6 +793,7 @@
+                     <option value="image/png">PNG (Sharp Text)</option>
+                     <option value="image/jpeg">JPG (Photo Style)</option>
+                     <option value="image/svg+xml">SVG (Vector for CorelDRAW)</option>
++                    <option value="application/pdf">PDF (Print Ready)</option>
+                 </select>
+             </div>
+             <button class="btn btn-p" id="btn-download"><i data-lucide="download"></i> Export High-Res ID</button>
+@@ -1134,6 +1136,21 @@
+                     if (!cachedSvg) throw new Error("Empty vector generated");
+                     blob = await (await fetch(cachedSvg)).blob();
+ 
++                } else if (formatSelection === 'application/pdf') {
++                    finalExt = 'pdf';
++                    // Generate high-res image first for the PDF
++                    const dataUrl = await htmlToImage.toJpeg(area, { backgroundColor: '#ffffff', pixelRatio: 4, quality: 0.98, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
++
++                    const { jsPDF } = window.jspdf;
++                    // Create landscape PDF, dimensions 100mm x 63mm (matching 1000x630 ratio)
++                    const doc = new jsPDF({
++                        orientation: 'landscape',
++                        unit: 'mm',
++                        format: [100, 63]
++                    });
++                    doc.addImage(dataUrl, 'JPEG', 0, 0, 100, 63);
++                    blob = doc.output('blob');
++
+                 } else {
+                     // Raster Path (Local)
+                     finalExt = formatSelection === 'image/png' ? 'png' : 'jpg';
+
+commit d398305fa40a10808fec135ff19db3ac9ed15925
+Author: Pradeep Parmar <pradeepparmar902@gmail.com>
+Date:   Sun Mar 8 00:19:24 2026 +0530
+
+    Fix mobile layout responsiveness
+
+diff --git a/index.html b/index.html
+index a5a33ad..908606b 100644
+--- a/index.html
++++ b/index.html
+@@ -3,8 +3,11 @@
+ 
+ <head>
+     <meta charset="UTF-8">
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+     <title>ID Designer Pro - Header Studio</title>
++    <link rel="manifest" href="manifest.json">
++    <meta name="theme-color" content="#001C6B">
++    <link rel="apple-touch-icon" href="logo192.png">
+     <!-- Google Fonts -->
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+     <!-- Lucide Icons -->
+@@ -32,11 +35,19 @@
+             font-family: 'Inter', sans-serif;
+         }
+ 
++        html {
++            width: 100vw;
++            overflow-x: hidden;
++        }
++
+         body {
+             background-color: var(--bg-color);
+             min-height: 100vh;
++            width: 100vw;
++            max-width: 100vw;
+             display: flex;
+-            overflow: hidden;
++            overflow-x: hidden;
++            overflow-y: auto;
+         }
+ 
+         /* Sidebar Styles */
+@@ -126,6 +137,30 @@
+             margin-bottom: 1rem;
+         }
+ 
++        .form-grid-3 {
++            display: grid;
++            grid-template-columns: 1fr 1fr 1fr;
++            gap: 0.5rem;
++        }
++
++        .form-grid-2 {
++            display: grid;
++            grid-template-columns: 1fr 1fr;
++            gap: 0.5rem;
++        }
++
++        .form-grid-2-1 {
++            display: grid;
++            grid-template-columns: 2fr 1fr;
++            gap: 0.5rem;
++        }
++
++        .form-grid-100-1 {
++            display: grid;
++            grid-template-columns: 100px 1fr;
++            gap: 0.5rem;
++        }
++
+         /* Preview Canvas */
+         .main-preview {
+             margin-left: var(--sidebar-width);
+@@ -400,6 +435,83 @@
+                 transform: rotate(360deg);
+             }
+         }
++
++        /* Mobile Layout Adjustments */
++        @media (max-width: 1200px) {
++            body {
++                flex-direction: column-reverse !important;
++                overflow-x: hidden !important;
++            }
++
++            .sidebar {
++                width: 100% !important;
++                height: auto;
++                position: relative;
++                border-right: none;
++                border-bottom: 2px solid #ddd;
++                padding: 1.5rem;
++                box-sizing: border-box;
++            }
++
++            .main-preview {
++                margin-left: 0 !important;
++                padding: 1rem;
++                height: auto;
++                justify-content: flex-start;
++                max-width: 100vw;
++                overflow-x: hidden;
++                overflow-y: hidden;
++            }
++
++            .id-card {
++                transform: scale(0.6);
++                transform-origin: top left;
++                margin-bottom: 20px;
++                /* Offset physical box width leftover from scaling 1000x630 -> 600x378 */
++                margin-right: -400px;
++                margin-bottom: -232px;
++            }
++
++            .actions {
++                margin-top: 1rem;
++                width: 100%;
++                display: flex;
++                flex-direction: column;
++                align-items: center;
++                gap: 10px;
++                position: relative;
++                z-index: 10;
++            }
++        }
++
++        @media (max-width: 768px) {
++            .sidebar {
++                padding: 1rem;
++            }
++
++            .form-grid-3,
++            .form-grid-2,
++            .form-grid-2-1,
++            .form-grid-100-1 {
++                grid-template-columns: 1fr;
++            }
++
++            .id-card {
++                transform: scale(0.35);
++                transform-origin: top left;
++                /* At 0.35 scale, physical box needs negative margins so it takes exactly 350x220 space */
++                margin-right: -650px;
++                margin-bottom: -409px;
++            }
++        }
++
++        @media (max-width: 480px) {
++            .id-card {
++                transform: scale(0.30) !important;
++                margin-right: -700px !important;
++                margin-bottom: -441px !important;
++            }
++        }
+     </style>
+ </head>
+ 
+@@ -511,14 +623,14 @@
+ 
+         <div class="section-title">Member Details</div>
+ 
+-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
++        <div class="form-grid-3">
+             <div class="form-group"><label>First Name</label><input type="text" id="m-fname" value=""></div>
+             <div class="form-group"><label>Middle Name</label><input type="text" id="m-mname" value=""></div>
+             <div class="form-group"><label>Surname</label><input type="text" id="m-sname" value=""></div>
+         </div>
+ 
+-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+-            <div class="form-group" style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem;">
++        <div class="form-grid-2">
++            <div class="form-group form-grid-2-1">
+                 <div><label>Date of Birth</label><input type="date" id="m-dob" value=""></div>
+                 <div>
+                     <label>Gender</label>
+@@ -540,13 +652,13 @@
+ 
+         <div class="form-group"><label>Address</label><textarea id="m-address" rows="2"></textarea></div>
+ 
+-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
++        <div class="form-grid-2">
+             <div class="form-group"><label>Mobile Number</label><input type="text" id="m-mobile" value="">
+             </div>
+             <div class="form-group"><label>Membership No</label><input type="text" id="m-membership" value=""></div>
+         </div>
+ 
+-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
++        <div class="form-grid-2">
+             <div class="form-group"><label>Valid Upto</label><input type="text" id="m-valid" value="">
+             </div>
+             <div class="form-group"><label>Date of Issue</label><input type="date" id="m-issue" value="">
+@@ -555,7 +667,7 @@
+ 
+         <div class="section-title" style="margin-top: 1rem; font-size: 0.65rem; opacity: 0.7;">Admin (Database Only)
+         </div>
+-        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 0.5rem;">
++        <div class="form-grid-100-1">
+             <div class="form-group"><label>Vibhag No</label><input type="text" id="db-vibhag-no" placeholder="e.g. 12">
+             </div>
+             <div class="form-group"><label>Vibhag Name</label><input type="text" id="db-vibhag-name"
+@@ -1451,6 +1563,17 @@
+             }
+         });
+ 
++        // Register Service Worker for PWA
++        if ('serviceWorker' in navigator) {
++            window.addEventListener('load', () => {
++                navigator.serviceWorker.register('./sw.js')
++                    .then(registration => {
++                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
++                    }, err => {
++                        console.log('ServiceWorker registration failed: ', err);
++                    });
++            });
++        }
+     </script>
+ </body>
+ 
+
+commit cda16d4c6e4d908412e9e417e763a670f3f2bd37
+Author: Pradeep Parmar <pradeepparmar902@gmail.com>
+Date:   Sat Mar 7 15:10:16 2026 +0530
+
+    first commit
+
+diff --git a/index.html b/index.html
+new file mode 100644
+index 0000000..a5a33ad
+--- /dev/null
++++ b/index.html
+@@ -0,0 +1,1457 @@
++<!DOCTYPE html>
++<html lang="en">
++
++<head>
++    <meta charset="UTF-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <title>ID Designer Pro - Header Studio</title>
++    <!-- Google Fonts -->
++    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
++    <!-- Lucide Icons -->
++    <script src="https://unpkg.com/lucide@latest"></script>
++    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
++    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
++    <!-- Firebase Cloud Sync SDKs -->
++    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
++    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
++    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
++    <style>
++        :root {
++            --primary-red: #ED1C24;
++            --primary-blue: #001C6B;
++            --primary-pink: #EC008C;
++            --bg-color: #f0f2f5;
++            --sidebar-width: 420px;
++            --transition: all 0.3s ease;
++        }
++
++        * {
++            margin: 0;
++            padding: 0;
++            box-sizing: border-box;
++            font-family: 'Inter', sans-serif;
++        }
++
++        body {
++            background-color: var(--bg-color);
++            min-height: 100vh;
++            display: flex;
++            overflow: hidden;
++        }
++
++        /* Sidebar Styles */
++        .sidebar {
++            width: var(--sidebar-width);
++            height: 100vh;
++            background: white;
++            border-right: 1px solid #ddd;
++            padding: 2rem;
++            overflow-y: auto;
++            position: fixed;
++            left: 0;
++            top: 0;
++            z-index: 100;
++            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
++        }
++
++        .sidebar h2 {
++            margin-bottom: 2rem;
++            font-weight: 900;
++            color: var(--primary-blue);
++            font-size: 1.6rem;
++        }
++
++        .section-title {
++            font-size: 0.75rem;
++            font-weight: 800;
++            color: #999;
++            text-transform: uppercase;
++            margin: 1.5rem 0 1rem;
++            border-bottom: 1px solid #eee;
++            padding-bottom: 5px;
++        }
++
++        .form-group {
++            margin-bottom: 1rem;
++        }
++
++        .form-group label {
++            display: block;
++            font-size: 0.8rem;
++            font-weight: 700;
++            color: #555;
++            margin-bottom: 0.4rem;
++        }
++
++        .form-group input,
++        .form-group select,
++        .form-group textarea {
++            width: 100%;
++            padding: 0.7rem;
++            border: 1px solid #ddd;
++            border-radius: 8px;
++            font-size: 0.9rem;
++        }
++
++        .btn-group {
++            display: flex;
++            gap: 0.5rem;
++            margin-bottom: 1rem;
++        }
++
++        .tab-btn {
++            flex: 1;
++            padding: 0.6rem;
++            border: 1px solid #ddd;
++            background: #f9f9f9;
++            cursor: pointer;
++            border-radius: 8px;
++            font-size: 0.8rem;
++            font-weight: 700;
++        }
++
++        .tab-btn.active {
++            background: var(--primary-blue);
++            color: white;
++            border-color: var(--primary-blue);
++        }
++
++        .mode-toggle {
++            display: flex;
++            align-items: center;
++            justify-content: space-between;
++            padding: 1rem;
++            background: #f0f4ff;
++            border-radius: 12px;
++            margin-bottom: 1rem;
++        }
++
++        /* Preview Canvas */
++        .main-preview {
++            margin-left: var(--sidebar-width);
++            flex: 1;
++            display: flex;
++            flex-direction: column;
++            align-items: center;
++            justify-content: center;
++            padding: 2rem;
++            background: #eef1f5;
++            overflow: auto;
++        }
++
++        .id-card {
++            width: 1000px;
++            height: 630px;
++            background: white;
++            border: 1px solid #ddd;
++            position: relative;
++            overflow: visible;
++            /* Fix truncation of long text elements */
++            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
++        }
++
++        /* Grid for design mode */
++        .design-mode-on .id-card {
++            background-image: radial-gradient(#ddd 1px, transparent 1px);
++            background-size: 20px 20px;
++        }
++
++        /* Draggable Elements */
++        .draggable {
++            position: absolute;
++            cursor: default;
++            user-select: none;
++            border: 1px solid transparent;
++        }
++
++        .design-mode-on .draggable {
++            cursor: move;
++            border: 1px dashed transparent;
++        }
++
++        .design-mode-on .draggable:hover {
++            border: 1px dashed var(--primary-pink);
++            background: rgba(236, 0, 140, 0.05);
++        }
++
++        .resizer {
++            width: 12px;
++            height: 12px;
++            background: var(--primary-pink);
++            position: absolute;
++            right: -6px;
++            bottom: -6px;
++            cursor: nwse-resize;
++            display: none;
++            border-radius: 50%;
++        }
++
++        .design-mode-on .draggable:hover .resizer {
++            display: block;
++        }
++
++        /* Parts of the Card */
++        .card-stripes {
++            width: 100%;
++            height: 35px;
++            display: flex;
++        }
++
++        .stripe-1 {
++            background: #2E3192;
++            flex: 1.5;
++        }
++
++        .stripe-2 {
++            background: #008A37;
++            flex: 1.5;
++        }
++
++        .stripe-3 {
++            background: #ffffff;
++            flex: 2.2;
++            color: #2E3192;
++            display: flex;
++            align-items: center;
++            justify-content: center;
++            font-weight: 800;
++            font-size: 16px;
++        }
++
++        .stripe-4 {
++            background: #F7931E;
++            flex: 1.5;
++        }
++
++        .stripe-5 {
++            background: #ED1C24;
++            flex: 1.5;
++        }
++
++        /* Header Layouts */
++        .header-container {
++            width: 100%;
++            min-height: 160px;
++            display: flex;
++            align-items: center;
++            justify-content: space-between;
++            padding: 10px 40px;
++            position: relative;
++            overflow: hidden;
++        }
++
++        .header-full-img {
++            width: 100%;
++            height: auto;
++            /* Preserve aspect ratio and resolution! */
++            display: block;
++            pointer-events: none;
++            /* Let clicks pass to the container for dragging */
++            image-rendering: -webkit-optimize-contrast;
++            /* Keep text sharp */
++        }
++
++        /* Clean up container when full image is used */
++        .header-container.full-imported {
++            padding: 0 !important;
++            overflow: visible !important;
++            /* Let image show fully if needed */
++            min-height: auto !important;
++            border: 1px dashed transparent;
++        }
++
++        .design-mode-on .header-container.full-imported {
++            border: 1px dashed var(--primary-pink);
++        }
++
++        .logo-box {
++            width: 140px;
++            height: 140px;
++            object-fit: contain;
++            flex-shrink: 0;
++        }
++
++        .header-text-box {
++            text-align: center;
++            flex: 1;
++        }
++
++        .header-text-box h1 {
++            color: var(--primary-red);
++            font-size: 42px;
++            font-weight: 950;
++            margin-bottom: 2px;
++        }
++
++        .header-text-box h2 {
++            color: var(--primary-blue);
++            font-size: 22px;
++            font-weight: 800;
++            margin-bottom: 4px;
++        }
++
++        .header-text-box p {
++            color: var(--primary-blue);
++            font-size: 17px;
++            font-weight: 700;
++        }
++
++        .office-bar {
++            color: var(--primary-blue);
++            background: transparent;
++            text-align: center;
++            padding: 4px;
++            font-size: 18px;
++            font-weight: 800;
++            border-top: 2px solid var(--primary-blue);
++            border-bottom: 2px solid var(--primary-blue);
++            margin-top: 4px;
++        }
++
++        /* Main Details */
++        #drag-photo {
++            width: 220px;
++            height: 280px;
++            border: 3px solid #000;
++            display: flex;
++            align-items: center;
++            justify-content: center;
++            background: #f8f9fa;
++        }
++
++        #drag-photo img {
++            width: 100%;
++            height: 100%;
++            object-fit: cover;
++        }
++
++        .detail-text {
++            font-size: 26px;
++            font-weight: 600;
++        }
++
++        .name-text {
++            color: var(--primary-pink);
++            font-size: 52px;
++            font-weight: 950;
++        }
++
++        .valid-box {
++            background: var(--primary-pink);
++            color: white;
++            padding: 10px 30px;
++            border-radius: 0 50px 50px 0;
++            font-weight: 900;
++        }
++
++        .actions {
++            margin-top: 2rem;
++            display: flex;
++            gap: 1rem;
++        }
++
++        .btn {
++            padding: 0.8rem 2rem;
++            border-radius: 12px;
++            border: none;
++            font-weight: 800;
++            cursor: pointer;
++            display: flex;
++            align-items: center;
++            gap: 0.6rem;
++        }
++
++        .btn-p {
++            background: var(--primary-blue);
++            color: white;
++        }
++
++        .btn-s {
++            background: white;
++            border: 1px solid #ddd;
++        }
++
++        .hidden {
++            display: none !important;
++        }
++
++        /* Draggable initial positions */
++        #drag-photo {
++            top: 250px;
++            left: 40px;
++        }
++
++        #drag-content-group {
++            top: 250px;
++            left: 300px;
++            width: 660px;
++        }
++
++        .spin {
++            animation: spin 1s linear infinite;
++        }
++
++        @keyframes spin {
++            from {
++                transform: rotate(0deg);
++            }
++
++            to {
++                transform: rotate(360deg);
++            }
++        }
++    </style>
++</head>
++
++<body class="design-mode-off">
++
++    <aside class="sidebar">
++        <h2 style="margin-bottom: 5px;">ID Designer Pro</h2>
++        <a href="view.html"
++            style="display: inline-block; margin-bottom: 2rem; color: var(--primary-red); font-size: 0.8rem; font-weight: bold; text-decoration: none;"><i
++                data-lucide="database" size="14" style="vertical-align: middle;"></i> View Generated Library</a>
++
++        <div class="mode-toggle">
++            <div>
++                <b style="font-size: 0.9rem;">Design Mode</b>
++                <p style="font-size: 0.7rem; color: #666;">Drag & resize anything</p>
++            </div>
++            <input type="checkbox" id="mode-toggle" style="width: 40px; height: 20px; cursor: pointer;">
++        </div>
++
++        <div id="bg-studio-container" class="hidden">
++            <div class="section-title">Custom Background Template</div>
++            <div class="form-group">
++                <label>Upload Full ID Background (PNG/JPG)</label>
++                <input type="file" id="bg-upload" accept="image/png, image/jpeg, image/jpg">
++            </div>
++            <div class="form-row" style="display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
++                <input type="checkbox" id="hide-defaults-toggle">
++                <label for="hide-defaults-toggle" style="font-size: 0.75rem; margin-bottom: 0;">Hide Default
++                    Graphics</label>
++            </div>
++        </div>
++
++        <div id="header-studio-container" class="hidden">
++            <div class="section-title">Header Studio</div>
++            <div class="btn-group">
++                <button class="tab-btn active" id="tab-custom">Custom Build</button>
++                <button class="tab-btn" id="tab-imported">Import Full Header</button>
++            </div>
++
++            <!-- Custom Build Header Section -->
++            <div id="section-custom">
++                <div class="form-group">
++                    <label>Line 1 (Org Name)</label>
++                    <input type="text" id="h-line1" value="MUMBAI MEGHWAL PANCHAYAT">
++                </div>
++                <div class="form-group">
++                    <label>Line 2 (Sub-title)</label>
++                    <input type="text" id="h-line2" value="(CENTRAL WORKING COMMITTEE)">
++                </div>
++                <div class="form-group">
++                    <label>Line 3 (Reg. Info)</label>
++                    <input type="text" id="h-line3" value="[Regd. No. Ms. 491/GB. BSD Γÿà PTR No. F-13507 (Mumbai)]">
++                </div>
++                <div class="form-group">
++                    <label>Slogan (Top Strip)</label>
++                    <input type="text" id="h-slogan" value="|| Jai Meghwal-Vankar ||">
++                </div>
++                <div class="form-group">
++                    <label>Office Address</label>
++                    <input type="text" id="h-office"
++                        value="Office : C/o. B-4, Sant Veer Meghmaya Marg, Tulsiwadi, Mahalaxmi, Mumbai - 400 034.">
++                </div>
++                <div class="form-row" style="display: flex; gap: 0.5rem; margin-top: 10px;">
++                    <button class="btn-s" style="flex: 1; padding: 5px; font-size: 11px;" id="up-logo1">Logo 1</button>
++                    <button class="btn-s" style="flex: 1; padding: 5px; font-size: 11px;" id="up-logo2">Logo 2</button>
++                </div>
++            </div>
++
++            <!-- Imported Header Section -->
++            <div id="section-imported" class="hidden">
++                <div class="form-group">
++                    <label>Upload Header Strip (PNG/JPG)</label>
++                    <input type="file" id="full-header-upload" accept="image/png, image/jpeg, image/jpg">
++                    <p style="font-size: 0.7rem; color: #888; margin-top: 5px;">Upload a single image for the entire
++                        header (text + logos).</p>
++                </div>
++                <div class="form-row"
++                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
++                    <div style="display:flex; align-items:center; gap:8px;">
++                        <input type="checkbox" id="hide-stripes-toggle">
++                        <label for="hide-stripes-toggle" style="font-size: 0.7rem; margin: 0;"><b>Hide
++                                Stripes</b></label>
++                    </div>
++                    <div style="display:flex; align-items:center; gap:8px;">
++                        <input type="checkbox" id="hide-office-toggle">
++                        <label for="hide-office-toggle" style="font-size: 0.7rem; margin: 0;"><b>Hide Blue Office
++                                Bar</b></label>
++                    </div>
++                </div>
++                <p style="font-size: 0.65rem; color: #666; margin-top: 8px; text-align: center;">(Check these if your
++                    imported image already contains them)</p>
++            </div>
++        </div>
++
++        <!-- Master Admin Save Option (Only shown in Design Mode) -->
++        <div id="admin-update-container" class="hidden"
++            style="margin-top: 1rem; background: var(--primary-blue); border-radius: 8px; padding: 12px; color: white;">
++            <div style="font-size: 0.75rem; font-weight: 600; text-align: center; margin-bottom: 8px;">
++                <i data-lucide="cloud" size="14" style="vertical-align: middle;"></i> Cloud Database Connected
++            </div>
++            <button class="btn btn-s" id="btn-save-layout"
++                style="width: 100%; background: white; color: var(--primary-blue); font-weight: 900; border: none; padding: 10px;">
++                <i data-lucide="upload-cloud" size="16"></i> Save Layout to Cloud
++            </button>
++            <div style="font-size: 0.65rem; text-align: center; margin-top: 5px; opacity: 0.8;">
++                Updates design for all team members
++            </div>
++        </div>
++
++        <div class="section-title">Member Details</div>
++
++        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
++            <div class="form-group"><label>First Name</label><input type="text" id="m-fname" value=""></div>
++            <div class="form-group"><label>Middle Name</label><input type="text" id="m-mname" value=""></div>
++            <div class="form-group"><label>Surname</label><input type="text" id="m-sname" value=""></div>
++        </div>
++
++        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
++            <div class="form-group" style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem;">
++                <div><label>Date of Birth</label><input type="date" id="m-dob" value=""></div>
++                <div>
++                    <label>Gender</label>
++                    <select id="m-gender">
++                        <option value="M">M</option>
++                        <option value="F">F</option>
++                    </select>
++                </div>
++            </div>
++            <div class="form-group">
++                <label>Period</label>
++                <select id="m-period">
++                    <option value="Lifetime">Life Time</option>
++                    <option value="5 Years">5 Years</option>
++                    <option value="1 Year">1 Year</option>
++                </select>
++            </div>
++        </div>
++
++        <div class="form-group"><label>Address</label><textarea id="m-address" rows="2"></textarea></div>
++
++        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
++            <div class="form-group"><label>Mobile Number</label><input type="text" id="m-mobile" value="">
++            </div>
++            <div class="form-group"><label>Membership No</label><input type="text" id="m-membership" value=""></div>
++        </div>
++
++        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
++            <div class="form-group"><label>Valid Upto</label><input type="text" id="m-valid" value="">
++            </div>
++            <div class="form-group"><label>Date of Issue</label><input type="date" id="m-issue" value="">
++            </div>
++        </div>
++
++        <div class="section-title" style="margin-top: 1rem; font-size: 0.65rem; opacity: 0.7;">Admin (Database Only)
++        </div>
++        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 0.5rem;">
++            <div class="form-group"><label>Vibhag No</label><input type="text" id="db-vibhag-no" placeholder="e.g. 12">
++            </div>
++            <div class="form-group"><label>Vibhag Name</label><input type="text" id="db-vibhag-name"
++                    placeholder="e.g. Mumbai"></div>
++        </div>
++        <div class="form-group" style="margin-top: 5px;">
++            <label>Remarks (Info Only / Will not print on ID)</label>
++            <input type="text" id="db-remarks" placeholder="Optional notes for the database">
++        </div>
++
++        <div class="form-group"><label>Member Photo (PNG/JPG)</label><input type="file" id="photo-upload"
++                accept="image/png, image/jpeg, image/jpg"></div>
++
++        <!-- Cloud Sync details have been moved to the Admin Panel -->
++
++        <button class="btn btn-s" id="btn-reset" style="width: 100%; margin-top: 2rem;"><i data-lucide="refresh-cw"
++                size="16"></i> Reset Layout</button>
++    </aside>
++
++    <main class="main-preview">
++        <div class="id-card" id="capture-area">
++            <!-- 1. Top Strip -->
++            <div class="card-stripes">
++                <div class="stripe-1"></div>
++                <div class="stripe-2"></div>
++                <div class="stripe-3" id="card-slogan">|| Jai Meghwal-Vankar ||</div>
++                <div class="stripe-4"></div>
++                <div class="stripe-5"></div>
++            </div>
++
++            <!-- 2. Header Section -->
++            <div class="header-container draggable" id="drag-header">
++                <!-- Mode A: Custom -->
++                <div id="header-custom-view"
++                    style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
++                    <img src="src/assets/panchayat_logo.png" class="logo-box" id="logo1-view">
++                    <div class="header-text-box">
++                        <h1 id="view-h1">MUMBAI MEGHWAL PANCHAYAT</h1>
++                        <h2 id="view-h2">(CENTRAL WORKING COMMITTEE)</h2>
++                        <p id="view-h3">[Regd. No. Ms. 491/GB. BSD Γÿà PTR No. F-13507 (Mumbai)]</p>
++                    </div>
++                    <img src="src/assets/ambedkar_logo.png" class="logo-box" id="logo2-view">
++                </div>
++                <!-- Mode B: Imported -->
++                <img id="header-imported-view" class="header-full-img hidden">
++                <div class="resizer"></div>
++            </div>
++
++            <!-- 3. Blue Office Bar -->
++            <div class="office-bar draggable" id="drag-office" style="margin-top: 4px;">
++                <span id="view-h-office">Office : C/o. B-4, Sant Veer Meghmaya Marg, Tulsiwadi, Mahalaxmi, Mumbai - 400
++                    034.</span>
++                <div class="resizer" style="z-index: 1;"></div>
++            </div>
++
++            <!-- 4. Member Photo -->
++            <div class="draggable" id="drag-photo">
++                <i data-lucide="user" size="60" color="#ccc"></i>
++                <div class="resizer"></div>
++            </div>
++
++            <!-- 5. Member Info (Separated) -->
++            <div class="draggable name-text" id="drag-m-name" style="top: 250px; left: 300px;">
++                <span id="view-m-name">[Full Name Here]</span>
++                <div class="resizer"></div>
++            </div>
++
++            <div class="draggable detail-text" id="drag-m-dob" style="top: 310px; left: 300px;">
++                <b>DOB : </b> <span id="view-m-dob">[DD.MM.YYYY]-M</span>
++                <div class="resizer"></div>
++            </div>
++
++            <div class="draggable detail-text" id="drag-m-address"
++                style="top: 350px; left: 300px; max-width: 650px; line-height: 1.15;">
++                <b>Address : </b> <span id="view-m-addr">[Full Address Here]</span>
++                <div class="resizer"></div>
++            </div>
++
++            <div class="draggable detail-text" id="drag-m-mobile" style="top: 440px; left: 300px;">
++                <b>Mob.</b> <span id="view-m-mobile">[Mobile No]</span>
++                <div class="resizer"></div>
++            </div>
++
++            <div class="draggable detail-text" id="drag-m-membership"
++                style="top: 480px; left: 300px; color: var(--primary-blue); font-weight: 800;">
++                Membership No.: <span id="view-m-membership"
++                    style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">[Mem
++                    No]</span>
++                <div class="resizer"></div>
++            </div>
++
++            <div class="draggable valid-box detail-text" id="drag-m-valid" style="top: 535px; left: 300px;">
++                Valid Up To : [Valid Date]
++                <div class="resizer"></div>
++            </div>
++
++            <div class="draggable detail-text" id="drag-m-issue" style="top: 590px; left: 40px; font-weight: 800;">
++                Date of Issue : <span id="view-m-issue">[Issue Date]</span>
++                <div class="resizer"></div>
++            </div>
++
++            <!-- 6. Signature -->
++            <div class="draggable" id="drag-sign" style="bottom: 40px; right: 50px; text-align: center;">
++                <svg width="180" height="70" viewBox="0 0 200 80">
++                    <path d="M20 60 Q 50 10, 80 60 T 140 60 T 180 30" fill="none" stroke="#001C6B" stroke-width="4"
++                        stroke-linecap="round" />
++                </svg>
++                <div style="font-weight: 800; font-size: 18px;">(R.P. Dharia)</div>
++                <div style="font-weight: 800; font-size: 18px;">President</div>
++                <div class="resizer"></div>
++            </div>
++        </div>
++
++        <div class="actions">
++            <div
++                style="display: flex; background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden;">
++                <div
++                    style="padding: 0.8rem 1rem; background: #f8f9fa; border-right: 1px solid #ddd; font-size: 0.8rem; font-weight: 800; color: #666; display: flex; align-items: center;">
++                    FORMAT</div>
++                <select id="export-format"
++                    style="border: none; padding: 0.8rem 1rem; font-weight: 700; cursor: pointer; background: transparent; outline: none;">
++                    <option value="image/png">PNG (Sharp Text)</option>
++                    <option value="image/jpeg">JPG (Photo Style)</option>
++                    <option value="image/svg+xml">SVG (Vector for CorelDRAW)</option>
++                </select>
++            </div>
++            <button class="btn btn-p" id="btn-download"><i data-lucide="download"></i> Export High-Res ID</button>
++        </div>
++    </main>
++
++    <!-- Fallback Preview Modal -->
++    <div id="preview-modal" class="hidden"
++        style="position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; backdrop-filter: blur(10px);">
++        <div
++            style="background: white; padding: 15px; border-radius: 12px; max-width: 90%; max-height: 80%; overflow: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.8);">
++            <img id="fallback-img" style="max-width: 100%; height: auto; border: 1px solid #ddd;">
++        </div>
++        <div style="margin-top: 2rem; text-align: center; color: white;">
++            <p style="font-weight: 900; font-size: 1.5rem; color: #fff;">EXPORT READY (High Resolution)</p>
++            <p style="opacity: 0.9; margin-top: 10px; font-size: 1.1rem; line-height: 1.5;">
++                If the file didn't download with the correct name:<br>
++                <b>Right-click the card above</b> and select <b>"Save Image As..."</b>
++            </p>
++            <button onclick="document.getElementById('preview-modal').classList.add('hidden')"
++                style="margin-top: 30px; background: var(--primary-red); color: white; border: none; padding: 15px 50px; border-radius: 40px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">Close
++                & Return</button>
++        </div>
++    </div>
++
++    <script>
++        // --- 0. Initialize Cloud Firebase (Master Database) ---
++        const firebaseConfig = {
++            apiKey: "AIzaSyDA1-QWSGJZPjB0P-cVeOoqvDj_1xqURMo",
++            authDomain: "mmp-cwc-election-card.firebaseapp.com",
++            projectId: "mmp-cwc-election-card",
++            storageBucket: "mmp-cwc-election-card.firebasestorage.app",
++            messagingSenderId: "870920667033",
++            appId: "1:870920667033:web:d0f2d4cae50568bede5d08",
++            measurementId: "G-E04MZT89TJ"
++        };
++        firebase.initializeApp(firebaseConfig);
++        const db = firebase.firestore();
++        const storage = firebase.storage();
++
++        lucide.createIcons();
++
++        // Global Variable for Cloud Storage Hook
++        window.masterSyncId = null;
++
++        // 1. Header Mode Switching
++        const tabCustom = document.getElementById('tab-custom');
++        const tabImported = document.getElementById('tab-imported');
++        const sectionCustom = document.getElementById('section-custom');
++        const sectionImported = document.getElementById('section-imported');
++        const viewCustom = document.getElementById('header-custom-view');
++        const viewImported = document.getElementById('header-imported-view');
++
++        tabCustom.onclick = () => {
++            tabCustom.classList.add('active'); tabImported.classList.remove('active');
++            sectionCustom.classList.remove('hidden'); sectionImported.classList.add('hidden');
++            viewCustom.classList.remove('hidden'); viewImported.classList.add('hidden');
++            // Remove full-imported padding fix
++            document.getElementById('drag-header').classList.remove('full-imported');
++        };
++        tabImported.onclick = () => {
++            tabImported.classList.add('active'); tabCustom.classList.remove('active');
++            sectionImported.classList.remove('hidden'); sectionCustom.classList.add('hidden');
++            viewImported.classList.remove('hidden'); viewCustom.classList.add('hidden');
++            // Add full-imported padding fix so image goes edge-to-edge
++            document.getElementById('drag-header').classList.add('full-imported');
++        };
++
++        // 2. Custom Header Sync
++        const hLine1 = document.getElementById('h-line1');
++        const hLine2 = document.getElementById('h-line2');
++        const hLine3 = document.getElementById('h-line3');
++        const hSlogan = document.getElementById('h-slogan');
++        const hOffice = document.getElementById('h-office');
++
++        const syncHeader = () => {
++            document.getElementById('view-h1').innerText = hLine1.value;
++            document.getElementById('view-h2').innerText = hLine2.value;
++            document.getElementById('view-h3').innerText = hLine3.value;
++            document.getElementById('card-slogan').innerText = hSlogan.value;
++            document.getElementById('view-h-office').innerText = hOffice.value;
++        };
++        [hLine1, hLine2, hLine3, hSlogan, hOffice].forEach(el => el.oninput = syncHeader);
++
++        // 3. Member Detail Sync
++        const mFname = document.getElementById('m-fname');
++        const mMname = document.getElementById('m-mname');
++        const mSname = document.getElementById('m-sname');
++        const mAddr = document.getElementById('m-address');
++        const mDob = document.getElementById('m-dob');
++        const mGender = document.getElementById('m-gender');
++        const mMobile = document.getElementById('m-mobile');
++        const mMembership = document.getElementById('m-membership');
++        const mValid = document.getElementById('m-valid');
++        const mIssue = document.getElementById('m-issue');
++
++        const syncMember = () => {
++            document.getElementById('view-m-name').innerText = `${mFname.value} ${mMname.value} ${mSname.value}`;
++            document.getElementById('view-m-addr').innerText = mAddr.value;
++
++            // Format DOB for display (YYYY-MM-DD to DD.MM.YYYY)
++            if (mDob.value) {
++                const parts = mDob.value.split('-');
++                document.getElementById('drag-m-dob').innerHTML = `<b>DOB : </b> ${parts[2]}.${parts[1]}.${parts[0]}-${mGender.value}<div class="resizer"></div>`;
++            } else {
++                document.getElementById('drag-m-dob').innerHTML = `<b>DOB : </b><div class="resizer"></div>`;
++            }
++
++            document.getElementById('drag-m-mobile').innerHTML = `<b>Mob.</b> ${mMobile.value}<div class="resizer"></div>`;
++            document.getElementById('drag-m-membership').innerHTML = `Membership No.: <span style="border: 2px solid var(--primary-blue); padding: 5px 15px; border-radius: 6px;">${mMembership.value}</span><div class="resizer"></div>`;
++            document.getElementById('drag-m-valid').innerHTML = `Valid Up To : ${mValid.value}<div class="resizer"></div>`;
++
++            // Format Issue Date
++            if (mIssue.value) {
++                const parts = mIssue.value.split('-');
++                document.getElementById('drag-m-issue').innerHTML = `Date of Issue : ${parts[2]}.${parts[1]}.${parts[0]}<div class="resizer"></div>`;
++            } else {
++                document.getElementById('drag-m-issue').innerHTML = `Date of Issue : <div class="resizer"></div>`;
++            }
++        };
++
++        [mFname, mMname, mSname, mAddr, mDob, mGender, mMobile, mMembership, mValid, mIssue].forEach(el => el.oninput = syncMember);
++
++        // 4. Image Uploads
++        const handleImg = (inputId, viewId) => {
++            const up = document.createElement('input');
++            up.type = 'file'; up.accept = 'image/png, image/jpeg, image/jpg';
++            document.getElementById(inputId).onclick = () => up.click();
++            up.onchange = (e) => {
++                const f = e.target.files[0];
++                if (f) {
++                    const r = new FileReader();
++                    r.onload = (re) => document.getElementById(viewId).src = re.target.result;
++                    r.readAsDataURL(f);
++                }
++            };
++        };
++        handleImg('up-logo1', 'logo1-view');
++        handleImg('up-logo2', 'logo2-view');
++
++        const fullHeaderUp = document.getElementById('full-header-upload');
++        const hideStripesToggle = document.getElementById('hide-stripes-toggle');
++        const hideOfficeToggle = document.getElementById('hide-office-toggle');
++
++        hideStripesToggle.onchange = (e) => {
++            document.querySelector('.card-stripes').style.visibility = e.target.checked ? 'hidden' : 'visible';
++        };
++        hideOfficeToggle.onchange = (e) => {
++            document.getElementById('drag-office').style.visibility = e.target.checked ? 'hidden' : 'visible';
++        };
++
++        fullHeaderUp.onchange = (e) => {
++            const f = e.target.files[0];
++            if (f) {
++                const r = new FileReader();
++                r.onload = (re) => {
++                    const img = new Image();
++                    img.onload = () => {
++                        viewImported.src = re.target.result;
++                        // Ensure the image itself scales correctly within its container
++                        // (CSS for #header-imported-view should be `width: 100%; height: auto; object-fit: contain;`)
++                        // If the image is not fitting as expected, consider adjusting the container's width/height or the image's object-fit property.
++
++                        // Auto-calculate the correct height to keep the resolution sharp (1000px width base)
++                        const container = document.getElementById('drag-header');
++                        const ratio = img.height / img.width;
++                        const targetHeight = 1000 * ratio; // The card is 1000px wide in CSS
++
++                        container.style.height = targetHeight + 'px';
++
++                        // Auto-hide top stripes and office bar
++                        if (!hideStripesToggle.checked) {
++                            hideStripesToggle.checked = true;
++                            document.querySelector('.card-stripes').style.visibility = 'hidden';
++                        }
++                        if (!hideOfficeToggle.checked) {
++                            hideOfficeToggle.checked = true;
++                            document.getElementById('drag-office').style.visibility = 'hidden';
++                        }
++                    };
++                    img.src = re.target.result;
++                };
++                r.readAsDataURL(f);
++            }
++        };
++
++        const photoUp = document.getElementById('photo-upload');
++        photoUp.onchange = (e) => {
++            const f = e.target.files[0];
++            if (f) {
++                const r = new FileReader();
++                r.onload = (re) => {
++                    document.getElementById('drag-photo').innerHTML = `<img src="${re.target.result}"><div class="resizer"></div>`;
++                };
++                r.readAsDataURL(f);
++            }
++        };
++
++        const bgUpload = document.getElementById('bg-upload');
++        const hideDefaultsToggle = document.getElementById('hide-defaults-toggle');
++        const captureArea = document.getElementById('capture-area');
++
++        bgUpload.onchange = (e) => {
++            const f = e.target.files[0];
++            if (f) {
++                const r = new FileReader();
++                r.onload = (re) => {
++                    captureArea.style.backgroundImage = `url(${re.target.result})`;
++                    captureArea.style.backgroundSize = '100% 100%';
++                    captureArea.style.backgroundPosition = 'center';
++                };
++                r.readAsDataURL(f);
++            }
++        };
++
++        hideDefaultsToggle.onchange = (e) => {
++            const displayStyle = e.target.checked ? 'none' : 'flex';
++            document.querySelector('.card-stripes').style.display = displayStyle;
++            document.querySelector('.header-container').style.display = displayStyle;
++            document.querySelector('.office-bar').style.display = displayStyle;
++        };
++
++        const bgStudio = document.getElementById('bg-studio-container');
++
++        // 5. Design Mode Engine
++        const modeToggle = document.getElementById('mode-toggle');
++        const headerStudio = document.getElementById('header-studio-container');
++
++        modeToggle.onchange = (e) => {
++            const isOn = e.target.checked;
++            document.body.className = isOn ? 'design-mode-on' : 'design-mode-off';
++            headerStudio.classList.toggle('hidden', !isOn);
++            if (typeof bgStudio !== 'undefined') bgStudio.classList.toggle('hidden', !isOn);
++
++            const adminContainer = document.getElementById('admin-update-container');
++            if (adminContainer) adminContainer.classList.toggle('hidden', !isOn);
++        };
++
++        let activeEl = null, startX, startY, startW, startH, startT, startL, isResize = false;
++        document.addEventListener('mousedown', (e) => {
++            if (!modeToggle.checked) return;
++            const drag = e.target.closest('.draggable');
++            if (!drag) return;
++
++            activeEl = drag;
++            isResize = e.target.classList.contains('resizer');
++            startX = e.clientX; startY = e.clientY;
++            const r = drag.getBoundingClientRect();
++            const pr = document.getElementById('capture-area').getBoundingClientRect();
++            startW = r.width; startH = r.height;
++            startT = r.top - pr.top; startL = r.left - pr.left;
++
++            document.onmousemove = (me) => {
++                const dx = me.clientX - startX; const dy = me.clientY - startY;
++                if (isResize) {
++                    activeEl.style.width = (startW + dx) + 'px';
++                    activeEl.style.height = (startH + dy) + 'px';
++                } else {
++                    activeEl.style.left = (startL + dx) + 'px';
++                    activeEl.style.top = (startT + dy) + 'px';
++                }
++            };
++            document.onmouseup = () => { document.onmousemove = null; activeEl = null; };
++        });
++
++        // 6. Reset
++        document.getElementById('btn-reset').onclick = () => location.reload();
++
++        // 7. Export / Save As Engine
++        document.getElementById('btn-download').onclick = async function () {
++            const btn = this;
++            const originalText = btn.innerHTML;
++            const area = document.getElementById('capture-area');
++            const formatSelection = document.getElementById('export-format').value;
++
++            btn.innerHTML = `<i data-lucide="loader-2" class="spin"></i> Generating...`;
++            btn.disabled = true;
++            if (window.lucide) lucide.createIcons();
++
++            const masterSheetCheck = window.masterSyncId;
++
++            const wasChecked = modeToggle.checked;
++            modeToggle.checked = false;
++            document.body.className = 'design-mode-off';
++
++            try {
++                // 1. FORCE dimensions for Export Stability
++                const exportStyles = new Map();
++                area.querySelectorAll('.draggable').forEach(el => {
++                    exportStyles.set(el, {
++                        width: el.style.width,
++                        height: el.style.height,
++                        ws: el.style.whiteSpace,
++                        fs: el.style.fontSize
++                    });
++
++                    if (el.id === 'drag-photo') {
++                        el.style.width = '220px';
++                        el.style.height = '280px';
++                    } else if (el.id === 'drag-m-address') {
++                        // Address Fix: Allow it to wrap correctly inside the card
++                        el.style.whiteSpace = 'normal';
++                        el.style.width = '600px';
++                    } else if (el.id !== 'drag-sign') {
++                        // Other fields (Name, DOB): Force to single line to avoid overlapping
++                        el.style.whiteSpace = 'nowrap';
++                        el.style.width = 'max-content';
++                    }
++                });
++
++                // Inline all images (CRITICAL: Needs to happen for both PNG and Cloud SVG generation)
++                const imgs = Array.from(area.querySelectorAll('img'));
++                for (const img of imgs) {
++                    if (img.src.startsWith('data:')) continue; // Do not corrupt high-res photos
++                    try {
++                        const canvas = document.createElement('canvas');
++                        canvas.width = img.naturalWidth || img.width;
++                        canvas.height = img.naturalHeight || img.height;
++                        canvas.getContext('2d').drawImage(img, 0, 0);
++                        img.src = canvas.toDataURL('image/png', 1.0);
++                    } catch (e) { }
++                }
++
++                let blob, finalExt;
++                let cachedSvg = null;
++
++                if (formatSelection === 'image/svg+xml') {
++                    finalExt = 'svg';
++                    if (typeof htmlToImage === 'undefined') throw new Error("Vector engine not ready");
++
++                    // Generate SVG
++                    cachedSvg = await htmlToImage.toSvg(area, {
++                        backgroundColor: '#ffffff',
++                        width: 1000, // True CSS layout width
++                        height: 630, // True CSS layout height
++                        skipFonts: true,
++                        fontEmbedCSS: ''
++                    });
++
++                    if (!cachedSvg) throw new Error("Empty vector generated");
++                    blob = await (await fetch(cachedSvg)).blob();
++
++                } else {
++                    // Raster Path (Local)
++                    finalExt = formatSelection === 'image/png' ? 'png' : 'jpg';
++                    const dataUrl = formatSelection === 'image/png'
++                        ? await htmlToImage.toPng(area, { backgroundColor: '#ffffff', pixelRatio: 4, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' })
++                        : await htmlToImage.toJpeg(area, { backgroundColor: '#ffffff', pixelRatio: 4, quality: 0.98, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
++                    blob = await (await fetch(dataUrl)).blob();
++                }
++
++                // --- GOOGLE CLOUD SYNC MASTER SHEET LOGIC ---
++                if (masterSheetCheck) {
++                    btn.innerHTML = `<i data-lucide="cloud-upload" class="spin"></i> Syncing...`;
++                    if (window.lucide) lucide.createIcons();
++
++                    if (masterSheetCheck.includes('script.google.com')) {
++                        alert("Hold on! You pasted the 'App Script URL' into the box. Please paste the URL of your Master Google Sheet instead.");
++                        btn.innerHTML = originalText;
++                        btn.disabled = false;
++                        if (window.lucide) lucide.createIcons();
++                        return;
++                    }
++
++                    // Auto-Extract ID if user pasted full URL
++                    const extractId = (str) => {
++                        if (!str) return null;
++                        const match = str.match(/[-\w]{25,}/);
++                        return match ? match[0] : str;
++                    };
++                    const mId = extractId(masterSheetCheck);
++
++                    // 1. Fetch Master Configuration from Google Sheets
++                    let driveId, sheetId, scriptUrl;
++                    try {
++                        const csvUrl = `https://docs.google.com/spreadsheets/d/${mId}/export?format=csv`;
++                        const res = await fetch(csvUrl);
++                        if (!res.ok) throw new Error(`Could not download Master Sheet. Status: ${res.status}`);
++                        const csvText = await res.text();
++
++                        if (csvText.includes('<html')) {
++                            throw new Error("Google returned a webpage instead of CSV data. Please check immediately if your Master Sheet's Sharing is set to 'Anyone with the link can view'.");
++                        }
++
++                        // Parse the entire CSV indiscriminate of columns/rows to find the 3 URLs
++                        const allCells = csvText.replace(/"/g, '').split(/,|\n/);
++                        let driveStr, sheetStr, scriptStr;
++
++                        for (const cell of allCells) {
++                            const c = cell.trim();
++                            // If it's the 25+ char ID by itself or contains drive
++                            if (c.includes('drive.google.com')) driveStr = c;
++                            if (c.includes('docs.google.com/spreadsheet')) sheetStr = c;
++                            if (c.includes('script.google.com/macros')) scriptStr = c;
++                        }
++
++                        // Fallback: If they literally just pasted IDs in the first row without the full URLs
++                        if (!driveStr || !sheetStr || !scriptStr) {
++                            const rows = csvText.split('\n');
++                            for (const r of rows) {
++                                if (r.includes('script.google.com')) {
++                                    const cols = r.replace(/"/g, '').split(',');
++                                    driveStr = driveStr || cols[0];
++                                    sheetStr = sheetStr || cols[1];
++                                    scriptStr = scriptStr || cols[2];
++                                }
++                            }
++                            // Final fallback to just grabbing first row
++                            if (!scriptStr) {
++                                const backupRow = rows.find(r => r.length > 20 && !r.toLowerCase().includes('google drive'));
++                                if (backupRow) {
++                                    const cols = backupRow.replace(/"/g, '').split(',');
++                                    driveStr = driveStr || cols[0];
++                                    sheetStr = sheetStr || cols[1];
++                                    scriptStr = scriptStr || cols[2];
++                                }
++                            }
++                        }
++
++                        driveId = extractId(driveStr);
++                        sheetId = extractId(sheetStr);
++                        scriptUrl = scriptStr ? scriptStr.trim() : null;
++
++                        if (!driveId || !sheetId || !scriptUrl) {
++                            throw new Error(`Could not find all 3 links in your sheet.\nFound Drive: ${driveId ? 'Yes' : 'No'}\nFound Sheet: ${sheetId ? 'Yes' : 'No'}\nFound Script: ${scriptUrl ? 'Yes' : 'No'}`);
++                        }
++                    } catch (mErr) {
++                        throw new Error(`Master Sheet Error: ${mErr.message}`);
++                    }
++
++                    // 2. Build Sync Payload
++                    const cloudPayload = {
++                        driveId: driveId,
++                        sheetId: sheetId,
++                        fileName: `ID_${document.getElementById('view-m-name').innerText.replace(/\s/g, '_').toUpperCase()}`,
++                        memberData: {
++                            "Membership No": document.getElementById('m-membership').value,
++                            "First Name": document.getElementById('m-fname').value,
++                            "Middle Name": document.getElementById('m-mname').value,
++                            "Surname": document.getElementById('m-sname').value,
++                            "Full Printed Name": document.getElementById('view-m-name').innerText,
++                            "Date of Birth": document.getElementById('m-dob').value,
++                            "Gender": document.getElementById('m-gender').value,
++                            "Period": document.getElementById('m-period').value,
++                            "Address": document.getElementById('m-address').value,
++                            "Mobile Number": document.getElementById('m-mobile').value,
++                            "Valid Upto": document.getElementById('m-valid').value,
++                            "Date of Issue": document.getElementById('m-issue').value,
++                            "Vibhag No": document.getElementById('db-vibhag-no').value,
++                            "Vibhag Name": document.getElementById('db-vibhag-name').value,
++                            "Remarks": document.getElementById('db-remarks') ? document.getElementById('db-remarks').value : ""
++                        }
++                    };
++
++                    // For Cloud, we always send both SVG and PNG
++                    let rawSvgUrl = cachedSvg || await htmlToImage.toSvg(area, { backgroundColor: '#ffffff', width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
++
++                    // The App Script bridge expects raw SVG text (<svg...), not a browser data URL string (data:image/svg...)
++                    if (rawSvgUrl && rawSvgUrl.includes(',')) {
++                        const encodedPart = rawSvgUrl.substring(rawSvgUrl.indexOf(',') + 1);
++                        cloudPayload.svgData = decodeURIComponent(encodedPart);
++                    } else {
++                        cloudPayload.svgData = rawSvgUrl;
++                    }
++
++                    // Reduce scale to 1.5 to prevent Google Apps Script from dropping large payloads (causes 'Failed to fetch')
++                    // (We also use this PNG for Firebase Storage)
++                    cloudPayload.pngData = await htmlToImage.toPng(area, { backgroundColor: '#ffffff', pixelRatio: 4, width: 1000, height: 630, skipFonts: true, fontEmbedCSS: '' });
++
++                    try {
++                        // --- A. SAVE TO FIREBASE STORAGE & FIRESTORE (FAST METHOD) ---
++                        btn.innerHTML = `<i data-lucide="database" class="spin"></i> Saving to Database...`;
++                        if (window.lucide) lucide.createIcons();
++
++                        // 1. Upload High-Res Image to Firebase Storage
++                        const imageRef = storage.ref(`id_cards/${cloudPayload.fileName}_${Date.now()}.png`);
++                        await imageRef.putString(cloudPayload.pngData, 'data_url');
++                        const downloadUrl = await imageRef.getDownloadURL();
++
++                        // 2. Save Data & Image URL to Firestore
++                        await db.collection('idCardLogs').add({
++                            ...cloudPayload.memberData,
++                            photoUrl: downloadUrl,
++                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
++                        });
++                    } catch (fbErr) {
++                        console.error("Firebase Sync Error:", fbErr);
++                    }
++
++                    // --- B. SAVE TO GOOGLE SCRIPT & SHEETS (BACKUP METHOD) ---
++                    try {
++                        if (!scriptUrl.startsWith('https://')) {
++                            throw new Error(`The parsed Script URL from your Master Sheet does not look like a correct web link. It was: "${scriptUrl}"`);
++                        }
++
++                        const response = await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(cloudPayload) });
++
++                        // CLEAR SCREEN AFTER SUCCESSFUL SYNC
++                        const safeClear = (id, defaultVal = "") => {
++                            const el = document.getElementById(id);
++                            if (el) el.value = defaultVal;
++                        };
++
++                        ['m-fname', 'm-mname', 'm-sname', 'm-dob', 'm-address', 'm-mobile', 'm-membership', 'm-valid', 'm-issue', 'db-vibhag-no', 'db-vibhag-name', 'db-remarks', 'photo-upload', 'bg-upload'].forEach(id => safeClear(id));
++                        safeClear('m-gender', 'M');
++                        safeClear('m-period', 'Lifetime');
++
++                        // Clear custom bg
++                        document.getElementById('capture-area').style.backgroundImage = 'none';
++
++                        const photoPreview = document.getElementById('drag-photo');
++                        if (photoPreview) {
++                            photoPreview.innerHTML = '<i data-lucide="user" size="60" color="#ccc"></i><div class="resizer"></div>';
++                        }
++
++                        if (typeof syncMember === 'function') syncMember();
++                        if (window.lucide) lucide.createIcons();
++
++                        setTimeout(() => alert("Sync Complete! Data saved to Google Sheets and Drive. The template has been cleared for the next member."), 100);
++                    } catch (e) {
++                        console.error("Sync Error:", e);
++                        alert(`Cloud Sync Error!\nTarget URL: ${scriptUrl}\nError Details: ${e.message || String(e)}`);
++                    }
++                }
++                // --- GOOGLE CLOUD SYNC END ---
++
++                // 2. RESTORE original styles after generating the blob
++                exportStyles.forEach((val, el) => {
++                    el.style.width = val.width;
++                    el.style.height = val.height;
++                    el.style.whiteSpace = val.ws;
++                    el.style.fontSize = val.fs;
++                });
++
++                // 3. Native Save Dialog
++                if ('showSaveFilePicker' in window) {
++                    try {
++                        const fileHandle = await window.showSaveFilePicker({
++                            suggestedName: `ID_Member_${Date.now()}.${finalExt}`,
++                            types: [{
++                                description: `${finalExt.toUpperCase()} File`,
++                                accept: { [formatSelection]: [`.${finalExt}`] }
++                            }]
++                        });
++                        const writable = await fileHandle.createWritable();
++                        await writable.write(blob);
++                        await writable.close();
++                    } catch (e) { console.log("User cancelled save"); }
++                } else {
++                    const url = URL.createObjectURL(blob);
++                    const link = document.createElement('a');
++                    link.href = url;
++                    link.download = `ID_Member_${Date.now()}.${finalExt}`;
++                    document.body.appendChild(link);
++                    link.click();
++                    setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(url); }, 500);
++                }
++
++            } catch (err) {
++                console.error("Export System failure:", err);
++                alert(`Export Failed: ${err.stack || err.message || JSON.stringify(err) || String(err)}`);
++            } finally {
++                btn.innerHTML = originalText;
++                btn.disabled = false;
++                if (window.lucide) lucide.createIcons();
++                if (wasChecked) {
++                    modeToggle.checked = true;
++                    document.body.className = 'design-mode-on';
++                }
++            }
++        };
++
++        // 6. Save & Load Layout Settings Engine
++        const btnSaveLayout = document.getElementById('btn-save-layout');
++        const btnLoadLayout = document.getElementById('btn-load-layout');
++        const layoutFileUpload = document.getElementById('layout-file-upload');
++
++        const getLayoutConfig = () => {
++            const draggables = Array.from(document.querySelectorAll('.draggable'));
++            const layout = draggables.map(el => ({
++                id: el.id,
++                top: el.style.top,
++                left: el.style.left,
++                width: el.style.width,
++                height: el.style.height,
++                fontSize: el.style.fontSize,
++                color: el.style.color
++            }));
++
++            const captureArea = document.getElementById('capture-area');
++            const bgImage = captureArea.style.backgroundImage;
++
++            const hideToggle = document.getElementById('hide-defaults-toggle');
++            const hideDefaults = hideToggle ? hideToggle.checked : false;
++
++            return { layout, bgImage, hideDefaults };
++        };
++
++        const applyLayoutConfig = (config) => {
++            if (config.layout) {
++                config.layout.forEach(item => {
++                    const el = document.getElementById(item.id);
++                    if (el) {
++                        if (item.top) el.style.top = item.top;
++                        if (item.left) el.style.left = item.left;
++                        if (item.width) el.style.width = item.width;
++                        if (item.height) el.style.height = item.height;
++                        if (item.fontSize) el.style.fontSize = item.fontSize;
++                        if (item.color) el.style.color = item.color;
++                    }
++                });
++            }
++            if (config.bgImage) {
++                const captureArea = document.getElementById('capture-area');
++                captureArea.style.backgroundImage = config.bgImage;
++                captureArea.style.backgroundSize = '100% 100%';
++                captureArea.style.backgroundPosition = 'center';
++            }
++            if (config.hideDefaults !== undefined) {
++                const hideToggle = document.getElementById('hide-defaults-toggle');
++                if (hideToggle) {
++                    hideToggle.checked = config.hideDefaults;
++                    const displayStyle = config.hideDefaults ? 'none' : 'flex';
++                    const stripes = document.querySelector('.card-stripes');
++                    const header = document.querySelector('.header-container');
++                    const office = document.querySelector('.office-bar');
++                    if (stripes) stripes.style.display = displayStyle;
++                    if (header) header.style.display = displayStyle;
++                    if (office) office.style.display = displayStyle;
++                }
++            }
++        };
++
++        const getMasterConfig = async (msInput) => {
++            let ms = msInput;
++            if (ms.includes('/spreadsheets/d/')) ms = ms.split('/spreadsheets/d/')[1].split('/')[0];
++            if (!ms || ms.length < 20) throw new Error("Invalid Master Config ID");
++
++            const extractId = (str) => {
++                if (!str) return null;
++                const match = str.match(/[-\w]{25,}/);
++                return match ? match[0] : str.trim();
++            };
++
++            const res = await fetch(`https://docs.google.com/spreadsheets/d/${ms}/export?format=csv`);
++            if (!res.ok) throw new Error("Master Sheet must be public");
++            const csvText = await res.text();
++
++            const rows = csvText.split('\n');
++            const dataRow = rows.find(r => r.length > 20 && !r.toLowerCase().includes('google drive folder'));
++            if (!dataRow) throw new Error("Could not find the row with your URLs.");
++
++            const cols = dataRow.replace(/"/g, '').split(',');
++            return {
++                driveId: extractId(cols[0]),
++                scriptUrl: (cols[2] || "").trim()
++            };
++        };
++
++        btnSaveLayout.onclick = async () => {
++            const config = getLayoutConfig();
++
++            let ms = window.masterSyncId;
++            if (!ms || ms.length < 20) { alert('Please setup Master Config Link in the Admin Panel first (go to /admin.html)!'); return; }
++
++            const btn = btnSaveLayout;
++            const orig = btn.innerHTML;
++            btn.innerHTML = '<i class="spin" data-lucide="loader"></i> Saving...';
++            btn.disabled = true;
++
++            try {
++                const conf = await getMasterConfig(ms);
++
++                await fetch(conf.scriptUrl, {
++                    method: 'POST',
++                    mode: 'no-cors',
++                    body: JSON.stringify({
++                        action: 'saveTemplate',
++                        driveId: conf.driveId,
++                        templateConfig: config
++                    })
++                });
++
++                setTimeout(() => alert("Template Layout saved successfully to Google Drive!"), 800);
++            } catch (e) {
++                alert("Error saving layout: " + e.message);
++            } finally {
++                btn.innerHTML = orig;
++                btn.disabled = false;
++                if (window.lucide) lucide.createIcons();
++            }
++        };
++
++        // Auto-Load Master Template when a User pastes the Sync ID!
++        const autoLoadTemplate = async (msParam) => {
++            let ms = msParam || localStorage.getItem('masterSyncId');
++            if (!ms || ms.length < 20) return;
++
++            try {
++                // Flash a mini toaster or text block to indicate loading
++                const loader = document.createElement('div');
++                loader.id = 'auto-loader-toast';
++                loader.innerHTML = '<i class="spin" data-lucide="loader"></i> Auto-Loading Master Design...';
++                loader.style = 'position:fixed; top:20px; right:20px; background:#008000; color:white; padding:10px 20px; border-radius:6px; z-index:9999; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.2);';
++                document.body.appendChild(loader);
++                if (window.lucide) lucide.createIcons();
++
++                const conf = await getMasterConfig(ms);
++
++                const response = await fetch(`${conf.scriptUrl}?action=loadTemplate&t=${Date.now()}&driveId=${encodeURIComponent(conf.driveId)}`);
++                const result = await response.json();
++
++                if (!result.error) {
++                    applyLayoutConfig(result);
++                    setTimeout(() => {
++                        loader.innerHTML = '<i data-lucide="check-circle"></i> Design Loaded Successfully!';
++                        if (window.lucide) lucide.createIcons();
++                        setTimeout(() => loader.remove(), 2500);
++                    }, 500);
++                } else {
++                    loader.remove(); // Fails silently if no template was saved by admin yet
++                }
++            } catch (e) {
++                const l = document.getElementById('auto-loader-toast');
++                if (l) l.remove();
++            }
++        };
++
++        // Auto-restore and load on page refresh
++        window.addEventListener('DOMContentLoaded', async () => {
++            const l = document.createElement('div');
++            l.id = 'fb-loader';
++            l.innerHTML = '<i class="spin" data-lucide="loader"></i> Checking Admin Database...';
++            l.style = 'position:fixed; top:20px; right:20px; background:#001C6B; color:white; padding:10px 20px; border-radius:6px; z-index:9999; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.2);';
++            document.body.appendChild(l);
++            if (window.lucide) lucide.createIcons();
++
++            try {
++                // 1. Read Master Config from Firebase Admin Panel First
++                const docSnap = await db.collection("settings").doc("masterConfig").get();
++                if (docSnap.exists) {
++                    const data = docSnap.data();
++                    if (data.sheetId && data.sheetId.length > 20) {
++                        window.masterSyncId = data.sheetId;
++                        l.innerHTML = '<i class="spin" data-lucide="cloud-download"></i> Received Admin Settings, downloading design...';
++                        if (window.lucide) lucide.createIcons();
++
++                        // Load Template using the Firebase Provided URL
++                        setTimeout(() => {
++                            autoLoadTemplate(data.sheetId).then(() => l.remove());
++                        }, 400);
++                        return; // Successfully Loaded from Database!
++                    }
++                }
++            } catch (err) {
++                console.warn("Could not load setting from Cloud Database:", err);
++            }
++
++            l.remove();
++
++            // 2. Fallback to Local Storage if Admin hasn't set up Firebase yet
++            const savedId = localStorage.getItem('masterSyncId');
++            if (savedId && savedId.length > 20) {
++                window.masterSyncId = savedId;
++                // Trigger auto load
++                setTimeout(() => {
++                    autoLoadTemplate(savedId);
++                }, 500);
++            }
++        });
++
++    </script>
++</body>
++
++</html>
+\ No newline at end of file

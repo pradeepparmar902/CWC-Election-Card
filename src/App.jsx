@@ -26,7 +26,52 @@ function App() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    console.log("INPUT_CHANGE", name, value)
+    setFormData(prev => {
+      const newData = { ...prev, [name]: value }
+
+      // Dynamic Valid Upto Logic
+      if (name === 'period' || name === 'dateOfIssue') {
+        const period = newData.period.toLowerCase().replace(/\s/g, '')
+        const issueDate = newData.dateOfIssue
+
+        if (period.includes('lifetime') || period.includes('liefe')) {
+          newData.validUpto = "Life Time"
+        } else if (period.includes('1year')) {
+          newData.validUpto = "1 Year"
+        } else if (period.includes('5year')) {
+          // Attempt to parse issue date
+          // React version uses text input for date of issue, unlike vanilla which uses date input
+          // Let's try to handle common formats or at least the logic
+          if (issueDate) {
+            try {
+              // Try parsing DD.MM.YYYY or common formats
+              let d = new Date(issueDate)
+              if (isNaN(d.getTime())) {
+                // Try DD.MM.YYYY manually
+                const parts = issueDate.split(/[.-/]/)
+                if (parts.length === 3) {
+                  if (parts[2].length === 4) { // DD.MM.YYYY
+                    d = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
+                  }
+                }
+              }
+
+              if (!isNaN(d.getTime())) {
+                d.setFullYear(d.getFullYear() + 5)
+                const dd = String(d.getDate()).padStart(2, '0')
+                const mm = String(d.getMonth() + 1).padStart(2, '0')
+                const yyyy = d.getFullYear()
+                newData.validUpto = `${dd}.${mm}.${yyyy}`
+              }
+            } catch (e) {
+              console.error("Date calculation error", e)
+            }
+          }
+        }
+      }
+      return newData
+    })
   }
 
   const handlePhotoUpload = (e) => {
