@@ -576,7 +576,7 @@
                 overflow-y: hidden;
             }
 
-            .id-card:not(#capture-area-worker) {
+            #capture-area {
                 transform: scale(0.6);
                 transform-origin: top left;
                 margin-bottom: 20px;
@@ -645,7 +645,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .id-card:not(#capture-area-worker) {
+            #capture-area {
                 transform: scale(0.35);
                 transform-origin: top left;
                 margin-right: -650px;
@@ -715,7 +715,7 @@
         }
 
         @media (max-width: 480px) {
-            .id-card:not(#capture-area-worker) {
+            #capture-area {
                 transform: scale(0.28);
                 margin-right: -720px;
                 margin-bottom: -455px;
@@ -1273,13 +1273,6 @@
                 <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
-        </div>
-        <!-- Off-screen Worker Area for Background Generation -->
-        <!-- V5.1 FINAL RENDER: Temporarily jumps to z-index 999999 during capture to force top-layer paint -->
-        <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: 0; width: 1000px; height: 630px; opacity: 1; visibility: visible; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden; border: none;">
-            <!-- Content will be injected from capture-area.innerHTML -->
-        </div>
-
         <div class="actions" style="margin-top: 2rem; display: flex; justify-content: center; width: 100%;">
             <button class="btn btn-p" id="btn-download" style="background: #F7931E; font-size: 1.1rem; padding: 12px 30px; box-shadow: 0 4px 15px rgba(247, 147, 30, 0.3); border-radius: 12px; transition: all 0.2s ease;">
                 <i data-lucide="upload-cloud"></i> Submit for Approval
@@ -3951,7 +3944,7 @@
                             width: 1000,
                             height: 630,
                             skipFonts: true,
-                            style: { opacity: '1', visibility: 'visible', left: '0', top: '0', transform: 'none' }, // Reset clone transform
+                            style: { opacity: '1', visibility: 'visible', left: '0', top: '0', transform: 'none', transformOrigin: 'top left' }, // Reset clone transform
                             imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
                         });
 
@@ -4288,6 +4281,10 @@
     </div>
 
 
+    <!-- Off-screen Worker Area for Background Generation (Moved outside main to stay isolated) -->
+    <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: 0; width: 1000px; height: 630px; opacity: 1; visibility: visible; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden; border: none;">
+        <!-- Content will be injected from capture-area.innerHTML -->
+    </div>
 </body>
 
 </html>
