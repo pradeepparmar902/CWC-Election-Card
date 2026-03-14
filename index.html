@@ -887,7 +887,7 @@
 
     <aside class="sidebar">
 
-                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #e67e22; color: white; padding: 2px 8px; border-radius: 10px;">V4.0_STABLE</span></h2>
+                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #9b59b6; color: white; padding: 2px 8px; border-radius: 10px;">V5.0_FINAL_STABLE</span></h2>
 
 
         <div class="mode-toggle">
@@ -1275,8 +1275,8 @@
             </div>
         </div>
         <!-- Off-screen Worker Area for Background Generation -->
-        <!-- V4.0 STABLE: Keeping in viewport but near-invisible to force browser painting while hiding from user -->
-        <div id="capture-area-worker" class="id-card" style="position: fixed; left: 0; top: 0; width: 1000px; height: 630px; opacity: 0.01; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden;">
+        <!-- V5.0 FINAL STABLE: Full opacity but far off-screen to guarantee 100% paint quality for capture libs -->
+        <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: 0; width: 1000px; height: 630px; opacity: 1; visibility: visible; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden;">
             <!-- Content will be injected from capture-area.innerHTML -->
         </div>
 
@@ -3874,15 +3874,15 @@
                 // 3. Wait for fonts and final browser paint
                 if (document.fonts) await document.fonts.ready;
                 
-                // V4.0: Forced visibility check for graphics
+                // V5.0: Forced visibility check for graphics (Respecting Flex Layout)
                 const ensureVisible = (target) => {
                     const layers = ['.card-stripes', '.header-container', '.office-bar', '#drag-sign'];
                     layers.forEach(sel => {
                         const el = target.querySelector(sel);
                         if (el) {
                             el.style.visibility = 'visible';
-                            el.style.display = 'block';
                             el.style.opacity = '1';
+                            // We do NOT force display: block here because it breaks flex-layout (stripes)
                         }
                     });
                 };
@@ -3906,6 +3906,8 @@
                             width: 1000,
                             height: 630,
                             skipFonts: true,
+                            // V5.0: Explicitly ensure the clone is opaque
+                            style: { opacity: '1', visibility: 'visible' },
                             imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
                         });
 
