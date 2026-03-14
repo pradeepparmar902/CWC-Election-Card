@@ -685,7 +685,7 @@
             }
 
             #mini-card-scaler {
-                transform: scale(0.34) !important; /* Scale 1000 to fit 340 */
+                transform: scale(0.34); /* Scale 1000 to fit 340 (Removed !important for capture safety) */
             }
 
             .approval-row td {
@@ -715,10 +715,10 @@
         }
 
         @media (max-width: 480px) {
-            .id-card {
-                transform: scale(0.28) !important;
-                margin-right: -720px !important;
-                margin-bottom: -455px !important;
+            .id-card:not(#capture-area-worker) {
+                transform: scale(0.28);
+                margin-right: -720px;
+                margin-bottom: -455px;
             }
         }
 
@@ -4276,11 +4276,11 @@
             transition: transform 0.15s ease, box-shadow 0.15s ease !important;
         }
         #ultimate-menu-trigger:hover {
-            transform: scale(1.08) !important;
+            transform: scale(1.08); /* Removed !important */
             box-shadow: 0 6px 22px rgba(0,28,107,0.45) !important;
         }
         #ultimate-menu-trigger:active {
-            transform: scale(0.93) !important;
+            transform: scale(0.93); /* Removed !important */
         }
     </style>
     <div id="ultimate-menu-trigger" onclick="toggleDrawer()" title="Open Navigation Menu">
