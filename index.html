@@ -1274,9 +1274,9 @@
                 <div class="resizer"></div>
             </div>
         </div>
-        <!-- Off-screen Worker Area for Background Generation (Mirrors capture-area structure) -->
-        <div id="capture-area-worker" class="id-card" style="position: fixed; left: -2000px; top: -2000px; display: block; opacity: 0.01; pointer-events: none;">
-            <!-- Content will be injected from capture-area.innerHTML during background processing -->
+        <!-- Off-screen Worker Area for Background Generation -->
+        <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: -9999px; display: block; visibility: visible; pointer-events: none; z-index: -1;">
+            <!-- Content will be injected from capture-area.innerHTML -->
         </div>
 
         <div class="actions" style="margin-top: 2rem; display: flex; justify-content: center; width: 100%;">
@@ -3000,6 +3000,7 @@
                 const activeRow = document.getElementById(`row-${id}`);
                 if (activeRow) activeRow.classList.add('active-row');
 
+                console.log("ANTIGRAVITY_STABILITY_V2_CHECK");
                 if (placeholder) placeholder.classList.add('hidden');
                 if (container) container.classList.remove('hidden');
 
@@ -3621,12 +3622,15 @@
                 const vCode = mData['Vibhag Code'];
                 const vNo = mData['Vibhag No'];
                 
-                if (vCode && vNo) {
-                    dynamicVibhagPrefix = `${vCode}-${vNo}/`;
+                // Strip any existing brackets from parts
+                const cleanVCode = String(vCode || '').replace(/[\[\]]/g, '');
+                const cleanVNo = String(vNo || '').replace(/[\[\]]/g, '');
+                
+                if (cleanVCode && cleanVNo) {
+                    dynamicVibhagPrefix = `${cleanVCode}-${cleanVNo}/`;
                 } else if (mData['Vibhag Name']) {
-                    // Fallback for older records using Name
-                    const abv = String(mData['Vibhag Name']).substring(0, 3).toUpperCase();
-                    dynamicVibhagPrefix = `${abv}-${vNo || '??'}/`;
+                    const abv = String(mData['Vibhag Name']).substring(0, 3).toUpperCase().replace(/[\[\]]/g, '');
+                    dynamicVibhagPrefix = `${abv}-${cleanVNo || '??'}/`;
                 }
 
                 mData['Membership No'] = dynamicVibhagPrefix + prefix + paddedNum;
@@ -3848,7 +3852,7 @@
                     // Try html-to-image first (Better quality)
                     base64Png = await htmlToImage.toPng(captureArea, {
                         backgroundColor: '#ffffff',
-                        pixelRatio: 2.5,
+                        pixelRatio: 3,
                         width: 1000,
                         height: 630,
                         skipFonts: true,
