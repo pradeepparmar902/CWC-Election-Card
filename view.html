@@ -83,9 +83,9 @@
 
         /* Left Side: Table View */
         .table-container {
-            flex: 2;
+            flex: 1.8;
             background: white;
-            border-right: 1px solid #ddd;
+            border-right: 1px solid #e1e8ed;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -155,26 +155,31 @@
 
         /* Right Side: Image Preview */
         .preview-container {
-            flex: 1;
-            background: #f8f9fa;
+            flex: 1.2;
+            background: #fdfdfd;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 40px;
+            justify-content: flex-start;
+            padding: 30px;
             position: relative;
             min-width: 400px;
+            overflow-y: auto;
         }
 
         .preview-card {
             background: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 100%;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 15px 45px rgba(0, 28, 107, 0.08);
+            width: 100%;
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            position: sticky;
+            top: 0;
         }
 
         .preview-card img {
@@ -480,7 +485,7 @@
 
     <!-- Header -->
     <header class="top-nav">
-        <h1><i data-lucide="database"></i> Cloud Database Viewer</h1>
+        <h1><i data-lucide="database"></i> Cloud Database Viewer <span style="font-size: 0.6rem; background: #e67e22; color: white; padding: 2px 8px; border-radius: 10px; vertical-align: middle; margin-left: 10px;">V5.4_SYNC_FIX</span></h1>
         <a href="index.html" class="btn-link"><i data-lucide="arrow-left"></i> Back to Designer</a>
     </header>
 
@@ -529,14 +534,19 @@
                     <h2 id="view-name">--</h2>
                     <p id="view-membership">--</p>
                 </div>
-                <img id="view-image" src="" alt="Selected ID Card">
+                <div id="view-image" style="width: 100%; aspect-ratio: 1000 / 630; background: #fdfdfd; border-radius: 8px; border: 1px solid #e1e8ed; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                    <div style="text-align: center; color: #aab8c2;">
+                        <i data-lucide="image" size="32"></i>
+                        <p style="font-size: 0.75rem; margin-top: 5px; font-weight: 500;">Select a card to preview</p>
+                    </div>
+                </div>
                 <button id="btn-download"
-                    style="margin-top: 15px; width: 100%; background: var(--primary-blue); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i data-lucide="download" size="18"></i> Download High-Res Photo
+                    style="margin-top: 20px; width: 100%; background: var(--primary-blue); color: white; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0, 28, 107, 0.2);">
+                    <i data-lucide="download" size="18"></i> Download ID Card
                 </button>
                 <button id="btn-share"
-                    style="margin-top: 10px; width: 100%; background: #25D366; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; align-items: center; justify-content: center; gap: 8px;">
-                    <i data-lucide="share-2" size="18"></i> Share to Apps
+                    style="margin-top: 12px; width: 100%; background: #25D366; color: white; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; display: none; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);">
+                    <i data-lucide="share-2" size="18"></i> Share to WhatsApp
                 </button>
             </div>
         </div>
@@ -602,7 +612,22 @@
 
             viewName.textContent = rec["Full Printed Name"] || "Unknown Member";
             viewMembership.textContent = `ID: ${rec["Membership No"] || "N/A"}`;
-            viewImage.src = rec.photoUrl || ""; // Firebase Storage PNG link
+            
+            if (rec.photoUrl) {
+                viewImage.innerHTML = `<img src="${rec.photoUrl}" id="preview-img-el" style="width:100%; height:100%; object-fit:contain;">`;
+                const imgEl = document.getElementById('preview-img-el');
+                if (imgEl) {
+                    imgEl.onload = () => console.log("PREVIEW_IMAGE_LOADED", rec.photoUrl);
+                    imgEl.onerror = (err) => {
+                        console.error("PREVIEW_IMAGE_ERROR", err, rec.photoUrl);
+                        viewImage.innerHTML = `<div style="padding:20px; text-align:center; color:#dc3545;"><i data-lucide="alert-triangle"></i><p>Image failed to load.<br><span style="font-size:0.7rem;">(Check console for CORS or Network error)</span></p></div>`;
+                        if (window.lucide) lucide.createIcons();
+                    };
+                }
+            } else {
+                viewImage.innerHTML = `<div style="padding:20px; text-align:center; color:#666;"><i data-lucide="image-off"></i><p>No card image available</p></div>`;
+                if (window.lucide) lucide.createIcons();
+            }
 
                 // Setup Share Button (if supported)
                 const btnShare = document.getElementById('btn-share');
@@ -617,15 +642,22 @@
                 if (window.lucide) lucide.createIcons();
 
                 try {
-                    // Method 4: High-Performance Image Proxy (Weserv)
-                    // Weserv is extremely fast and specifically handles image CORS for downloading.
-                    const weservUrl = `https://images.weserv.nl/?url=${encodeURIComponent(rec.photoUrl)}&output=png&default=${encodeURIComponent(rec.photoUrl)}`;
+                    let downloadUrl = "";
                     
-                    const response = await fetch(weservUrl);
-                    if (!response.ok) throw new Error('Image fetch failed');
-                    
-                    const blob = await response.blob();
-                    const downloadUrl = window.URL.createObjectURL(blob);
+                    if (rec.photoUrl.startsWith('data:')) {
+                        // Direct download of base64
+                        downloadUrl = rec.photoUrl;
+                    } else {
+                        // Method 4: High-Performance Image Proxy (Weserv)
+                        // Weserv is extremely fast and specifically handles image CORS for downloading.
+                        const weservUrl = `https://images.weserv.nl/?url=${encodeURIComponent(rec.photoUrl)}&output=png&default=${encodeURIComponent(rec.photoUrl)}`;
+                        
+                        const response = await fetch(weservUrl);
+                        if (!response.ok) throw new Error('Image fetch failed');
+                        
+                        const blob = await response.blob();
+                        downloadUrl = window.URL.createObjectURL(blob);
+                    }
                     
                     const a = document.createElement('a');
                     a.style.display = 'none';
@@ -733,6 +765,7 @@
 
         // Boot system
         fetchDatabase();
+        console.log("%c ID_DESIGNER_V3_ULTRA_STABLE_ACTIVE ", "background: #28a745; color: #fff; font-weight: bold; padding: 5px; border-radius: 3px;");
 
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {

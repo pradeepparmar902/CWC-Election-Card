@@ -562,7 +562,7 @@
                 overflow-x: hidden !important;
             }
 
-            .sidebar {
+            body:not(.is-capturing) .sidebar {
                 width: 100% !important;
                 height: auto;
                 position: relative;
@@ -571,8 +571,8 @@
                 padding: 1.5rem;
                 box-sizing: border-box;
             }
-
-            .main-preview {
+-
+            body:not(.is-capturing) .main-preview {
                 margin-left: 0 !important;
                 padding: 1rem;
                 height: auto;
@@ -591,7 +591,7 @@
                 margin-bottom: -232px;
             }
 
-            .actions {
+            body:not(.is-capturing) .actions {
                 margin-top: 1rem;
                 width: 100%;
                 display: flex;
@@ -609,7 +609,7 @@
             }
 
             /* On mobile, sidebar is always visible — stacks below the card */
-            .sidebar {
+            body:not(.is-capturing) .sidebar {
                 position: relative !important;
                 left: auto !important;
                 top: auto !important;
@@ -1283,6 +1283,10 @@
         <div class="actions" style="margin-top: 2rem; display: flex; justify-content: center; width: 100%;">
             <button class="btn btn-p" id="btn-download" style="background: #F7931E; font-size: 1.1rem; padding: 12px 30px; box-shadow: 0 4px 15px rgba(247, 147, 30, 0.3); border-radius: 12px; transition: all 0.2s ease;">
                 <i data-lucide="upload-cloud"></i> Submit for Approval
+            </button>
+            <!-- PHASE 7 TEST BUTTON -->
+            <button class="btn btn-p" onclick="addRajuTestEntry()" style="background: #999; margin-left: 10px; font-size: 0.8rem; padding: 5px 15px;">
+                Add Raju Test Data
             </button>
         </div>
     </main>
@@ -3593,6 +3597,11 @@
                 // V6.6: VIEWPORT LOCKDOWN (Disable mobile scaling for high-res capture)
                 document.body.classList.add('is-capturing');
                 
+                // V7.0: DOUBLE-FRAME SYNC
+                // Give the browser time to recognize the .is-capturing class and recalculate layout
+                // (Necessary for mobile browsers that might be slow to un-match media queries)
+                await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+                
                 if (!isSilent) {
                     l = document.createElement('div');
                     l.className = 'approval-toast';
@@ -3933,41 +3942,43 @@
 
                 let base64Png = "";
                 let attempts = 0;
-                const maxAttempts = 3;
+                const maxAttempts = 5; // V7: Increased retries for mobile stability
 
                 while (attempts < maxAttempts && !base64Png) {
                     attempts++;
                     try {
-                        updateToast(`Capturing High-Fidelity Record (Attempt ${attempts})...`, 'camera');
-                        // Progressive wait for GPU paint
-                        await new Promise(r => setTimeout(r, 800 * attempts));
+                        updateToast(`Capturing Record (Attempt ${attempts})...`, 'camera');
+                        // V7: Hyper-Progressive wait for GPU paint on mobile
+                        const waitTime = attempts === 1 ? 500 : (1000 * (attempts - 1));
+                        await new Promise(r => setTimeout(r, waitTime));
 
-                        // Try html-to-image first (Better quality)
+                        // Force another layout check on mobile
+                        if (attempts > 1) {
+                            void captureArea.offsetHeight;
+                            await new Promise(r => requestAnimationFrame(r));
+                        }
+
                         base64Png = await htmlToImage.toPng(captureArea, {
                             backgroundColor: '#ffffff',
                             pixelRatio: 3,
                             width: 1000,
                             height: 630,
                             skipFonts: true,
-                            style: { opacity: '1', visibility: 'visible', left: '0', top: '0', transform: 'none', transformOrigin: 'top left' }, // Reset clone transform
+                            style: { opacity: '1', visibility: 'visible', left: '0', top: '0', transform: 'none', transformOrigin: 'top left' },
                             imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
                         });
 
-                        if (base64Png && base64Png.length < 5000) { 
-                            console.warn(`Attempt ${attempts}: Rendered image looks critically blank (${Math.round(base64Png.length/1024)}KB). Retrying...`);
+                        // V7: STRICTER BLANK DETECTION (Card must be > 30KB to be considered "Real")
+                        if (base64Png && base64Png.length < 30000) { 
+                            console.warn(`Attempt ${attempts}: Rendered image looks too small (${Math.round(base64Png.length/1024)}KB). Retrying...`);
                             base64Png = ""; 
-                            if (attempts === maxAttempts) throw new Error("RENDER_BLANK_REPEATED");
+                            if (attempts === maxAttempts) throw new Error("RENDER_CRITICALLY_SMALL");
                         }
                     } catch (h2iErr) {
                         console.warn(`Attempt ${attempts} failed:`, h2iErr);
                         if (attempts === maxAttempts) {
                             console.warn("Final fallback to legacy render...");
-                            const canvas = await html2canvas(captureArea, {
-                                useCORS: true,
-                                allowTaint: true,
-                                scale: 3,
-                                backgroundColor: '#ffffff'
-                            });
+                            const canvas = await html2canvas(captureArea, { useCORS: true, allowTaint: true, scale: 3, backgroundColor: '#ffffff' });
                             base64Png = canvas.toDataURL('image/png', 1.0);
                         }
                     }
@@ -4243,6 +4254,32 @@
             console.log("HEARTBEAT_STABLE_" + new Date().toLocaleTimeString());
         }, 10000);
 
+        // V7.0: TEST HELPER for Raju Y Parmar
+        window.addRajuTestEntry = async function() {
+            try {
+                const testData = {
+                    memberData: {
+                        "Full Printed Name": "Raju Y Parmar",
+                        "Mobile Number": "09800000000",
+                        "Membership No": "",
+                        "Vibhag Code": "TEST",
+                        "Vibhag No": "V7",
+                        "Period": "Lifetime",
+                        "Gender": "Male",
+                        "Address": "TEST ADDRESS FOR RAJU",
+                        "Date of Birth": "1995-01-01",
+                        "Date of Issue": new Date().toISOString().split('T')[0]
+                    },
+                    status: 'pending',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    photoUrl: "https://images.weserv.nl/?url=https://i.pravatar.cc/320&output=png",
+                    templateConfig: typeof getLayoutConfig === 'function' ? getLayoutConfig() : null
+                };
+                await db.collection('idCardApprovals').add(testData);
+                alert("SUCCESS: Raju entry added. Approve it via mobile dashboard now.");
+                if (typeof loadApprovals === 'function') loadApprovals();
+            } catch (e) { alert("Fail: " + e.message); }
+        };
     </script>
     <!-- Emergency Diagnostic Overlay -->
     <div id="diag-log"
