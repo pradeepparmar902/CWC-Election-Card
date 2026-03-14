@@ -1275,7 +1275,8 @@
             </div>
         </div>
         <!-- Off-screen Worker Area for Background Generation -->
-        <div id="capture-area-worker" class="id-card" style="position: absolute; left: -9999px; top: -9999px; display: block; visibility: visible; pointer-events: none; z-index: -1;">
+        <!-- Fixed: Using extreme small opacity at top-left instead of negative positioning for better engine rendering -->
+        <div id="capture-area-worker" class="id-card" style="position: fixed; left: 0; top: 0; opacity: 0.001; pointer-events: none; z-index: -9999; display: block; background: white;">
             <!-- Content will be injected from capture-area.innerHTML -->
         </div>
 
@@ -2982,6 +2983,22 @@
             if (window.lucide) lucide.createIcons();
         }
 
+        window.renderOriginalActionButtons = function(id, mode) {
+            const container = document.getElementById('preview-actions');
+            if (!container) return;
+            container.innerHTML = `
+                <button id="btn-approve-active" onclick="event.stopPropagation()"
+                    style="flex: 1; background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; position: relative; z-index: 101;">
+                    <i data-lucide="check-circle" size="20"></i> Approve Card
+                </button>
+                <button id="btn-reject-active" onclick="event.stopPropagation()"
+                    style="flex: 1; background: #dc3545; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; position: relative; z-index: 101;">
+                    <i data-lucide="x-circle" size="20"></i> Reject
+                </button>
+            `;
+            if (window.lucide) lucide.createIcons();
+        };
+
         window.showCardPreview = async function(id, mode = 'pending') {
             try {
                 const container = document.getElementById('active-preview-content');
@@ -3663,16 +3680,13 @@
                     }
                 };
 
-                // Save current UI state (layout and data)
-                const captureArea = document.getElementById(targetAreaId);
-                const tempCaptureAreaHtml = captureArea.innerHTML;
-                
-                // If using worker, prime it with the current UI's static elements if needed, 
-                // but actually we expect it to be ready.
-                if (targetAreaId === 'capture-area-worker' && !captureArea.innerHTML.trim()) {
-                    const master = document.getElementById('capture-area');
-                    if (master) captureArea.innerHTML = master.innerHTML;
+                // --- STEP 1: SYNC WORKER AREA (Fix for Blank/Mismatched Previews) ---
+                // We ALWAYS re-sync the worker with the master layout to ensure all elements (stripes, containers) are identical.
+                const master = document.getElementById('capture-area');
+                if (master && targetAreaId === 'capture-area-worker') {
+                    captureArea.innerHTML = master.innerHTML;
                 }
+
 
                 const currentLayout = getLayoutConfig(); // Base config for restoration
 
