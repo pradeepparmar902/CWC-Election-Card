@@ -215,11 +215,17 @@
             width: 1000px;
             height: 630px;
             background: white;
-            border: 1px solid #ddd;
             position: relative;
-            overflow: visible;
-            /* Fix truncation of long text elements */
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        /* HARDEN: Ensure background worker NEVER scales */
+        #capture-area-worker.id-card {
+            transform: none !important;
+            transform-origin: top left !important;
         }
 
         /* Grid for design mode */
@@ -1273,6 +1279,7 @@
                 <label class="mandatory-toggle"><input type="checkbox" onchange="toggleMandatory(this)"> Mandatory</label>
                 <div class="resizer"></div>
             </div>
+        </div>
         <div class="actions" style="margin-top: 2rem; display: flex; justify-content: center; width: 100%;">
             <button class="btn btn-p" id="btn-download" style="background: #F7931E; font-size: 1.1rem; padding: 12px 30px; box-shadow: 0 4px 15px rgba(247, 147, 30, 0.3); border-radius: 12px; transition: all 0.2s ease;">
                 <i data-lucide="upload-cloud"></i> Submit for Approval
@@ -3517,7 +3524,7 @@
 
                     try {
                         // Use the WORKER area for capture
-                        const success = await window.approveCard(card.id, true, 'capture-area-worker');
+                        const success = await window.approveCard(card.id, 'capture-area-worker', true);
                         if (success) successCount++;
                         else {
                             errorCount++;
@@ -3879,14 +3886,9 @@
                 // 3. Wait for fonts and final browser paint
                 if (document.fonts) await document.fonts.ready;
                 
-                // V5.1: Top-Layer Paint Strategy 
+                // V5.1: Top-Layer Paint Strategy (Simplified for stability)
                 if (targetAreaId === 'capture-area-worker') {
-                    captureArea.style.left = '50%';
-                    captureArea.style.top = '50%';
-                    captureArea.style.transform = 'translate(-50%, -50%) scale(0.8)';
                     captureArea.style.zIndex = '999999';
-                    captureArea.style.boxShadow = '0 0 100px rgba(0,0,0,0.5)';
-                    captureArea.style.borderRadius = '20px';
                     // Force Layout Reflow
                     void captureArea.offsetHeight;
                 }
