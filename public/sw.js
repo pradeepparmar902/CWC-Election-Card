@@ -1,5 +1,5 @@
-// Service Worker v41 — Network-first for HTML, cache-first for assets
-const CACHE_NAME = 'id-designer-pro-v41';
+// Service Worker v42 — Forced Update for Bracket Fix
+const CACHE_NAME = 'id-designer-pro-v42';
 const STATIC_ASSETS = [
   './',
 ];
