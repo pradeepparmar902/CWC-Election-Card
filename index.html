@@ -3615,7 +3615,8 @@
                     captureArea.innerHTML = master.innerHTML;
                     // V5.4: Structural Guard Sync
                     // Sync aesthetics (appearances)
-                    captureArea.className = master.className;
+                    // PROTECT: Force worker area to stay clean (Do Not Inherit 'hide-defaults')
+                    captureArea.className = master.className.replace('hide-defaults', '').trim();
                     captureArea.style.backgroundImage = master.style.backgroundImage;
                     captureArea.style.backgroundSize = master.style.backgroundSize || '100% 100%';
                     captureArea.style.backgroundPosition = master.style.backgroundPosition || 'center';
@@ -3759,9 +3760,9 @@
                     if (d.photoUrl.startsWith('data:')) {
                         photoWrap.innerHTML = `<img src="${d.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
                     } else {
-                        // Crucial for Firebase Storage images preventing tainted canvas
-                        // If crossOrigin fails, the Deep Resolve Engine below proxies it
-                        photoWrap.innerHTML = `<img src="${d.photoUrl}" crossorigin="anonymous" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
+                        // Injection for Capture: Remove crossorigin to prevent initial load failures on localhost.
+                        // The Deep Resolve Engine below will handle the Base64 conversion via proxy if needed.
+                        photoWrap.innerHTML = `<img src="${d.photoUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"><div class="resizer"></div>`;
                     }
                 }
 
@@ -3790,26 +3791,20 @@
                         } catch (e) { return null; } finally { clearTimeout(timeout); }
                     };
 
-                    // Try direct, then proxy
+                    // Try direct, then proxy (Proxies only work for public URLs)
                     let result = await fetchAsset(cleanUrl, false);
-                    if (!result && !cleanUrl.includes('localhost')) {
-                        console.warn("Retrying with proxy:", cleanUrl);
-                        result = await fetchAsset(cleanUrl, true);
-                        if (!result) {
-                            // Secondary fallback proxy
-                            console.warn("Retrying with secondary proxy...");
-                            const target2 = `https://api.allorigins.win/raw?url=${encodeURIComponent(cleanUrl)}`;
-                            try {
-                                const res2 = await fetch(target2);
-                                if (res2.ok) {
-                                    const blob2 = await res2.blob();
-                                    result = await new Promise(r => {
-                                        const reader = new FileReader();
-                                        reader.onloadend = () => r(reader.result);
-                                        reader.readAsDataURL(blob2);
-                                    });
-                                }
-                            } catch (e) { }
+                    if (!result) {
+                        const isPublicUrl = cleanUrl.startsWith('http') && !cleanUrl.includes('localhost') && !cleanUrl.includes('127.0.0.1');
+                        if (isPublicUrl) {
+                            console.warn("Retrying with primary proxy (Weserv):", cleanUrl);
+                            // V5.4: Use Weserv for high-speed CORS resolution with explicit PNG output
+                            const weservProxy = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&output=png`;
+                            result = await fetchAsset(weservProxy, false);
+                        }
+                        
+                        if (!result && isPublicUrl) {
+                            console.warn("Retrying with secondary proxy (CORSProxy):", cleanUrl);
+                            result = await fetchAsset(cleanUrl, true);
                         }
                     }
                     if (!result) console.warn("Deep Resolve failed for URL:", cleanUrl, "falling back to original URL.");
@@ -3960,8 +3955,8 @@
                             imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
                         });
 
-                        if (base64Png && base64Png.length < 25000) { 
-                            console.warn(`Attempt ${attempts}: Rendered image looks blank (${Math.round(base64Png.length/1024)}KB). Retrying...`);
+                        if (base64Png && base64Png.length < 5000) { 
+                            console.warn(`Attempt ${attempts}: Rendered image looks critically blank (${Math.round(base64Png.length/1024)}KB). Retrying...`);
                             base64Png = ""; 
                             if (attempts === maxAttempts) throw new Error("RENDER_BLANK_REPEATED");
                         }
