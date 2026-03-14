@@ -557,7 +557,7 @@
 
         /* Mobile Layout Adjustments */
         @media (max-width: 1200px) {
-            body {
+            body:not(.is-capturing) {
                 flex-direction: column-reverse !important;
                 overflow-x: hidden !important;
             }
@@ -582,7 +582,7 @@
                 overflow-y: hidden;
             }
 
-            #capture-area {
+            body:not(.is-capturing) #capture-area {
                 transform: scale(0.6);
                 transform-origin: top left;
                 margin-bottom: 20px;
@@ -604,7 +604,7 @@
         }
 
         @media (max-width: 768px) {
-            body {
+            body:not(.is-capturing) {
                 flex-direction: column !important;
             }
 
@@ -628,7 +628,7 @@
             }
 
             /* Main canvas takes full width and appears first */
-            .main-preview {
+            body:not(.is-capturing) .main-preview {
                 margin-left: 0 !important;
                 width: 100vw !important;
                 max-width: 100vw !important;
@@ -651,7 +651,7 @@
                 grid-template-columns: 1fr;
             }
 
-            #capture-area {
+            body:not(.is-capturing) #capture-area {
                 transform: scale(0.35);
                 transform-origin: top left;
                 margin-right: -650px;
@@ -721,7 +721,7 @@
         }
 
         @media (max-width: 480px) {
-            #capture-area {
+            body:not(.is-capturing) #capture-area {
                 transform: scale(0.28);
                 margin-right: -720px;
                 margin-bottom: -455px;
@@ -1283,6 +1283,10 @@
         <div class="actions" style="margin-top: 2rem; display: flex; justify-content: center; width: 100%;">
             <button class="btn btn-p" id="btn-download" style="background: #F7931E; font-size: 1.1rem; padding: 12px 30px; box-shadow: 0 4px 15px rgba(247, 147, 30, 0.3); border-radius: 12px; transition: all 0.2s ease;">
                 <i data-lucide="upload-cloud"></i> Submit for Approval
+            </button>
+            <!-- TEMP TEST BUTTON -->
+            <button class="btn btn-p" onclick="addDummyTestApprovals()" style="background: #999; margin-left: 10px; font-size: 0.8rem; padding: 5px 15px;">
+                Add Test Data
             </button>
         </div>
     </main>
@@ -3590,6 +3594,9 @@
             let currentLayout = null;
 
             try {
+                // V6.6: VIEWPORT LOCKDOWN (Disable mobile scaling for high-res capture)
+                document.body.classList.add('is-capturing');
+                
                 if (!isSilent) {
                     l = document.createElement('div');
                     l.className = 'approval-toast';
@@ -3983,6 +3990,9 @@
                     alert("Warning: The generated card image appears to be blank. This usually happens if the browser is low on memory. Please refresh and try again.");
                 }
 
+                // V6.6: RELEASE VIEWPORT LOCKDOWN
+                document.body.classList.remove('is-capturing');
+
                 // 4. RESTORE UI
                 if (captureArea && tempCaptureAreaHtml) {
                     captureArea.innerHTML = tempCaptureAreaHtml;
@@ -4236,6 +4246,42 @@
         setInterval(() => {
             console.log("HEARTBEAT_STABLE_" + new Date().toLocaleTimeString());
         }, 10000);
+
+        // V6.6: TEST HELPER - Add Dummy Data for validation
+        window.addDummyTestApprovals = async function() {
+            console.log("Adding dummy test data...");
+            const names = ["Vijay Gupta", "Meera Devi", "Ramesh Kumar"];
+            const mobile = "9800000000";
+            
+            try {
+                for (let i = 0; i < names.length; i++) {
+                    const testData = {
+                        memberData: {
+                            "Full Printed Name": names[i],
+                            "Mobile Number": mobile,
+                            "Membership No": "",
+                            "Vibhag Code": "TEST",
+                            "Vibhag No": String(i + 1),
+                            "Period": "Lifetime",
+                            "Gender": "Male",
+                            "Address": "123 Test Street, Mumbai",
+                            "Date of Birth": "1990-01-01",
+                            "Date of Issue": new Date().toISOString().split('T')[0]
+                        },
+                        status: 'pending',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        photoUrl: "https://images.weserv.nl/?url=https://i.pravatar.cc/300&output=png", // Proxy-safe dummy photo
+                        templateConfig: typeof getLayoutConfig === 'function' ? getLayoutConfig() : null
+                    };
+                    await db.collection('idCardApprovals').add(testData);
+                }
+                alert("SUCCESS: 3 Dummy cards added for testing. Open 'Checker Dashboard' to approve them.");
+                if (typeof loadApprovals === 'function') loadApprovals();
+            } catch (e) {
+                console.error("Test data failed", e);
+                alert("Failed to add test data: " + e.message);
+            }
+        };
     </script>
     <!-- Emergency Diagnostic Overlay -->
     <div id="diag-log"
