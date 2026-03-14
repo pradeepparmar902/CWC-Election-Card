@@ -1817,10 +1817,12 @@
                     else if (pVal.includes("5")) periodPrefix = "V-";
                     else if (pVal.includes("1")) periodPrefix = "I-";
                     
-                    // Vibhag Prefix: [CODE-NO]/
+                    // Vibhag Prefix: CODE-NO/ (Brackets removed for clean design)
                     let vPrefix = "";
                     if (vNoInput && vNoInput.value && vCodeInput && vCodeInput.value) {
-                        vPrefix = `[${vCodeInput.value}-${vNoInput.value}]/`;
+                        const cleanVCode = String(vCodeInput.value).replace(/[\[\]]/g, '');
+                        const cleanVNo = String(vNoInput.value).replace(/[\[\]]/g, '');
+                        vPrefix = `${cleanVCode}-${cleanVNo}/`;
                     }
                     
                     // Only apply auto-prefix if the user hasn't already typed a full formatted number
@@ -2130,8 +2132,11 @@
                 let finalMemNo = memVal;
                 
                 // If the preview has the full formatted number, use it for the database
+                // FORCE: Strip any brackets that might have leaked from the UI or templates
                 if (memView && memView.innerText && memView.innerText !== "[Mem No]") {
-                    finalMemNo = memView.innerText;
+                    finalMemNo = memView.innerText.replace(/[\[\]]/g, '');
+                } else {
+                    finalMemNo = String(memVal).replace(/[\[\]]/g, '');
                 }
 
                 const cloudPayload = {
@@ -3000,7 +3005,7 @@
                 const activeRow = document.getElementById(`row-${id}`);
                 if (activeRow) activeRow.classList.add('active-row');
 
-                console.log("ANTIGRAVITY_STABILITY_V2_CHECK");
+                                console.log("ANTIGRAVITY_STABILITY_V3_FINAL");
                 if (placeholder) placeholder.classList.add('hidden');
                 if (container) container.classList.remove('hidden');
 
@@ -4116,7 +4121,7 @@
     <div id="diag-log"
         style="position:fixed; bottom:10px; right:10px; width:300px; max-height:200px; overflow-y:auto; background:rgba(0,0,0,0.8); color:#00ff00; font-family:monospace; font-size:10px; padding:10px; border-radius:5px; z-index:999999; display:none; pointer-events:none;">
         <div style="border-bottom:1px solid #444; padding-bottom:5px; margin-bottom:5px; font-weight:bold;">SYSLOG
-            [STABILITY V2]</div>
+                        [STABILITY V3_FINAL]</div>
     </div>
 
     <!-- HAMBURGER MENU BUTTON - Always visible, all screen sizes -->
