@@ -887,7 +887,7 @@
 
     <aside class="sidebar">
 
-                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #28a745; color: white; padding: 2px 8px; border-radius: 10px;">V3.3_FINAL</span></h2>
+                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #e67e22; color: white; padding: 2px 8px; border-radius: 10px;">V4.0_STABLE</span></h2>
 
 
         <div class="mode-toggle">
@@ -1275,8 +1275,8 @@
             </div>
         </div>
         <!-- Off-screen Worker Area for Background Generation -->
-        <!-- Fixed V3.3: Moving off-screen but keeping opacity:1 to ensure browser paints all layers (stripes, text) -->
-        <div id="capture-area-worker" class="id-card" style="position: fixed; left: -5000px; top: 0; opacity: 1; pointer-events: none; z-index: -9999; display: block; background: white;">
+        <!-- V4.0 STABLE: Keeping in viewport but near-invisible to force browser painting while hiding from user -->
+        <div id="capture-area-worker" class="id-card" style="position: fixed; left: 0; top: 0; width: 1000px; height: 630px; opacity: 0.01; pointer-events: none; z-index: -9999; display: block; background: white; overflow: hidden;">
             <!-- Content will be injected from capture-area.innerHTML -->
         </div>
 
@@ -3873,32 +3873,68 @@
 
                 // 3. Wait for fonts and final browser paint
                 if (document.fonts) await document.fonts.ready;
-                await new Promise(r => setTimeout(r, 800));
+                
+                // V4.0: Forced visibility check for graphics
+                const ensureVisible = (target) => {
+                    const layers = ['.card-stripes', '.header-container', '.office-bar', '#drag-sign'];
+                    layers.forEach(sel => {
+                        const el = target.querySelector(sel);
+                        if (el) {
+                            el.style.visibility = 'visible';
+                            el.style.display = 'block';
+                            el.style.opacity = '1';
+                        }
+                    });
+                };
+                ensureVisible(captureArea);
 
                 let base64Png = "";
-                try {
-                    // Try html-to-image first (Better quality)
-                    base64Png = await htmlToImage.toPng(captureArea, {
-                        backgroundColor: '#ffffff',
-                        pixelRatio: 3,
-                        width: 1000,
-                        height: 630,
-                        skipFonts: true,
-                        imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
-                    });
-                } catch (h2iErr) {
-                    console.warn("html-to-image failed, falling back to html2canvas:", h2iErr);
-                    // Fallback to html2canvas (More robust, lower quality)
-                    const canvas = await html2canvas(captureArea, {
-                        useCORS: true,
-                        allowTaint: true,
-                        scale: 3,
-                        backgroundColor: '#ffffff'
-                    });
-                    base64Png = canvas.toDataURL('image/png', 1.0);
+                let attempts = 0;
+                const maxAttempts = 3;
+
+                while (attempts < maxAttempts && !base64Png) {
+                    attempts++;
+                    try {
+                        updateToast(`Capturing High-Res Image (Attempt ${attempts})...`, 'camera');
+                        // Progressive wait
+                        await new Promise(r => setTimeout(r, 600 * attempts));
+
+                        // Try html-to-image first (Better quality)
+                        base64Png = await htmlToImage.toPng(captureArea, {
+                            backgroundColor: '#ffffff',
+                            pixelRatio: 3,
+                            width: 1000,
+                            height: 630,
+                            skipFonts: true,
+                            imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+                        });
+
+                        // V4.0: Validate the result (Check for suspiciously small data reflecting a blank/white card)
+                        // A blank white card is typically < 10KB. A real card is usually > 100KB.
+                        if (base64Png && base64Png.length < 25000) { 
+                            console.warn(`Attempt ${attempts}: Rendered image looks blank (${Math.round(base64Png.length/1024)}KB). Retrying...`);
+                            base64Png = ""; 
+                            if (attempts === maxAttempts) throw new Error("RENDER_BLANK_REPEATED");
+                        }
+                    } catch (h2iErr) {
+                        console.warn(`Attempt ${attempts} failed:`, h2iErr);
+                        if (attempts === maxAttempts) {
+                            console.warn("Falling back to html2canvas for final attempt...");
+                            const canvas = await html2canvas(captureArea, {
+                                useCORS: true,
+                                allowTaint: true,
+                                scale: 3,
+                                backgroundColor: '#ffffff'
+                            });
+                            base64Png = canvas.toDataURL('image/png', 1.0);
+                        }
+                    }
                 }
 
                 if (!base64Png) throw new Error("Could not generate image data from the card.");
+                if (base64Png.length < 25000) {
+                    alert("Warning: The generated card image appears to be blank. This usually happens if the browser is low on memory. Please refresh and try again.");
+                }
 
                 // 4. RESTORE UI
                 if (captureArea && tempCaptureAreaHtml) {
