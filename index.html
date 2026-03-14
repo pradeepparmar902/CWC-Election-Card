@@ -1275,7 +1275,7 @@
             </div>
         </div>
         <!-- Off-screen Worker Area for Background Generation (Mirrors capture-area structure) -->
-        <div id="capture-area-worker" class="id-card" style="position: fixed; left: -5000px; top: -5000px; display: block; pointer-events: none;">
+        <div id="capture-area-worker" class="id-card" style="position: fixed; left: -2000px; top: -2000px; display: block; opacity: 0.01; pointer-events: none;">
             <!-- Content will be injected from capture-area.innerHTML during background processing -->
         </div>
 
@@ -3622,11 +3622,11 @@
                 const vNo = mData['Vibhag No'];
                 
                 if (vCode && vNo) {
-                    dynamicVibhagPrefix = `[${vCode}-${vNo}]/`;
+                    dynamicVibhagPrefix = `${vCode}-${vNo}/`;
                 } else if (mData['Vibhag Name']) {
                     // Fallback for older records using Name
                     const abv = String(mData['Vibhag Name']).substring(0, 3).toUpperCase();
-                    dynamicVibhagPrefix = `[${abv}-${vNo || '??'}]/`;
+                    dynamicVibhagPrefix = `${abv}-${vNo || '??'}/`;
                 }
 
                 mData['Membership No'] = dynamicVibhagPrefix + prefix + paddedNum;
@@ -3848,7 +3848,7 @@
                     // Try html-to-image first (Better quality)
                     base64Png = await htmlToImage.toPng(captureArea, {
                         backgroundColor: '#ffffff',
-                        pixelRatio: 3,
+                        pixelRatio: 2.5,
                         width: 1000,
                         height: 630,
                         skipFonts: true,
