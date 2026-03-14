@@ -3062,26 +3062,14 @@
 
         // Navigation Drawer / Mobile Sidebar Toggle
         function toggleDrawer() {
-            const isMobile = window.innerWidth <= 768;
+            const drawer = document.getElementById('nav-drawer');
             const overlay = document.getElementById('drawer-overlay');
-
-            if (isMobile) {
-                // On mobile: toggle the sidebar panel
-                const sidebar = document.querySelector('.sidebar');
-                if (sidebar) {
-                    const isOpen = sidebar.classList.toggle('mobile-open');
-                    if (overlay) {
-                        overlay.classList.toggle('active', isOpen);
-                    }
-                }
-            } else {
-                // On desktop: toggle the sliding nav drawer
-                const drawer = document.getElementById('nav-drawer');
-                if (drawer && overlay) {
-                    drawer.classList.toggle('open');
-                    overlay.classList.toggle('active');
-                }
+            
+            if (drawer && overlay) {
+                const isOpen = drawer.classList.toggle('open');
+                overlay.classList.toggle('active', isOpen);
             }
+            
             if (window.lucide) lucide.createIcons();
         }
 
