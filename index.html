@@ -17,7 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         .hide-defaults .card-stripes,
-        .hide-defaults .header-container,
+        .hide-defaults #header-custom-view,
         .hide-defaults .office-bar,
         .hide-defaults #drag-sign {
             display: none !important;
@@ -887,7 +887,7 @@
 
     <aside class="sidebar">
 
-                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #001C6B; color: white; padding: 2px 8px; border-radius: 10px;">V5.2_SMART_LAYER</span></h2>
+                <h2 style="margin-bottom: 20px; margin-top: 70px;" class="sidebar-desktop-title">ID Designer Pro <span style="font-size: 0.6rem; background: #28a745; color: white; padding: 2px 8px; border-radius: 10px;">V5.3_UNIVERSAL_SYNC</span></h2>
 
 
         <div class="mode-toggle">
@@ -1919,6 +1919,10 @@
                         const targetHeight = 1000 * ratio; // The card is 1000px wide in CSS
 
                         container.style.height = targetHeight + 'px';
+
+                        // V5.3: Explicitly toggle between system text and imported graphics
+                        document.getElementById('header-custom-view').classList.add('hidden');
+                        document.getElementById('header-imported-view').classList.remove('hidden');
 
                         // Auto-hide top stripes and office bar
                         if (!hideStripesToggle.checked) {
@@ -3609,14 +3613,13 @@
                 // SYNC WORKER
                 if (targetAreaId === 'capture-area-worker') {
                     captureArea.innerHTML = master.innerHTML;
-                    // V5.2: Preserve the visibility status (hide-defaults) from the master area
-                    if (master.classList.contains('hide-defaults')) {
-                        captureArea.classList.add('hide-defaults');
-                    } else {
-                        captureArea.classList.remove('hide-defaults');
-                    }
+                    // V5.3: Universal Sync Engine (Mirror all classes and styles)
+                    captureArea.className = master.className;
+                    captureArea.style.cssText = master.style.cssText;
+                    // Reset worker-specific positioning after sync
+                    captureArea.style.position = 'absolute';
+                    captureArea.style.left = '-9999px';
                 } 
-                // Note: If targetAreaId is 'capture-area', it already has the correct classes.
                 // 1. **Auto-Generate Next Membership Number**
                 const currentPeriod = mData['Period'] || "Lifetime";
                 const catKey = currentPeriod.toLowerCase().replace(/\s/g, ''); // "lifetime", "5years", "1year"
